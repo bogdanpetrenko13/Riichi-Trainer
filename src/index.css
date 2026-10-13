@@ -1,69 +1,240 @@
-.handTile {
-    position: relative;
-    width: 7%;
-    height:7%;
-    padding-left: 2px;
-    padding-right: 2px;
+/* src/index.css — современная тема для Riichi Trainer */
+
+:root {
+  /* Цвета */
+  --rt-bg: #f7f4ec;              /* тёплый бумажный фон */
+  --rt-surface: #ffffff;         /* карточки */
+  --rt-surface-2: #f0ece1;       /* вторичный фон */
+  --rt-text: #232323;            /* основной текст */
+  --rt-text-muted: #6b6b6b;      /* вторичный текст */
+  --rt-border: #e2dccf;          /* границы */
+  --rt-primary: #2e4a3b;         /* бамбуковый зелёный */
+  --rt-primary-hover: #24392d;
+  --rt-accent: #c45a42;          /* терракота */
+  --rt-accent-hover: #a94b36;
+  --rt-danger: #b33a3a;
+  --rt-success: #3f7d5a;
+
+  /* Типографика */
+  --rt-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+             "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --rt-radius: 12px;
+  --rt-radius-sm: 8px;
+  --rt-shadow: 0 2px 8px rgba(35, 35, 35, 0.06);
+  --rt-shadow-lg: 0 8px 24px rgba(35, 35, 35, 0.10);
+  --rt-transition: 180ms ease-in-out;
 }
 
-.discardTile {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    padding-left: 2px;
-    padding-right: 2px;
-}
-
-.tile {
-    width: 100%;
-    height: 100%;
-}
-
-.index {
-    position: absolute;
-    top: -3px;
-    right: 6px;
-    font-size: 1em;
-    color: red;
-    font-weight: bold;
-    text-shadow: -1px -1px 0 #f5f0eb, 1px -1px 0 #f5f0eb, -1px 1px 0 #f5f0eb, 1px 1px 0 #f5f0eb;
-}
-
-.tenhouLink {
-    color: #0000EE;
-}
-
-.tenhouLink:hover {
-    color: #0B0080;
+/* Базовые стили */
+html, body, #root {
+  height: 100%;
 }
 
 body {
-    background: #6C979B;
-    overflow-y: scroll;
+  font-family: var(--rt-font);
+  background-color: var(--rt-bg);
+  color: var(--rt-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
+  /* Отключаем «резинку» на Android */
+  overscroll-behavior: none;
 }
 
-span {
-    color: #FFFFFF;
+/* Заголовки */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--rt-text);
+  margin-top: 0;
+  margin-bottom: 0.5em;
+}
+h1 { font-size: 1.75rem; }
+h2 { font-size: 1.4rem; }
+h3 { font-size: 1.15rem; }
+
+/* Кнопки: единый стиль, крупные тач-зоны */
+.btn {
+  font-family: var(--rt-font);
+  font-weight: 500;
+  border-radius: var(--rt-radius-sm);
+  padding: 0.6rem 1.1rem;
+  min-height: 44px;                 /* удобно для пальца */
+  font-size: 1rem;
+  transition: background-color var(--rt-transition),
+              border-color var(--rt-transition),
+              transform var(--rt-transition),
+              box-shadow var(--rt-transition);
+  border: 1px solid transparent;
+  box-shadow: none;
+  cursor: pointer;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn:focus,
+.btn:focus-visible {
+  outline: 3px solid rgba(46, 74, 59, 0.35);
+  outline-offset: 2px;
+  box-shadow: none;
 }
 
-.blackText {
-    color: #000000;
+.btn-primary {
+  background-color: var(--rt-primary);
+  border-color: var(--rt-primary);
+  color: #fff;
+}
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--rt-primary-hover);
+  border-color: var(--rt-primary-hover);
+}
+.btn-primary:disabled {
+  background-color: #a9b7ad;
+  border-color: #a9b7ad;
+  opacity: 0.8;
+  cursor: not-allowed;
 }
 
+.btn-secondary {
+  background-color: var(--rt-surface);
+  border-color: var(--rt-border);
+  color: var(--rt-text);
+}
+.btn-secondary:hover {
+  background-color: var(--rt-surface-2);
+}
+
+.btn-danger {
+  background-color: var(--rt-danger);
+  border-color: var(--rt-danger);
+  color: #fff;
+}
+
+/* Карточки */
+.card,
+.rt-card {
+  background-color: var(--rt-surface);
+  border: 1px solid var(--rt-border);
+  border-radius: var(--rt-radius);
+  box-shadow: var(--rt-shadow);
+  padding: 1rem 1.1rem;
+  transition: box-shadow var(--rt-transition),
+              transform var(--rt-transition);
+}
+.card:hover,
+.rt-card:hover {
+  box-shadow: var(--rt-shadow-lg);
+}
+
+/* Навигация / шапка */
+.navbar {
+  background-color: var(--rt-surface);
+  border-bottom: 1px solid var(--rt-border);
+  padding: 0.6rem 0.9rem;
+  min-height: 56px;
+}
+.navbar a,
+.navbar .nav-link {
+  color: var(--rt-text);
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--rt-radius-sm);
+  transition: background-color var(--rt-transition);
+}
+.navbar a:hover,
+.navbar .nav-link:hover {
+  background-color: var(--rt-surface-2);
+  color: var(--rt-text);
+}
+
+/* Таблицы / статистика */
+.table {
+  background-color: var(--rt-surface);
+  border-radius: var(--rt-radius);
+  overflow: hidden;
+  border: 1px solid var(--rt-border);
+  font-size: 0.95rem;
+}
+.table thead th {
+  background-color: var(--rt-surface-2);
+  color: var(--rt-text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--rt-border);
+}
+.table tbody tr:nth-child(even) {
+  background-color: #fbf9f4;
+}
+.table tbody tr:hover {
+  background-color: #f3efe5;
+}
+
+/* Поля ввода */
+input, select, textarea {
+  font-family: var(--rt-font);
+  font-size: 1rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--rt-border);
+  border-radius: var(--rt-radius-sm);
+  background-color: var(--rt-surface);
+  color: var(--rt-text);
+  transition: border-color var(--rt-transition),
+              box-shadow var(--rt-transition);
+  min-height: 44px;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--rt-primary);
+  box-shadow: 0 0 0 3px rgba(46, 74, 59, 0.18);
+}
+
+/* Модальные окна */
+.modal-content {
+  border-radius: var(--rt-radius);
+  border: none;
+  box-shadow: var(--rt-shadow-lg);
+  background-color: var(--rt-surface);
+}
+.modal-header,
+.modal-footer {
+  border-color: var(--rt-border);
+}
+
+/* Ссылки */
 a {
-    color: yellow
+  color: var(--rt-primary);
+  text-decoration: none;
+  transition: color var(--rt-transition);
 }
-
 a:hover {
-    color: orange
+  color: var(--rt-primary-hover);
+  text-decoration: underline;
 }
 
-.collapse.width {
-    height: auto;
-    -webkit-transition: width 0.35s ease;
-    -moz-transition: width 0.35s ease;
-    -o-transition: width 0.35s ease;
-    transition: width 0.35s ease;
+/* Скругления на мобильных */
+* {
+  -webkit-tap-highlight-color: rgba(46, 74, 59, 0.12);
+}
+
+/* Уважение к системе: тёмная тема (только если пользователь сам включил в ОС) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --rt-bg: #1c1f1d;
+    --rt-surface: #262a27;
+    --rt-surface-2: #2f3430;
+    --rt-text: #ececec;
+    --rt-text-muted: #a9ada9;
+    --rt-border: #3a3f3b;
+    --rt-primary: #7fb08c;
+    --rt-primary-hover: #9cc4a6;
+    --rt-accent: #e08768;
+  }
+  .table tbody tr:nth-child(even) { background-color: #2a2e2b; }
+  .table tbody tr:hover { background-color: #333833; }
 }
