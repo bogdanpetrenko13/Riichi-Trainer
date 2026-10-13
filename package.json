@@ -4,6 +4,8 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/core": "^6.2.0",
     "bootstrap": "^4.5.3",
     "cross-env": "^5.2.1",
     "i18next": "^17.3.1",
@@ -19,11 +21,17 @@
     "reactstrap": "^7.1.0",
     "typescript": "^3.9.7"
   },
+  "devDependencies": {
+    "@capacitor/cli": "^6.2.0"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "android:add": "cap add android",
+    "android:sync": "npm run build && cap sync android",
+    "android:open": "cap open android"
   },
   "eslintConfig": {
     "extends": "react-app"
