@@ -1,5 +1,4 @@
 import React from 'react';
-import { ListGroupItem, Row } from 'reactstrap';
 import ScoreInput from './ScoreInput';
 import { PLACEMENTS } from '../../Constants';
 import { useTranslation } from 'react-i18next';
@@ -24,8 +23,8 @@ function GyakutenQuestion(props) {
     }
 
     return (
-        <ListGroupItem>
-            <Row className="mb-2">{question}</Row>
+        <div className="rt-question">
+            <p className="rt-question__text">{question}</p>
             <ScoreInput
                 onScoreSubmit={props.onScoreSubmit}
                 tsumo={props.tsumo}
@@ -36,7 +35,7 @@ function GyakutenQuestion(props) {
                 maxFu={props.maxFu}
             />
             {props.messages[props.index] ? props.messages[props.index].generateJSX(t, props.showDifferences) : ""}
-        </ListGroupItem>
+        </div>
     );
 }
 

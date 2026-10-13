@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Col } from 'reactstrap';
+import { Button } from './ui';
 import { convertHandToTenhouString } from '../scripts/HandConversions';
 import { withTranslation } from 'react-i18next';
 
@@ -45,9 +45,9 @@ class CopyButton extends React.Component {
         let { t } = this.props;
 
         return (
-            <Col xs="6" sm="3" md="3" lg="2">
-                <Button className="btn-block" color={hasCopied ? "info" : "primary"} onClick={() => this.onClick()}>{hasCopied ? t("trainer.copied") : t("trainer.copyHand")}</Button>
-            </Col>
+            <Button variant={hasCopied ? "success" : "secondary"} icon={hasCopied ? "check" : "copy"} onClick={() => this.onClick()}>
+                {hasCopied ? t("trainer.copied") : t("trainer.copyHand")}
+            </Button>
         );
     }
 }

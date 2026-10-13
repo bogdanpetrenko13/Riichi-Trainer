@@ -1,215 +1,233 @@
+/* Стол для режима «Защита». Все размеры кратны --dt, поэтому стол
+   пропорционально сжимается на узких экранах (на широких --dt = 1px). */
+
 .discard-table-container {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 2rem;
+  --dt: calc((100vw - 32px) / 640);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--rt-space-3);
+}
+
+@media (min-width: 672px) {
+  .discard-table-container {
+    --dt: 1px;
+  }
 }
 
 .discard-table-grid {
-    position: relative;
-    width: 600px;
-    height: 600px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
+  position: relative;
+  width: calc(var(--dt) * 600);
+  height: calc(var(--dt) * 600);
+  background: var(--rt-color-felt);
+  border: 1px solid var(--rt-color-border);
+  border-radius: var(--rt-radius-lg);
+  box-shadow: inset 0 1px 3px rgba(35, 35, 35, 0.07);
 }
 
 /* Position containers for each player */
 .discard-position {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Bottom player (position 0) */
 .discard-row-bottom {
-    bottom: 10px;
-    left: 51.5%;
-    transform: translateX(-50%);
-    width: 280px;
+  bottom: calc(var(--dt) * 10);
+  left: 51.5%;
+  transform: translateX(-50%);
+  width: calc(var(--dt) * 280);
 }
 
 .discard-row-bottom .discard-player-label {
-    text-align: center;
-    margin-bottom: 8px;
+  text-align: center;
+  margin-bottom: calc(var(--dt) * 8);
 }
 
 .discard-row-bottom .discard-rows {
-    flex-direction: column;
-    align-items: flex-start;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 /* Right player (position 1) */
 .discard-row-right {
-    right: 10px;
-    top: 57%;
-    transform: translateY(-50%);
-    width: 140px;
-    height: 280px;
+  right: calc(var(--dt) * 10);
+  top: 57%;
+  transform: translateY(-50%);
+  width: calc(var(--dt) * 140);
+  height: calc(var(--dt) * 280);
 }
 
 .discard-row-right {
-    flex-direction: column;
+  flex-direction: column;
 }
 
 .discard-row-right .discard-player-label {
-    text-align: center;
-    width: 100%;
-    margin-right: 200px;
-    transform: rotate(270deg);
-    transform-origin: center;
+  text-align: center;
+  width: 100%;
+  margin-right: calc(var(--dt) * 200);
+  transform: rotate(270deg);
+  transform-origin: center;
 }
 
 .discard-row-right .discard-rows {
-    flex-direction: row;
-    width: 100%;
-    height: 100%;
-    gap: 2px;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  gap: calc(var(--dt) * 2);
 }
 
 /* Top player (position 2) */
 .discard-row-top {
-    top: 10px;
-    left: 48.5%;
-    transform: translateX(-50%);
-    width: 280px;
+  top: calc(var(--dt) * 10);
+  left: 48.5%;
+  transform: translateX(-50%);
+  width: calc(var(--dt) * 280);
 }
 
 .discard-row-top .discard-player-label {
-    text-align: center;
-    margin-bottom: 8px;
-    order: 2;
+  text-align: center;
+  margin-bottom: calc(var(--dt) * 8);
+  order: 2;
 }
 
 .discard-row-top .discard-rows {
-    flex-direction: column;
-    align-items: flex-start;
-    order: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  order: 1;
 }
 
 /* Left player (position 3) */
 .discard-row-left {
-    left: 10px;
-    top: 43%;
-    transform: translateY(-50%);
-    width: 140px;
-    height: 280px;
+  left: calc(var(--dt) * 10);
+  top: 43%;
+  transform: translateY(-50%);
+  width: calc(var(--dt) * 140);
+  height: calc(var(--dt) * 280);
 }
 
 .discard-row-left {
-    flex-direction: column;
+  flex-direction: column;
 }
 
 .discard-row-left .discard-player-label {
-    text-align: center;
-    margin-left: 200px;
-    width: 100%;
-    order: 2;
-    transform: rotate(90deg);
-    transform-origin: center;
+  text-align: center;
+  margin-left: calc(var(--dt) * 200);
+  width: 100%;
+  order: 2;
+  transform: rotate(90deg);
+  transform-origin: center;
 }
 
 .discard-row-left .discard-rows {
-    flex-direction: row;
-    width: 100%;
-    height: 100%;
-    gap: 2px;
-    order: 1;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  gap: calc(var(--dt) * 2);
+  order: 1;
 }
 
 /* Shared styles */
 .discard-player-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 .discard-player-label {
-    font-size: 0.9rem;
-    font-weight: bold;
-    color: #ffffff;
-    white-space: nowrap;
-    margin-bottom: 8px;
+  font-size: 0.7rem;
+  font-size: max(0.7rem, calc(var(--dt) * 14));
+  font-weight: 600;
+  color: var(--rt-color-text-2);
+  white-space: nowrap;
 }
 
 .discard-rows {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--dt) * 2);
+  width: 100%;
 }
 
 .discard-row {
-    display: flex;
-    gap: 2px;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+  display: flex;
+  gap: calc(var(--dt) * 2);
+  flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
 .discard-row-bottom .discard-row,
 .discard-row-top .discard-row {
-    flex-direction: row;
+  flex-direction: row;
 }
 
 .discard-row-right .discard-row,
 .discard-row-left .discard-row {
-    flex-direction: column;
-    gap: 2px;
+  flex-direction: column;
+  gap: calc(var(--dt) * 2);
 }
 
 .discard-tile-wrapper {
-    position: relative;
-    width: 42px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    aspect-ratio: 192/256;
+  position: relative;
+  width: calc(var(--dt) * 42);
+  height: calc(var(--dt) * 56);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 192/256;
+}
+
+.discard-tile-wrapper .discardTile {
+  height: 100%;
 }
 
 .discard-tile-wrapper.riichi-tile {
-    transform: rotate(90deg);
-    transform-origin: center;
+  transform: rotate(90deg);
+  transform-origin: center;
 }
 
 /* Rotation classes for entire discard sections */
 .rotation-0 {
-    /* Bottom player - no rotation */
+  /* Bottom player - no rotation */
 }
 
 .rotation-90 {
-    /* Left player - rotate 90 degrees counter-clockwise */
-    transform: rotate(90deg);
+  /* Left player - rotate 90 degrees counter-clockwise */
+  transform: rotate(90deg);
 }
 
 .rotation-180 {
-    /* Top player - rotate 180 degrees */
-    transform: rotate(180deg);
+  /* Top player - rotate 180 degrees */
+  transform: rotate(180deg);
 }
 
 .rotation-270 {
-    /* Right player - rotate 270 degrees (or 90 degrees clockwise) */
-    transform: rotate(270deg);
+  /* Right player - rotate 270 degrees (or 90 degrees clockwise) */
+  transform: rotate(270deg);
 }
 
 /* Adjust positions to account for rotation transforms */
 .discard-row-left .discard-rows {
-    transform-origin: center center;
+  transform-origin: center center;
 }
 
 .discard-row-right .discard-rows {
-    transform-origin: center center;
+  transform-origin: center center;
 }
 
 .discard-row-top .discard-rows {
-    transform-origin: center center;
+  transform-origin: center center;
 }
 
 .discard-table-info {
-    text-align: center;
-    margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--rt-space-2) var(--rt-space-4);
+  font-size: var(--rt-text-sm);
+  color: var(--rt-color-text-2);
 }

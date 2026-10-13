@@ -1,0 +1,152 @@
+.btn {
+  --b-bg: var(--rt-color-surface);
+  --b-bg-hover: var(--rt-color-surface-2);
+  --b-border: var(--rt-color-border-strong);
+  --b-fg: var(--rt-color-text);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--rt-space-2);
+  min-height: 44px;
+  padding: 0 var(--rt-space-4);
+  font: inherit;
+  font-size: var(--rt-text-base);
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  color: var(--b-fg);
+  background-color: var(--b-bg);
+  border: 1px solid var(--b-border);
+  border-radius: var(--rt-radius-sm);
+  box-shadow: var(--rt-shadow-sm);
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  transition:
+    background-color var(--rt-dur) var(--rt-ease),
+    border-color var(--rt-dur) var(--rt-ease),
+    box-shadow var(--rt-dur) var(--rt-ease),
+    transform var(--rt-dur-fast) var(--rt-ease);
+}
+
+.label {
+  min-width: 0;
+}
+
+@media (hover: hover) {
+  .btn:hover:not(:disabled) {
+    background-color: var(--b-bg-hover);
+    border-color: var(--b-bg-hover);
+    box-shadow: var(--rt-shadow-md);
+  }
+
+  .secondary:hover:not(:disabled) {
+    border-color: var(--rt-color-border-strong);
+  }
+}
+
+.btn:active:not(:disabled) {
+  background-color: var(--b-bg-hover);
+  box-shadow: none;
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  color: var(--rt-color-disabled);
+  background-color: var(--rt-color-surface-2);
+  border-color: var(--rt-color-border);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Варианты */
+.primary { --b-bg: var(--rt-color-primary); --b-bg-hover: var(--rt-color-primary-hover); --b-border: var(--rt-color-primary); --b-fg: var(--rt-color-on-primary); }
+.accent { --b-bg: var(--rt-color-accent); --b-bg-hover: var(--rt-color-accent-hover); --b-border: var(--rt-color-accent); --b-fg: var(--rt-color-on-accent); }
+.success { --b-bg: var(--rt-color-success); --b-bg-hover: var(--rt-color-success-hover); --b-border: var(--rt-color-success); --b-fg: var(--rt-color-on-success); }
+.danger { --b-bg: var(--rt-color-danger); --b-bg-hover: var(--rt-color-danger-hover); --b-border: var(--rt-color-danger); --b-fg: var(--rt-color-on-danger); }
+.secondary { }
+
+.ghost {
+  --b-bg: transparent;
+  --b-bg-hover: var(--rt-color-surface-2);
+  --b-border: transparent;
+  box-shadow: none;
+}
+
+.ghost:disabled {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.link {
+  --b-bg: transparent;
+  --b-bg-hover: transparent;
+  --b-border: transparent;
+  --b-fg: var(--rt-color-link);
+  padding: 0 var(--rt-space-2);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  box-shadow: none;
+}
+
+.link:disabled {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+/* Размеры. У sm визуально 36px, но зона нажатия расширена до 44px */
+.sm {
+  min-height: 36px;
+  padding: 0 var(--rt-space-3);
+  font-size: var(--rt-text-sm);
+}
+
+.sm::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  right: -2px;
+  bottom: -4px;
+  left: -2px;
+}
+
+.lg {
+  min-height: 52px;
+  padding: 0 var(--rt-space-6);
+  font-size: var(--rt-text-md);
+}
+
+.block {
+  display: flex;
+  width: 100%;
+}
+
+.iconOnly {
+  width: 44px;
+  padding: 0;
+}
+
+.iconOnly.sm {
+  width: 36px;
+}
+
+.iconOnly.lg {
+  width: 52px;
+}
+
+/* Загрузка */
+.loading {
+  pointer-events: none;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: rt-spin 0.7s linear infinite;
+}

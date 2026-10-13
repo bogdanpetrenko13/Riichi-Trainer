@@ -4,11 +4,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 import "./i18n";
+import { initAppearance } from './theme';
 
-//import UkeireQuiz from './states/UkeireQuiz';
-//import HandExplorer from './states/HandExplorer';
-//import ReplayAnalysis from './states/ReplayAnalysis';
 import MainMenu from './states/MainMenu';
 
+initAppearance();
+
 ReactDOM.render(<MainMenu />, document.getElementById('root'));
-serviceWorker.register();
+// Приложение работает офлайн из APK, service worker не нужен и мешает обновлению.
+serviceWorker.unregister();

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Container, Row, Input, InputGroup, InputGroupAddon, Col, ListGroup, ListGroupItem, Button, ListGroupItemHeading, Label } from 'reactstrap';
+import { Input, InputGroup, InputGroupAddon, Label } from 'reactstrap';
+import { Button, Card } from '../components/ui';
 import { getPoints } from '../scripts/ScoreCalculation';
 import Player from '../models/Player';
 import { randomInt, validateFu, shuffleArray } from '../scripts/Utils';
@@ -206,78 +207,79 @@ class SouthFourQuiz extends React.Component {
         let { t } = this.props;
         let scores = this.state.players.map((player, index) => {
             if (this.state.showDifferences) {
-                return <Row key={index}>{t(SEAT_NAMES[player.seat]) + ": " + player.points} ({index === 0 ? t("allLast.you") : "+" + (player.points - this.state.players[0].points)})</Row>;
+                return <li key={index}>{t(SEAT_NAMES[player.seat]) + ": " + player.points} ({index === 0 ? t("allLast.you") : "+" + (player.points - this.state.players[0].points)})</li>;
             } else {
-                return <Row key={index}>{t(SEAT_NAMES[player.seat]) + ": " + player.points}</Row>;
+                return <li key={index}>{t(SEAT_NAMES[player.seat]) + ": " + player.points}</li>;
             }
         });
 
+        const scoreBlock = (
+            <React.Fragment>
+                <p className="rt-instructions">{t("allLast.info")}</p>
+                <ul className="rt-lines rt-num">{scores}</ul>
+            </React.Fragment>
+        );
+
         return (
-            <Container>
-                <ListGroup>
-                    <ListGroupItemHeading><span>{t("allLast.title")}</span></ListGroupItemHeading>
-                    <ListGroupItem>
-                        <Row>
-                            <Col xs="12" sm="8" md="6">
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend">{t("allLast.maxFu")}</InputGroupAddon>
-                                    <Input type="number" value={this.state.maxFu} placeholder={t("allLast.fu")} step="5" min="20" max="130" onBlur={this.onFuChanged} onChange={this.onNumberChanged} />
-                                </InputGroup>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col className="form-check form-check-inline">
-                                <Input className="form-check-input" type="checkbox" id="toggleDifference"
-                                    checked={this.state.showDifferences} onChange={() => this.onToggleDifferences()} />
-                                <Label className="form-check-label" for="toggleDifference">{t("allLast.showDifferences")}</Label>
-                            </Col>
-                        </Row>
-                    </ListGroupItem>
-                    <ListGroupItem>
-                        <Row>{t("allLast.loadInstructions")}</Row>
+            <div className="rt-page">
+                <Card title={t("allLast.title")} icon="barChart">
+                    <div className="rt-stack">
                         <InputGroup>
-                            <Input id="loadScoresString" placeholder="28000,26000,24000,22000" />
+                            <InputGroupAddon addonType="prepend">{t("allLast.maxFu")}</InputGroupAddon>
+                            <Input type="number" inputMode="numeric" aria-label={t("allLast.maxFu")} value={this.state.maxFu} placeholder={t("allLast.fu")} step="5" min="20" max="130" onBlur={this.onFuChanged} onChange={this.onNumberChanged} />
+                        </InputGroup>
+                        <div className="form-check form-check-inline">
+                            <Input className="form-check-input" type="checkbox" id="toggleDifference"
+                                checked={this.state.showDifferences} onChange={() => this.onToggleDifferences()} />
+                            <Label className="form-check-label" for="toggleDifference">{t("allLast.showDifferences")}</Label>
+                        </div>
+                        <p className="rt-instructions">{t("allLast.loadInstructions")}</p>
+                        <InputGroup>
+                            <Input id="loadScoresString" aria-label={t("allLast.loadLabel")} placeholder="28000,26000,24000,22000" autoCapitalize="off" autoCorrect="off" spellCheck="false" />
                             <InputGroupAddon addonType="append">
-                                <Button color="warning" onClick={() => this.onLoadSituation()}>{t("allLast.loadLabel")}</Button>
+                                <Button variant="primary" icon="download" onClick={() => this.onLoadSituation()}>{t("allLast.loadLabel")}</Button>
                             </InputGroupAddon>
                         </InputGroup>
-                        <Row>{this.state.loadErrorMessage ? this.state.loadErrorMessage.generateString(t) : ""}</Row>
-                    </ListGroupItem>
-                    <ListGroupItem>
-                        <Button onClick={() => this.generateNewQuiz()}>{t("allLast.newLabel")}</Button>
-                    </ListGroupItem>
-                    <ListGroupItemHeading><span>{t("allLast.escapeHeader")}</span></ListGroupItemHeading>
-                    <ListGroupItem>
-                        <Row>{t("allLast.info")}</Row>
-                        {scores}
-                    </ListGroupItem>
-                    <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={true} ronTarget={0} placementTarget={1} index={0} riichis={[0, 0, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
-                    <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={false} ronTarget={1} placementTarget={1} index={1} riichis={[0, 0, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
-                    <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={false} ronTarget={2} placementTarget={1} index={2} riichis={[0, 0, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
-                    <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={false} ronTarget={3} placementTarget={1} index={3} riichis={[0, 0, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
-                    <ListGroupItemHeading><span>{t("allLast.riichiHeader")}</span></ListGroupItemHeading>
-                    <ListGroupItem>
-                        <Row>{t("allLast.info")}</Row>
-                        {scores}
-                    </ListGroupItem>
-                    <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={true} ronTarget={0} placementTarget={1} index={4} riichis={[0, 0, 0, 1]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
-                    <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={false} ronTarget={1} placementTarget={1} index={5} riichis={[0, 0, 0, 1]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
-                    <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={false} ronTarget={3} placementTarget={1} index={6} riichis={[0, 0, 0, 1]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
-                    <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={true} ronTarget={0} placementTarget={1} index={7} riichis={[0, 1, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
-                    <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={false} ronTarget={1} placementTarget={1} index={8} riichis={[0, 1, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
-                    <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={false} ronTarget={3} placementTarget={1} index={9} riichis={[0, 1, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
-                    <ListGroupItemHeading><span>{t("allLast.higherHeader")}</span></ListGroupItemHeading>
-                    <ListGroupItem>
-                        <Row>{t("allLast.info")}</Row>
-                        {scores}
-                    </ListGroupItem>
-                    <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={true} ronTarget={0} placementTarget={2} index={10} riichis={[0, 0, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
-                    <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={false} ronTarget={1} placementTarget={2} index={11} riichis={[0, 0, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
-                    <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={false} ronTarget={2} placementTarget={2} index={12} riichis={[0, 0, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
-                    <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={true} ronTarget={0} placementTarget={3} index={13} riichis={[0, 0, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
-                    <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={false} ronTarget={3} placementTarget={3} index={14} riichis={[0, 0, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
-                </ListGroup>
-            </Container>
+                        {this.state.loadErrorMessage ? <p className="rt-feedback rt-feedback--error" role="alert">{this.state.loadErrorMessage.generateString(t)}</p> : null}
+                        <div className="rt-actions">
+                            <Button variant="accent" icon="refresh" onClick={() => this.generateNewQuiz()}>{t("allLast.newLabel")}</Button>
+                        </div>
+                    </div>
+                </Card>
+
+                <Card title={t("allLast.escapeHeader")} icon="shield">
+                    <div className="rt-stack">
+                        {scoreBlock}
+                        <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={true} ronTarget={0} placementTarget={1} index={0} riichis={[0, 0, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
+                        <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={false} ronTarget={1} placementTarget={1} index={1} riichis={[0, 0, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
+                        <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={false} ronTarget={2} placementTarget={1} index={2} riichis={[0, 0, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
+                        <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={false} ronTarget={3} placementTarget={1} index={3} riichis={[0, 0, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
+                    </div>
+                </Card>
+
+                <Card title={t("allLast.riichiHeader")} icon="target">
+                    <div className="rt-stack">
+                        {scoreBlock}
+                        <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={true} ronTarget={0} placementTarget={1} index={4} riichis={[0, 0, 0, 1]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
+                        <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={false} ronTarget={1} placementTarget={1} index={5} riichis={[0, 0, 0, 1]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
+                        <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={false} ronTarget={3} placementTarget={1} index={6} riichis={[0, 0, 0, 1]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
+                        <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={true} ronTarget={0} placementTarget={1} index={7} riichis={[0, 1, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
+                        <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={false} ronTarget={1} placementTarget={1} index={8} riichis={[0, 1, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
+                        <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={false} ronTarget={3} placementTarget={1} index={9} riichis={[0, 1, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
+                    </div>
+                </Card>
+
+                <Card title={t("allLast.higherHeader")} icon="barChart">
+                    <div className="rt-stack">
+                        {scoreBlock}
+                        <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={true} ronTarget={0} placementTarget={2} index={10} riichis={[0, 0, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
+                        <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={false} ronTarget={1} placementTarget={2} index={11} riichis={[0, 0, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
+                        <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={false} ronTarget={2} placementTarget={2} index={12} riichis={[0, 0, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
+                        <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={true} ronTarget={0} placementTarget={3} index={13} riichis={[0, 0, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
+                        <GyakutenQuestion onScoreSubmit={this.onSubmit} tsumo={false} ronTarget={3} placementTarget={3} index={14} riichis={[0, 0, 0, 0]} messages={this.state.messages} showDifferences={this.state.showDifferences} maxFu={this.state.maxFu} />
+                    </div>
+                </Card>
+            </div>
         );
     }
 }

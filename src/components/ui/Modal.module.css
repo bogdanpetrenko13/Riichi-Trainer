@@ -1,0 +1,99 @@
+.backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--rt-space-4) + var(--rt-safe-top)) calc(var(--rt-space-4) + var(--rt-safe-right)) calc(var(--rt-space-4) + var(--rt-safe-bottom)) calc(var(--rt-space-4) + var(--rt-safe-left));
+  background-color: var(--rt-color-overlay);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  animation: rt-backdrop-in var(--rt-dur-slow) var(--rt-ease);
+}
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 460px;
+  max-height: calc(100vh - 2 * var(--rt-space-4));
+  color: var(--rt-color-text);
+  background-color: var(--rt-color-surface);
+  border-radius: var(--rt-radius-lg);
+  box-shadow: var(--rt-shadow-xl);
+  outline: none;
+  animation: rt-pop var(--rt-dur-slow) var(--rt-ease);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--rt-space-3);
+  padding: var(--rt-space-3) var(--rt-space-3) 0 var(--rt-space-5);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--rt-text-lg);
+}
+
+.body {
+  flex: 1 1 auto;
+  padding: var(--rt-space-4) var(--rt-space-5);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--rt-space-2);
+  padding: var(--rt-space-3) var(--rt-space-5) var(--rt-space-4);
+}
+
+.closing {
+  animation-direction: reverse;
+  animation-fill-mode: forwards;
+  animation-duration: 180ms;
+}
+
+/* Телефон: bottom sheet */
+@media (max-width: 599px) {
+  .backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .dialog {
+    max-width: none;
+    max-height: calc(100vh - var(--rt-space-9));
+    padding-bottom: var(--rt-safe-bottom);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    animation-name: rt-sheet-in;
+  }
+
+  .footer {
+    flex-direction: column-reverse;
+  }
+
+  .footer > * {
+    width: 100%;
+  }
+}
+
+@keyframes rt-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes rt-sheet-in {
+  from { opacity: 0; transform: translateY(32px); }
+  to { opacity: 1; transform: none; }
+}

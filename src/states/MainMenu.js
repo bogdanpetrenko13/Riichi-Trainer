@@ -1,5 +1,4 @@
 import React from 'react';
-import { Container, Row, Button, Col, Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap';
 import UkeireQuiz from "./UkeireQuiz";
 import ReplayAnalysis from "./ReplayAnalysis";
 import UtilsState from "./UtilsState";
@@ -8,6 +7,10 @@ import Shanten from './Shanten';
 import SouthFourQuiz from './SouthFourQuiz';
 import { withTranslation } from "react-i18next";
 import DefenseState from './DefenseState';
+import AppSettings from '../screens/AppSettings';
+import Help from '../screens/Help';
+import About from '../screens/About';
+import { AppBar, BottomNav, Button, Icon, Modal, ToastHost } from '../components/ui';
 
 const STATES = {
     UKEIRE: 0,
@@ -17,7 +20,13 @@ const STATES = {
     SOUTH_FOUR: 4,
     DEFENSE: 5,
     SHANTEN: 6,
+    SETTINGS: 7,
+    HELP: 8,
+    ABOUT: 9,
 };
+
+/** Пункты нижней навигации: id совпадает с номером состояния, кроме «Ещё». */
+const NAV_STATES = [STATES.UKEIRE, STATES.DEFENSE, STATES.REPLAY, STATES.SOUTH_FOUR];
 
 class MainMenu extends React.Component {
     constructor(props) {
@@ -25,20 +34,33 @@ class MainMenu extends React.Component {
 
         this.state = {
             active: 0,
-            dropdownOpen: false
+            moreOpen: false
         }
+
+        this.onSetActivePage = this.onSetActivePage.bind(this);
+        this.onNavSelect = this.onNavSelect.bind(this);
+        this.closeMore = this.closeMore.bind(this);
     }
 
     onSetActivePage(index) {
         this.setState({
-            active: index
+            active: index,
+            moreOpen: false
         });
+
+        window.scrollTo(0, 0);
     }
 
-    toggleDropdown() {
-        this.setState({
-            dropdownOpen: !this.state.dropdownOpen
-        });
+    onNavSelect(id) {
+        if (id === 'more') {
+            this.setState({ moreOpen: true });
+        } else {
+            this.onSetActivePage(id);
+        }
+    }
+
+    closeMore() {
+        this.setState({ moreOpen: false });
     }
 
     changeLanguage(newLanguage) {
@@ -46,68 +68,102 @@ class MainMenu extends React.Component {
         i18n.changeLanguage(newLanguage);
     }
 
-    render() {
+    getTitle() {
         let { t } = this.props;
-        let page = <Row />;
+        switch (this.state.active) {
+            case STATES.REPLAY: return t("menu.analyzer");
+            case STATES.UTILS: return t("menu.utils");
+            case STATES.EXPLORER: return t("menu.explorer");
+            case STATES.SOUTH_FOUR: return t("menu.allLast");
+            case STATES.DEFENSE: return t("menu.defense");
+            case STATES.SHANTEN: return t("menu.shanten");
+            case STATES.SETTINGS: return t("app.settings");
+            case STATES.HELP: return t("app.help");
+            case STATES.ABOUT: return t("app.about");
+            default: return t("menu.trainer");
+        }
+    }
+
+    renderPage() {
         switch (this.state.active) {
             case STATES.UKEIRE:
-                page = <UkeireQuiz />; break;
+                return <UkeireQuiz />;
             case STATES.REPLAY:
-                page = <ReplayAnalysis />; break;
+                return <ReplayAnalysis />;
             case STATES.UTILS:
-                page = <UtilsState />; break;
+                return <UtilsState />;
             case STATES.EXPLORER:
-                page = <HandExplorer />; break;
+                return <HandExplorer />;
             case STATES.SOUTH_FOUR:
-                page = <SouthFourQuiz />; break;
+                return <SouthFourQuiz />;
             case STATES.DEFENSE:
-                page = <DefenseState />; break;
+                return <DefenseState />;
             case STATES.SHANTEN:
-                page = <Shanten />; break;
+                return <Shanten />;
+            case STATES.SETTINGS:
+                return <AppSettings />;
+            case STATES.HELP:
+                return <Help />;
+            case STATES.ABOUT:
+                return <About />;
             default:
-                page = <UkeireQuiz />;
+                return <UkeireQuiz />;
         }
+    }
+
+    render() {
+        let { t } = this.props;
+        let active = this.state.active;
+
+        let items = [
+            { id: STATES.UKEIRE, label: t("menu.trainer"), icon: "target" },
+            { id: STATES.DEFENSE, label: t("menu.defense"), icon: "shield" },
+            { id: STATES.REPLAY, label: t("menu.analyzer"), icon: "search" },
+            { id: STATES.SOUTH_FOUR, label: t("menu.allLast"), icon: "barChart" },
+            { id: 'more', label: t("app.more"), icon: "more" },
+        ];
+
+        let moreLinks = [
+            { id: STATES.EXPLORER, label: t("menu.explorer"), icon: "layers" },
+            { id: STATES.SHANTEN, label: t("menu.shanten"), icon: "compass" },
+            { id: STATES.UTILS, label: t("menu.utils"), icon: "wrench" },
+            { id: STATES.SETTINGS, label: t("app.settings"), icon: "sliders" },
+            { id: STATES.HELP, label: t("app.help"), icon: "help" },
+            { id: STATES.ABOUT, label: t("app.about"), icon: "info" },
+        ];
+
+        let activeNav = NAV_STATES.indexOf(active) > -1 ? active : 'more';
 
         return (
-            <React.Fragment>
-                <Container className="mb-4">
-                    <Row>
-                        <Button color="success" xs="4" disabled={this.state.active === STATES.UKEIRE} onClick={() => this.onSetActivePage(STATES.UKEIRE)}>{t("menu.trainer")}</Button>
-                        <Button xs="4" disabled={this.state.active === STATES.REPLAY} onClick={() => this.onSetActivePage(STATES.REPLAY)}>{t("menu.analyzer")}</Button>
-                        <Button xs="4" disabled={this.state.active === STATES.SOUTH_FOUR} onClick={() => this.onSetActivePage(STATES.SOUTH_FOUR)}>{t("menu.allLast")}</Button>
-                        <Button xs="4" disabled={this.state.active === STATES.DEFENSE} onClick={() => this.onSetActivePage(STATES.DEFENSE)}>{t("menu.defense")}</Button>
-                        <Button xs="4" disabled={this.state.active === STATES.EXPLORER} onClick={() => this.onSetActivePage(STATES.EXPLORER)}>{t("menu.explorer")}</Button>
-                        <Button xs="4" disabled={this.state.active === STATES.SHANTEN} onClick={() => this.onSetActivePage(STATES.SHANTEN)}>{t("menu.shanten")}</Button>
-                        <Button xs="4" disabled={this.state.active === STATES.UTILS} onClick={() => this.onSetActivePage(STATES.UTILS)}>{t("menu.utils")}</Button>
-                    </Row>
-                    <Row>
-                        <Dropdown isOpen={this.state.dropdownOpen} toggle={() => this.toggleDropdown()}>
-                            <DropdownToggle caret>
-                                🌐 {t("menu.language")}
-                            </DropdownToggle>
-                            <DropdownMenu>
-                                <DropdownItem onClick={() => this.changeLanguage("en")}>English</DropdownItem>
-                                <DropdownItem onClick={() => this.changeLanguage("ja")}>日本語</DropdownItem>
-                                <DropdownItem onClick={() => this.changeLanguage("ru")}>Русский</DropdownItem>
-                                <DropdownItem onClick={() => this.changeLanguage("fr")}>Français</DropdownItem>
-                                <DropdownItem onClick={() => this.changeLanguage("pl")}>polski</DropdownItem>
-                                <DropdownItem onClick={() => this.changeLanguage("pt")}>Português Brasileiro</DropdownItem>
-                                <DropdownItem onClick={() => this.changeLanguage("zh_CN")}>简体中文</DropdownItem>
-                                <DropdownItem onClick={() => this.changeLanguage("ko")}>한국어</DropdownItem>
-                                <DropdownItem onClick={() => this.changeLanguage("de")}>Deutsch</DropdownItem>
-                            </DropdownMenu>
-                        </Dropdown>
-                    </Row>
-                </Container>
-                {page}
-                <Container className="mt-4">
-                    <Row className="mt-4">
-                        <Col xs="12"><span>{t("credits.label")}</span></Col>
-                        <Col xs="12"><span>{t("credits.tilesPreLink")} <a href="https://github.com/FluffyStuff/riichi-mahjong-tiles">{t("credits.tilesLinkText")}</a>{t("credits.tilesPostLink")}<a href="https://creativecommons.org/licenses/by/4.0/">{t("credits.ccLinkText")}</a></span></Col>
-                        <Col xs="12"><span>{t("credits.shantenPreLink")}<a href="http://cmj3.web.fc2.com/#syanten">{t("credits.shantenLinkText")}</a>{t("credits.shantenPostLink")}</span></Col>
-                    </Row>
-                </Container>
-            </React.Fragment>
+            <div className="rt-app">
+                <AppBar
+                    title={this.getTitle()}
+                    left={<Icon name="tile" size={24} className="rt-brand" />}
+                    right={<Button variant="ghost" icon="sliders" aria-label={t("app.settings")} onClick={() => this.onSetActivePage(STATES.SETTINGS)} />}
+                />
+                <main className="rt-main">
+                    {this.renderPage()}
+                </main>
+                <BottomNav items={items} activeId={activeNav} onSelect={this.onNavSelect} ariaLabel={t("app.navLabel")} />
+                <Modal open={this.state.moreOpen} onClose={this.closeMore} title={t("app.moreTitle")}>
+                    <ul className="rt-more-list">
+                        {moreLinks.map((link) => (
+                            <li key={link.id}>
+                                <button
+                                    type="button"
+                                    className="rt-lang"
+                                    aria-current={active === link.id ? 'page' : undefined}
+                                    onClick={() => this.onSetActivePage(link.id)}
+                                >
+                                    <span className="rt-row"><Icon name={link.icon} size={20} />{link.label}</span>
+                                    <Icon name="chevronRight" size={18} />
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                </Modal>
+                <ToastHost />
+            </div>
         );
     }
 }

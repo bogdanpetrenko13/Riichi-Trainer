@@ -1,12 +1,13 @@
 import React from 'react';
-import { Container, Collapse, Card, CardBody, Button, Row, Col } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
+import { Button, Collapsible, Modal } from '../ui';
 
 class StatsDisplay extends React.Component {
     constructor(props) {
         super(props);
         this.toggleStats = this.toggleStats.bind(this);
         this.toggleConfirm = this.toggleConfirm.bind(this);
+        this.onConfirmReset = this.onConfirmReset.bind(this);
         this.state = {
             statsCollapsed: true,
             confirmCollapsed: true
@@ -19,6 +20,11 @@ class StatsDisplay extends React.Component {
 
     toggleConfirm() {
         this.setState({ confirmCollapsed: !this.state.confirmCollapsed });
+    }
+
+    onConfirmReset() {
+        this.props.onReset();
+        this.setState({ confirmCollapsed: true });
     }
 
     render() {
@@ -34,34 +40,31 @@ class StatsDisplay extends React.Component {
         averageTime = Math.round(averageTime * 10) / 10;
 
         return (
-            <Container>
-                <Button color="primary" onClick={this.toggleStats}>{t("shanten.stats.buttonLabel")}</Button>
-                <Collapse isOpen={!this.state.statsCollapsed}>
-                    <Card><CardBody>
-                        <Row>
-                            {t("shanten.stats.correctGuesses", { count: correctGuesses, total: totalGuesses, percent: correctRate })}
-                        </Row>
-                        {useTimer && <Row>
-                            {t("shanten.stats.averageTime", { time: averageTime })}
-                        </Row>}
-                        <Row className="mt-4">
-                            <Button color="danger" onClick={this.toggleConfirm}>{t("shanten.stats.reset")}</Button>
-                        </Row>
-                        <Row>
-                            <Collapse isOpen={!this.state.confirmCollapsed}>
-                                <Card><CardBody>
-                                    <Row>{t("shanten.stats.confirmation")}</Row>
-                                    <Row>
-                                        <Button color="danger" onClick={this.props.onReset}>{t("shanten.stats.yes")}</Button>
-                                        <Col xs="1" />
-                                        <Button color="success" onClick={this.toggleConfirm}>{t("shanten.stats.no")}</Button>
-                                    </Row>
-                                </CardBody></Card>
-                            </Collapse>
-                        </Row>
-                    </CardBody></Card>
-                </Collapse>
-            </Container>
+            <React.Fragment>
+                <Collapsible title={t("shanten.stats.buttonLabel")} icon="barChart" open={!this.state.statsCollapsed} onToggle={this.toggleStats}>
+                    <ul className="rt-lines rt-num">
+                        <li>{t("shanten.stats.correctGuesses", { count: correctGuesses, total: totalGuesses, percent: correctRate })}</li>
+                        {useTimer && <li>{t("shanten.stats.averageTime", { time: averageTime })}</li>}
+                    </ul>
+                    <div className="rt-bar" aria-hidden="true"><span style={{ width: correctRate + '%' }} /></div>
+                    <div className="rt-mt-4">
+                        <Button variant="danger" icon="refresh" onClick={this.toggleConfirm}>{t("shanten.stats.reset")}</Button>
+                    </div>
+                </Collapsible>
+                <Modal
+                    open={!this.state.confirmCollapsed}
+                    onClose={this.toggleConfirm}
+                    title={t("shanten.stats.reset")}
+                    footer={
+                        <React.Fragment>
+                            <Button variant="secondary" onClick={this.toggleConfirm}>{t("shanten.stats.no")}</Button>
+                            <Button variant="danger" onClick={this.onConfirmReset}>{t("shanten.stats.yes")}</Button>
+                        </React.Fragment>
+                    }
+                >
+                    <p>{t("shanten.stats.confirmation")}</p>
+                </Modal>
+            </React.Fragment>
         );
     }
 }

@@ -1,12 +1,12 @@
 import React from 'react';
-import { Row, ListGroup, ListGroupItem } from 'reactstrap';
+import { Card } from '../ui';
 import ResultingHandInfo from './ResultingHandInfo';
 import { calculateUkeire, calculateUkeireUpgrades, calculateDiscardUkeire } from '../../scripts/UkeireCalculator';
 import { calculateStandardShanten } from '../../scripts/ShantenCalculator';
 import { ALL_TILES_REMAINING } from '../../Constants';
 
 function HandFutures(props) {
-    if (!props.hand) return <Row />;
+    if (!props.hand) return null;
 
     let tiles = [];
     let hand = props.hand.slice();
@@ -64,9 +64,9 @@ function HandFutures(props) {
         });
     }
 
-    let handInfos = infoObjects.map((obj) => {
+    let handInfos = infoObjects.map((obj, index) => {
         return (
-            <ListGroupItem>
+            <Card key={obj.discard + '-' + index}>
                 <ResultingHandInfo
                     hand={obj.hand}
                     discard={obj.discard}
@@ -74,16 +74,14 @@ function HandFutures(props) {
                     ukeire={obj.ukeire}
                     upgrades={obj.upgrades}
                 />
-            </ListGroupItem>
+            </Card>
         );
     });
 
     return (
-        <Row className="mt-2">
-            <ListGroup>
-                {handInfos}
-            </ListGroup>
-        </Row>
+        <div className="rt-stack">
+            {handInfos}
+        </div>
     );
 }
 

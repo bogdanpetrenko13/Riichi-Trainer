@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Row, Button, Col } from 'reactstrap';
+import { Button } from '../components/ui';
 import Hand from '../components/Hand';
 import LoadButton from '../components/LoadButton';
 import HandFutures from '../components/hand-explorer/HandFutures';
@@ -62,19 +62,22 @@ class HandExplorer extends React.Component {
     render() {
         let { t } = this.props;
         return (
-            <Container>
-                <Row className="mb-2">
-                    <span>
-                        {t("explorer.warning")}
-                        <br />{t("explorer.shanten")}
-                        <br />{t("explorer.ukeire")}
-                    </span></Row>
-                <LoadButton callback={this.loadHand} />
-                <Col xs="12"><Button onClick={() => this.onShowToggled()}>{this.state.showAll ? t("explorer.notableDiscards") : t("explorer.allDiscards")}</Button></Col>
-                <Row className="mt-2 mb-2">{this.state.message}</Row>
-                <Hand tiles={this.state.hand} />
+            <div className="rt-page">
+                <p className="rt-note">
+                    {t("explorer.warning")}
+                    <br />{t("explorer.shanten")}
+                    <br />{t("explorer.ukeire")}
+                </p>
+                <div className="rt-actions">
+                    <LoadButton callback={this.loadHand} />
+                    <Button variant="secondary" icon="layers" onClick={() => this.onShowToggled()}>{this.state.showAll ? t("explorer.notableDiscards") : t("explorer.allDiscards")}</Button>
+                </div>
+                {this.state.message ? <p className="rt-feedback" role="status">{this.state.message}</p> : null}
+                <section className="rt-board">
+                    <Hand tiles={this.state.hand} />
+                </section>
                 <HandFutures hand={this.state.hand} showAll={this.state.showAll} />
-            </Container>
+            </div>
         );
     }
 }

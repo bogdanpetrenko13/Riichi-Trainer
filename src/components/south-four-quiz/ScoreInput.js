@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, Input, InputGroup, InputGroupAddon, Col, Row } from 'reactstrap';
+import { Input, InputGroup, InputGroupAddon } from 'reactstrap';
+import { Button } from '../ui';
 import { withTranslation } from 'react-i18next';
 
 class ScoreInput extends React.Component {
@@ -70,23 +71,17 @@ class ScoreInput extends React.Component {
         let { t } = this.props;
 
         return (
-            <Row>
-                <Col xs="4" sm="3">
-                    <InputGroup>
-                        <InputGroupAddon addonType="prepend">{t("allLast.han")}</InputGroupAddon>
-                        <Input type="number" placeholder={t("allLast.han")} step="1" min="1" max={this.props.maxHan || 13} onBlur={this.onHanChanged} onChange={this.onNumberChanged} />
-                    </InputGroup>
-                </Col>
-                <Col xs="4" sm="3">
-                    <InputGroup>
-                        <InputGroupAddon addonType="prepend">{t("allLast.fu")}</InputGroupAddon>
-                        <Input type="number" placeholder={t("allLast.fu")} step="5" min="20" max={this.props.maxFu || 130} onBlur={this.onFuChanged} onChange={this.onNumberChanged} />
-                    </InputGroup>
-                </Col>
-                <Col xs="2">
-                    <Button className="btn-block" onClick={() => this.onScoreSubmit()}>{t("allLast.submit")}</Button>
-                </Col>
-            </Row>
+            <div className="rt-score-input">
+                <InputGroup>
+                    <InputGroupAddon addonType="prepend">{t("allLast.han")}</InputGroupAddon>
+                    <Input type="number" inputMode="numeric" aria-label={t("allLast.han")} placeholder={t("allLast.han")} step="1" min="1" max={this.props.maxHan || 13} onBlur={this.onHanChanged} onChange={this.onNumberChanged} />
+                </InputGroup>
+                <InputGroup>
+                    <InputGroupAddon addonType="prepend">{t("allLast.fu")}</InputGroupAddon>
+                    <Input type="number" inputMode="numeric" aria-label={t("allLast.fu")} placeholder={t("allLast.fu")} step="5" min="20" max={this.props.maxFu || 130} onBlur={this.onFuChanged} onChange={this.onNumberChanged} />
+                </InputGroup>
+                <Button variant="primary" icon="check" onClick={() => this.onScoreSubmit()}>{t("allLast.submit")}</Button>
+            </div>
         )
     }
 }

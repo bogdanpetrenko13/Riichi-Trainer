@@ -1,0 +1,133 @@
+/* =========================================================
+   Reset и базовые элементы
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background-color: var(--rt-color-bg);
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--rt-font-sans);
+  font-size: var(--rt-text-base);
+  line-height: var(--rt-leading-text);
+  color: var(--rt-color-text);
+  background-color: var(--rt-color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+  transition: background-color var(--rt-dur-slow) var(--rt-ease), color var(--rt-dur-slow) var(--rt-ease);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 var(--rt-space-2);
+  font-weight: 600;
+  line-height: var(--rt-leading-heading);
+  color: var(--rt-color-text);
+}
+
+h1 { font-size: var(--rt-text-2xl); letter-spacing: -0.01em; }
+h2 { font-size: var(--rt-text-xl); letter-spacing: -0.01em; }
+h3 { font-size: var(--rt-text-lg); letter-spacing: -0.01em; }
+h4 { font-size: var(--rt-text-md); }
+h5, h6 { font-size: var(--rt-text-base); }
+
+p {
+  margin: 0 0 var(--rt-space-3);
+}
+
+a {
+  color: var(--rt-color-link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--rt-dur-fast) var(--rt-ease);
+}
+
+a:hover {
+  color: var(--rt-color-accent);
+}
+
+small,
+.small {
+  font-size: var(--rt-text-sm);
+}
+
+u {
+  text-decoration: none;
+  font-weight: 600;
+}
+
+img {
+  max-width: 100%;
+  vertical-align: middle;
+  border-style: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+button {
+  touch-action: manipulation;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--rt-color-border);
+  margin: var(--rt-space-4) 0;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+::selection {
+  background: var(--rt-color-primary);
+  color: var(--rt-color-on-primary);
+}
+
+/* Фокус для клавиатуры и скринридеров: 3px акцентный контур */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 3px solid var(--rt-color-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Цифры: ровные, одинаковой ширины */
+.rt-num {
+  font-family: var(--rt-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Анимации можно отключить на уровне системы */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

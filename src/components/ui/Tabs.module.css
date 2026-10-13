@@ -1,0 +1,11 @@
+.tabs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rt-space-3);
+  min-width: 0;
+}
+
+.panel {
+  min-width: 0;
+  animation: rt-fade-in var(--rt-dur-slow) var(--rt-ease);
+}

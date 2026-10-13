@@ -1,6 +1,6 @@
 import React from 'react';
 import { withTranslation } from "react-i18next";
-import { Container, Row, Col, Button, Collapse, Card, CardBody } from 'reactstrap';
+import { Button, Collapsible } from '../components/ui';
 import DiscardTable from '../components/DiscardTable';
 import Hand from '../components/Hand';
 import History from '../components/History';
@@ -536,47 +536,42 @@ class DefenseState extends React.Component {
         let { t } = this.props;
 
         let safetyRatings = SAFETY_RATING_EXPLANATIONS.map((explanation, index) => {
-            if (index === 0) return <Row key={index}></Row>;
-            return <Row key={index}>{t("defense.safetyRating", { rating: index, explanation: t(explanation) })}</Row>
+            if (index === 0) return null;
+            return <li key={index}>{t("defense.safetyRating", { rating: index, explanation: t(explanation) })}</li>
         }).reverse();
 
         return (
-            <Container>
-                <DefenseSettings onChange={this.onSettingsChanged} />
-                <Container>
-                    <Button color="primary" onClick={() => this.toggleChart()}>{t("defense.safetyRatings")}</Button>
-                    <Collapse isOpen={!this.state.chartCollapsed}>
-                        <Card><CardBody>
-                            <Row>{t("defense.averagedSafetyRating")}</Row>
+            <div className="rt-page">
+                <div className="rt-panels">
+                    <DefenseSettings onChange={this.onSettingsChanged} />
+                    <Collapsible title={t("defense.safetyRatings")} icon="shield" open={!this.state.chartCollapsed} onToggle={() => this.toggleChart()}>
+                        <p className="rt-muted">{t("defense.averagedSafetyRating")}</p>
+                        <ul className="rt-lines">
                             {safetyRatings}
-                        </CardBody></Card>
-                    </Collapse>
-                </Container>
-                {this.state.players.length &&
+                        </ul>
+                    </Collapsible>
+                </div>
+                {this.state.players.length > 0 &&
                     <React.Fragment>
-                        <Row className="mb-2 mt-2">
-                            <span>{t("defense.instructions")}</span>
-                        </Row>
+                        <p className="rt-instructions">{t("defense.instructions")}</p>
                         <DiscardTable players={this.state.players} discardCount={this.state.discardCount} wallCount={this.state.tilePool && this.state.tilePool.length} showIndexes={this.state.settings.showIndexes} />
-                        <Hand tiles={this.state.players[0].hand}
-                            lastDraw={this.state.lastDraw}
-                            onTileClick={this.onTileClicked}
-                            showIndexes={this.state.settings.showIndexes} />
-                        <Row className="mt-2">
-                            <Col xs="6" sm="3" md="3" lg="2">
-                                <Button className="btn-block" color={this.state.isComplete ? "success" : "warning"} onClick={() => this.onNewHand()}>{t("trainer.newHandButtonLabel")}</Button>
-                            </Col>
-                        </Row>
-                        {this.state.settings.useTimer ?
-                            <Row className="mt-2" style={{ justifyContent: 'flex-end', marginRight: 1 }}><span>{this.state.currentTime.toFixed(1)} + {this.state.currentBonus.toFixed(1)}</span></Row>
-                            : ""
-                        }
-                        <Row className="mt-2 no-gutters">
-                            <History history={this.state.history} concise={true} verbose={this.state.settings.verbose} spoilers={this.state.settings.spoilers} />
-                        </Row>
+                        <section className="rt-board">
+                            <Hand tiles={this.state.players[0].hand}
+                                lastDraw={this.state.lastDraw}
+                                onTileClick={this.onTileClicked}
+                                showIndexes={this.state.settings.showIndexes} />
+                            {this.state.settings.useTimer ?
+                                <div className="rt-timer rt-num">{this.state.currentTime.toFixed(1)} + {this.state.currentBonus.toFixed(1)}</div>
+                                : null
+                            }
+                        </section>
+                        <div className="rt-actions">
+                            <Button variant={this.state.isComplete ? "success" : "accent"} icon="refresh" onClick={() => this.onNewHand()}>{t("trainer.newHandButtonLabel")}</Button>
+                        </div>
+                        <History history={this.state.history} concise={true} verbose={this.state.settings.verbose} spoilers={this.state.settings.spoilers} />
                     </React.Fragment>
                 }
-            </Container>
+            </div>
         );
     }
 }

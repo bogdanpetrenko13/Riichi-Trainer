@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Button, ListGroup, ListGroupItem, Row } from 'reactstrap';
+import { Button, Card } from '../ui';
 import Player from '../../models/Player';
 import { convertTilesToAsciiSymbols, convertIndexesToTenhouTiles, getTileAsText } from '../../scripts/TileConversions';
 import { ROUND_PARAMETERS, SEAT_NAMES } from '../../Constants';
@@ -116,41 +116,43 @@ class RandomGameState extends React.Component {
 
     render() {
         if (this.state.init === false) {
-            return <Row>Please wait...</Row>;
+            return <p className="rt-feedback" role="status">...</p>;
         }
 
         let { t } = this.props;
 
         let playerItems = this.state.players.map((player, index) => {
             return (
-                <ListGroupItem key={index + 1}>
-                    <Row>{t("utils.playerLabel", {
+                <li key={index + 1}>
+                    <strong>{t("utils.playerLabel", {
                         seat: t(SEAT_NAMES[player.seat]),
                         you: player.seat === this.state.userSeat
                             ? `(${t("allLast.you")})`
                             : ""
-                    })}</Row>
-                    <Row>{t("utils.points")} {player.points}</Row>
-                    <Row>{t("utils.discards")} {convertTilesToAsciiSymbols(player.discards)} ({convertIndexesToTenhouTiles(player.discards)})</Row>
-                </ListGroupItem>
+                    })}</strong>
+                    <div className="rt-num">{t("utils.points")} {player.points}</div>
+                    <div>{t("utils.discards")} {convertTilesToAsciiSymbols(player.discards)} ({convertIndexesToTenhouTiles(player.discards)})</div>
+                </li>
             );
         });
 
         return (
-            <Container>
-                <Button xs="12" color="primary" className="btn-block" onClick={() => this.generateState()}>{t("utils.stateButtonLabel")}</Button>
-                <ListGroup>
-                    <ListGroupItem key={0}>
-                        <Row>{t("utils.info", {
-                            turn: this.state.turn,
-                            round: t("roundName", ROUND_PARAMETERS[this.state.round]),
-                            seat: t(SEAT_NAMES[this.state.userSeat])
-                        })}</Row>
-                        <Row>{t("utils.dora", { tile: getTileAsText(t, this.state.doraIndicator, true) })}</Row>
-                    </ListGroupItem>
-                    {playerItems}
-                </ListGroup>
-            </Container>
+            <Card title={t("utils.stateHeader")} icon="layers">
+                <div className="rt-stack">
+                    <Button variant="accent" block icon="refresh" onClick={() => this.generateState()}>{t("utils.stateButtonLabel")}</Button>
+                    <ul className="rt-lines">
+                        <li key={0}>
+                            <div>{t("utils.info", {
+                                turn: this.state.turn,
+                                round: t("roundName", ROUND_PARAMETERS[this.state.round]),
+                                seat: t(SEAT_NAMES[this.state.userSeat])
+                            })}</div>
+                            <div>{t("utils.dora", { tile: getTileAsText(t, this.state.doraIndicator, true) })}</div>
+                        </li>
+                        {playerItems}
+                    </ul>
+                </div>
+            </Card>
         );
     }
 }

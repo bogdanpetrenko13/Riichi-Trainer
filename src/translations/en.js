@@ -1,5 +1,29 @@
 export const en = {
     translations: {
+        app: {
+            name: "Riichi Trainer",
+            close: "Close",
+            increase: "Increase",
+            decrease: "Decrease",
+            more: "More",
+            moreTitle: "All sections",
+            navLabel: "Main navigation",
+            settings: "Settings",
+            help: "Help",
+            about: "About",
+            appearance: "Appearance",
+            theme: "Theme",
+            themeLight: "Light",
+            themeDark: "Dark",
+            themeSystem: "System",
+            tileSize: "Tile size",
+            tileSmall: "S",
+            tileMedium: "M",
+            tileLarge: "L",
+            language: "Language",
+            helpIntro: "Short instructions for every section.",
+            aboutText: "Practice tile efficiency, defense, shanten and endgame decisions. Works fully offline."
+        },
         values: {
             one: "one",
             two: "two",

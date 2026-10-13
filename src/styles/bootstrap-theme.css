@@ -1,0 +1,423 @@
+/* =========================================================
+   Переоформление Bootstrap 4 / reactstrap под токены Riichi Trainer.
+   Подключается после bootstrap.min.css, поэтому правила здесь побеждают.
+   Все цвета — только через var(--rt-color-*).
+   ========================================================= */
+
+/* ---------- Сетка ---------- */
+.container,
+.container-fluid {
+  max-width: var(--rt-page-max);
+  padding-left: calc(var(--rt-space-4) + var(--rt-safe-left));
+  padding-right: calc(var(--rt-space-4) + var(--rt-safe-right));
+}
+
+.container .container {
+  max-width: none;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.row > [class*="col-"],
+.row > .col {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* ---------- Кнопки ---------- */
+.btn {
+  --btn-bg: var(--rt-color-surface);
+  --btn-bg-hover: var(--rt-color-surface-2);
+  --btn-border: var(--rt-color-border-strong);
+  --btn-fg: var(--rt-color-text);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--rt-space-2);
+  min-height: 44px;
+  padding: 0 var(--rt-space-4);
+  font-size: var(--rt-text-base);
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  white-space: normal;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: var(--rt-radius-sm);
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  transition:
+    background-color var(--rt-dur) var(--rt-ease),
+    border-color var(--rt-dur) var(--rt-ease),
+    transform var(--rt-dur-fast) var(--rt-ease);
+  background-color: var(--btn-bg) !important;
+  border-color: var(--btn-border) !important;
+  color: var(--btn-fg) !important;
+  box-shadow: var(--rt-shadow-sm) !important;
+}
+
+.btn-block {
+  display: flex;
+  width: 100%;
+}
+
+.btn-primary { --btn-bg: var(--rt-color-primary); --btn-bg-hover: var(--rt-color-primary-hover); --btn-border: var(--rt-color-primary); --btn-fg: var(--rt-color-on-primary); }
+.btn-warning { --btn-bg: var(--rt-color-accent); --btn-bg-hover: var(--rt-color-accent-hover); --btn-border: var(--rt-color-accent); --btn-fg: var(--rt-color-on-accent); }
+.btn-success { --btn-bg: var(--rt-color-success); --btn-bg-hover: var(--rt-color-success-hover); --btn-border: var(--rt-color-success); --btn-fg: var(--rt-color-on-success); }
+.btn-danger { --btn-bg: var(--rt-color-danger); --btn-bg-hover: var(--rt-color-danger-hover); --btn-border: var(--rt-color-danger); --btn-fg: var(--rt-color-on-danger); }
+.btn-info { --btn-bg: var(--rt-color-info); --btn-bg-hover: var(--rt-color-info-hover); --btn-border: var(--rt-color-info); --btn-fg: var(--rt-color-on-info); }
+.btn-link { --btn-bg: transparent; --btn-bg-hover: var(--rt-color-surface-2); --btn-border: transparent; --btn-fg: var(--rt-color-link); text-decoration: underline; box-shadow: none !important; }
+
+@media (hover: hover) {
+  .btn:hover:not(:disabled):not(.disabled) {
+    background-color: var(--btn-bg-hover) !important;
+    border-color: var(--btn-bg-hover) !important;
+    color: var(--btn-fg) !important;
+  }
+
+  .btn-secondary:hover:not(:disabled):not(.disabled),
+  .btn-basic:hover:not(:disabled):not(.disabled) {
+    border-color: var(--rt-color-border-strong) !important;
+  }
+}
+
+.btn:active:not(:disabled):not(.disabled) {
+  background-color: var(--btn-bg-hover) !important;
+  transform: translateY(1px);
+}
+
+.btn:disabled,
+.btn.disabled {
+  background-color: var(--rt-color-surface-2) !important;
+  border-color: var(--rt-color-border) !important;
+  color: var(--rt-color-disabled) !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+.btn-sm {
+  min-height: 36px;
+  padding: 0 var(--rt-space-3);
+  font-size: var(--rt-text-sm);
+}
+
+.btn-lg {
+  min-height: 52px;
+  padding: 0 var(--rt-space-6);
+  font-size: var(--rt-text-md);
+}
+
+/* ---------- Карточки ---------- */
+.card {
+  background-color: var(--rt-color-surface);
+  border: 1px solid var(--rt-color-border);
+  border-radius: var(--rt-radius-md);
+  box-shadow: var(--rt-shadow-sm);
+  color: var(--rt-color-text);
+}
+
+.card-body {
+  padding: var(--rt-space-4);
+}
+
+/* ---------- Списки ---------- */
+.list-group {
+  background-color: var(--rt-color-surface);
+  border: 1px solid var(--rt-color-border);
+  border-radius: var(--rt-radius-md);
+  box-shadow: var(--rt-shadow-sm);
+  overflow: hidden;
+}
+
+.list-group-item {
+  background-color: var(--rt-color-surface);
+  color: var(--rt-color-text);
+  border: 0;
+  border-top: 1px solid var(--rt-color-border);
+  border-radius: 0;
+  padding: var(--rt-space-3) var(--rt-space-4);
+  line-height: var(--rt-leading-text);
+}
+
+.list-group-item:first-child {
+  border-top: 0;
+  border-radius: 0;
+}
+
+.list-group-item:last-child {
+  border-radius: 0;
+}
+
+.list-group-item-heading {
+  margin: 0;
+  padding: var(--rt-space-3) var(--rt-space-4);
+  background-color: var(--rt-color-surface-2);
+  color: var(--rt-color-text-2);
+  font-size: var(--rt-text-sm);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-top: 1px solid var(--rt-color-border);
+}
+
+.list-group-item-heading:first-child {
+  border-top: 0;
+}
+
+/* Подсветка результатов (классы приходят из Constants, моделей и экранов) */
+.list-group-item.bg-danger,
+.list-group-item.bg-success,
+.list-group-item.bg-warning {
+  box-shadow: inset 4px 0 0 var(--rt-status-bar, transparent);
+}
+
+.list-group-item.bg-danger {
+  --rt-status-bar: var(--rt-color-danger);
+  background-color: var(--rt-color-danger-soft) !important;
+  color: var(--rt-color-danger-text) !important;
+}
+
+.list-group-item.bg-success {
+  --rt-status-bar: var(--rt-color-success);
+  background-color: var(--rt-color-success-soft) !important;
+  color: var(--rt-color-success-text) !important;
+}
+
+.list-group-item.bg-warning {
+  --rt-status-bar: var(--rt-color-warning);
+  background-color: var(--rt-color-warning-soft) !important;
+  color: var(--rt-color-warning-text) !important;
+}
+
+.list-group-item.text-white {
+  color: inherit !important;
+}
+
+/* ---------- Формы ---------- */
+label {
+  margin-bottom: 0;
+}
+
+.form-control {
+  min-height: 44px;
+  padding: var(--rt-space-2) var(--rt-space-3);
+  font-size: var(--rt-text-base);
+  line-height: 1.4;
+  color: var(--rt-color-text);
+  background-color: var(--rt-color-surface);
+  border: 1px solid var(--rt-color-border-strong);
+  border-radius: var(--rt-radius-sm);
+  transition: border-color var(--rt-dur) var(--rt-ease), box-shadow var(--rt-dur) var(--rt-ease);
+}
+
+.form-control::placeholder {
+  color: var(--rt-color-text-muted);
+  opacity: 1;
+}
+
+.form-control:focus {
+  color: var(--rt-color-text);
+  background-color: var(--rt-color-surface);
+  border-color: var(--rt-color-primary);
+  box-shadow: 0 0 0 3px var(--rt-color-focus-soft);
+  outline: none;
+}
+
+.form-control:disabled,
+.form-control[readonly] {
+  background-color: var(--rt-color-surface-2);
+  color: var(--rt-color-text-2);
+}
+
+.form-control-file {
+  width: 100%;
+  min-height: 44px;
+  padding: var(--rt-space-2);
+  font-size: var(--rt-text-sm);
+  color: var(--rt-color-text-2);
+  background-color: var(--rt-color-surface-2);
+  border: 1px dashed var(--rt-color-border-strong);
+  border-radius: var(--rt-radius-sm);
+}
+
+.form-control-file::file-selector-button {
+  min-height: 36px;
+  margin-right: var(--rt-space-3);
+  padding: 0 var(--rt-space-3);
+  font: inherit;
+  font-weight: 600;
+  color: var(--rt-color-on-primary);
+  background-color: var(--rt-color-primary);
+  border: 0;
+  border-radius: var(--rt-radius-sm);
+  cursor: pointer;
+}
+
+.input-group {
+  flex-wrap: nowrap;
+}
+
+.input-group-prepend {
+  display: flex;
+  align-items: center;
+  padding: 0 var(--rt-space-3);
+  font-size: var(--rt-text-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--rt-color-text-2);
+  background-color: var(--rt-color-surface-2);
+  border: 1px solid var(--rt-color-border-strong);
+  border-right: 0;
+  border-radius: var(--rt-radius-sm) 0 0 var(--rt-radius-sm);
+}
+
+.input-group-append {
+  display: flex;
+}
+
+.input-group-append .btn {
+  border-radius: 0 var(--rt-radius-sm) var(--rt-radius-sm) 0;
+}
+
+.input-group + .input-group {
+  margin-top: var(--rt-space-2);
+}
+
+/* Переключатели вместо чекбоксов: разметка прежняя, меняется только вид */
+.form-check {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--rt-space-3);
+  min-height: 44px;
+  padding-left: 0;
+  margin: 0;
+}
+
+.form-check-inline {
+  display: flex;
+  margin-right: 0;
+}
+
+.form-check-label {
+  flex: 1 1 auto;
+  order: 0;
+  margin: 0;
+  cursor: pointer;
+  color: var(--rt-color-text);
+}
+
+input[type="checkbox"].form-check-input {
+  -webkit-appearance: none;
+  appearance: none;
+  position: relative;
+  flex: none;
+  order: 2;
+  width: 46px;
+  height: 28px;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--rt-radius-pill);
+  background-color: var(--rt-color-switch-off);
+  cursor: pointer;
+  transition: background-color var(--rt-dur) var(--rt-ease);
+}
+
+input[type="checkbox"].form-check-input::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: transform var(--rt-dur) var(--rt-ease);
+}
+
+input[type="checkbox"].form-check-input:checked {
+  background-color: var(--rt-color-primary);
+}
+
+input[type="checkbox"].form-check-input:checked::after {
+  transform: translateX(18px);
+}
+
+input[type="checkbox"].form-check-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.form-check-input:not([type="checkbox"]) {
+  position: static;
+  margin: 0;
+}
+
+/* ---------- Выпадающие меню ---------- */
+.dropdown-menu {
+  min-width: 12rem;
+  margin-top: var(--rt-space-1);
+  padding: 6px;
+  color: var(--rt-color-text);
+  background-color: var(--rt-color-surface);
+  border: 1px solid var(--rt-color-border);
+  border-radius: var(--rt-radius-md);
+  box-shadow: var(--rt-shadow-lg);
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--rt-space-3);
+  font-size: var(--rt-text-base);
+  color: var(--rt-color-text);
+  border-radius: var(--rt-radius-sm);
+  cursor: pointer;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  color: var(--rt-color-text);
+  background-color: var(--rt-color-surface-2);
+}
+
+.dropdown-item:active,
+.dropdown-item.active {
+  color: var(--rt-color-on-primary);
+  background-color: var(--rt-color-primary);
+}
+
+.dropdown-item.disabled,
+.dropdown-item:disabled {
+  color: var(--rt-color-text-muted);
+  background-color: transparent;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* ---------- Сворачивание ---------- */
+.collapsing {
+  transition: height var(--rt-dur-slow) var(--rt-ease);
+}
+
+/* ---------- Ссылки на внешние сервисы ---------- */
+.tenhouLink {
+  font-weight: 600;
+  color: var(--rt-color-info-text);
+}
+
+.blackText {
+  color: inherit;
+}

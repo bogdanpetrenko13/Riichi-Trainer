@@ -1,9 +1,9 @@
 import React from 'react';
 import {
-    Container, Dropdown, DropdownItem, DropdownMenu, DropdownToggle,
-    Row, ListGroup, ListGroupItem, Col, Input,
-    Card, CardBody, Button
+    Dropdown, DropdownItem, DropdownMenu, DropdownToggle,
+    Row, ListGroup, ListGroupItem, Input
 } from 'reactstrap';
+import { Button, Card, Collapsible } from '../components/ui';
 import * as ParseTenhouReplay from '../scripts/ParseTenhouReplay';
 import * as ParseMajsoulReplay from '../scripts/ParseMajsoulReplay';
 import Hand from '../components/Hand';
@@ -210,7 +210,7 @@ class ReplayAnalysis extends React.Component {
 
         if (this.state.rounds.length) {
             roundItems = roundNames.map((roundName, index) => {
-                return <DropdownItem disabled={index === this.state.currentRound} onClick={() => this.onRoundChoice(index)}>{roundName.generateString(t)}</DropdownItem>;
+                return <DropdownItem key={index} disabled={index === this.state.currentRound} onClick={() => this.onRoundChoice(index)}>{roundName.generateString(t)}</DropdownItem>;
             });
 
             let playerNames;
@@ -222,7 +222,7 @@ class ReplayAnalysis extends React.Component {
             }
 
             playerItems = playerNames.map((player, index) => {
-                return <DropdownItem disabled={index === this.state.player} onClick={() => this.onPlayerChoice(index)}>{index}: {player}</DropdownItem>
+                return <DropdownItem key={index} disabled={index === this.state.player} onClick={() => this.onPlayerChoice(index)}>{index}: {player}</DropdownItem>
             });
         }
 
@@ -231,7 +231,7 @@ class ReplayAnalysis extends React.Component {
 
         if (this.state.turns.length) {
             let messageArray = currentTurn.message.generateString(t).split("<br/>");
-            message = <ListGroupItem className={currentTurn.className}>{messageArray.map((row) => <Row>{row}</Row>)}</ListGroupItem>;
+            message = <ListGroupItem className={currentTurn.className}>{messageArray.map((row, rowIndex) => <Row key={rowIndex}>{row}</Row>)}</ListGroupItem>;
         }
 
         let calls = "";
@@ -242,68 +242,49 @@ class ReplayAnalysis extends React.Component {
         }
 
         return (
-            <Container>
-                <Row>
-                    <Card><CardBody>
-                        {t("analyzer.instructions1")}<br />
-                        {t("analyzer.instructions2")}<br />
-                        {t("analyzer.instructions3")}<br />
-                        {t("analyzer.instructions4")}<br /><br />
-                        {t("analyzer.instructions5")}<br />
-                        {t("analyzer.instructions6")}<br />
-                        {t("analyzer.instructions7")}<br /><br />
-                        {t("analyzer.instructions8")}<br />
-                        {t("analyzer.instructions9")}
-                    </CardBody></Card>
-                </Row>
-                <Row>
-                    <Input id="tenhouURL" placeholder={t("analyzer.URLplaceholder")} onChange={this.onURLChanged} /> <br />
-                    {this.state.URLfeedback}
-                </Row>
-                <Row>
-                    <Input type="file" id="fileInput" onChange={this.onFileChanged} />
-                </Row>
-                {this.state.rounds.length ? (
-                    <Row>
-                        <Col xs="6">
-                            <Dropdown isOpen={this.state.roundDropdownOpen} toggle={this.toggleRoundDropdown}>
-                                <DropdownToggle caret>
-                                    {t("analyzer.roundSelect")}
-                                </DropdownToggle>
-                                <DropdownMenu>
-                                    {roundItems}
-                                </DropdownMenu>
-                            </Dropdown>
-                        </Col>
-                        <Col xs="6">
-                            <Dropdown isOpen={this.state.playerDropdownOpen} toggle={this.togglePlayerDropdown}>
-                                <DropdownToggle caret>
-                                    {t("analyzer.playerSelect")}
-                                </DropdownToggle>
-                                <DropdownMenu>
-                                    {playerItems}
-                                </DropdownMenu>
-                            </Dropdown>
-                        </Col>
-                    </Row>
-                ) : ""}
+            <div className="rt-page">
+                <Collapsible title={t("analyzer.instructions1")} icon="help">
+                    <ol className="rt-prose">
+                        {[2, 3, 4, 5, 6, 7, 8, 9].map((n) => <li key={n}>{t("analyzer.instructions" + n)}</li>)}
+                    </ol>
+                </Collapsible>
+                <Card title={t("menu.analyzer")} icon="search">
+                    <div className="rt-stack">
+                        <Input id="tenhouURL" aria-label={t("analyzer.URLplaceholder")} placeholder={t("analyzer.URLplaceholder")} onChange={this.onURLChanged} autoCapitalize="off" autoCorrect="off" spellCheck="false" />
+                        {this.state.URLfeedback ? <p className="rt-feedback" role="status">{this.state.URLfeedback}</p> : null}
+                        <Input type="file" id="fileInput" aria-label="mjlog / xml" onChange={this.onFileChanged} />
+                        {this.state.rounds.length ? (
+                            <div className="rt-pair">
+                                <Dropdown isOpen={this.state.roundDropdownOpen} toggle={this.toggleRoundDropdown}>
+                                    <DropdownToggle caret>
+                                        {t("analyzer.roundSelect")}
+                                    </DropdownToggle>
+                                    <DropdownMenu>
+                                        {roundItems}
+                                    </DropdownMenu>
+                                </Dropdown>
+                                <Dropdown isOpen={this.state.playerDropdownOpen} toggle={this.togglePlayerDropdown}>
+                                    <DropdownToggle caret>
+                                        {t("analyzer.playerSelect")}
+                                    </DropdownToggle>
+                                    <DropdownMenu>
+                                        {playerItems}
+                                    </DropdownMenu>
+                                </Dropdown>
+                            </div>
+                        ) : null}
+                    </div>
+                </Card>
                 {this.state.turns.length ? (
                     <React.Fragment>
-                        <br />
-                        <Hand tiles={currentTurn.hand} lastDraw={currentTurn.draw} />
-                        <br />
-                        <Row>
-                            <Col xs="4">
-                                <Button color="primary" block={true} xs="6" disabled={this.state.currentTurn <= 0} onClick={() => this.onPreviousTurn()}>{t("analyzer.previousTurn")}</Button>
-                            </Col>
-                            <Col xs="4">
-                                <Button color="primary" block={true} xs="6" disabled={this.state.currentTurn >= this.state.turns.length - 1} onClick={() => this.onNextTurn()}>{t("analyzer.nextTurn")}</Button>
-                            </Col>
-                            <Col xs="4">
-                                <Button color="primary" block={true} xs="6" disabled={this.state.currentTurn >= this.state.turns.length - 1} onClick={() => this.onNextIssue()}>{t("analyzer.nextIssue")}</Button>
-                            </Col>
-                        </Row>
-                        <br />
+                        <section className="rt-board">
+                            <Hand tiles={currentTurn.hand} lastDraw={currentTurn.draw} />
+                        </section>
+                        <div className="rt-steps">
+                            <Button variant="primary" icon="chevronLeft" disabled={this.state.currentTurn <= 0} onClick={() => this.onPreviousTurn()}>{t("analyzer.previousTurn")}</Button>
+                            <Button variant="primary" iconRight="chevronRight" disabled={this.state.currentTurn >= this.state.turns.length - 1} onClick={() => this.onNextTurn()}>{t("analyzer.nextTurn")}</Button>
+                            <Button variant="accent" iconRight="chevronRight" disabled={this.state.currentTurn >= this.state.turns.length - 1} onClick={() => this.onNextIssue()}>{t("analyzer.nextIssue")}</Button>
+                        </div>
                         <ListGroup>
                             <ListGroupItem>
                                 <Row>{t("analyzer.turn", { round: roundNames[this.state.currentRound].generateString(t), turn: this.state.currentTurn + 1 })}</Row>
@@ -318,8 +299,8 @@ class ReplayAnalysis extends React.Component {
                             </ListGroupItem>
                         </ListGroup>
                     </React.Fragment>
-                ) : ""}
-            </Container>
+                ) : null}
+            </div>
         );
     }
 }

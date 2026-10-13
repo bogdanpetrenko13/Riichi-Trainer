@@ -1,0 +1,326 @@
+/* =========================================================
+   Каркас приложения, страницы и общие блоки экранов
+   ========================================================= */
+
+.rt-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.rt-main {
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: var(--rt-page-max);
+  margin: 0 auto;
+  padding:
+    var(--rt-space-4)
+    calc(var(--rt-space-4) + var(--rt-safe-right))
+    calc(var(--rt-bottomnav-h) + var(--rt-safe-bottom) + var(--rt-space-6))
+    calc(var(--rt-space-4) + var(--rt-safe-left));
+}
+
+.rt-main .container {
+  max-width: none;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.rt-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rt-space-4);
+  animation: rt-fade-in var(--rt-dur-slow) var(--rt-ease);
+}
+
+.rt-page > * {
+  min-width: 0;
+}
+
+.rt-section-title {
+  margin: var(--rt-space-2) 0 0;
+  font-size: var(--rt-text-lg);
+}
+
+.rt-instructions {
+  margin: 0;
+  color: var(--rt-color-text-2);
+}
+
+.rt-note {
+  margin: 0;
+  padding: var(--rt-space-3) var(--rt-space-4);
+  font-size: var(--rt-text-sm);
+  color: var(--rt-color-info-text);
+  background-color: var(--rt-color-info-soft);
+  border-radius: var(--rt-radius-md);
+}
+
+.rt-feedback {
+  margin: 0;
+  font-size: var(--rt-text-sm);
+  color: var(--rt-color-text-2);
+}
+
+.rt-timer {
+  align-self: flex-end;
+  padding: 4px var(--rt-space-3);
+  font-family: var(--rt-font-mono);
+  font-size: var(--rt-text-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--rt-color-text);
+  background-color: var(--rt-color-surface);
+  border: 1px solid var(--rt-color-border);
+  border-radius: var(--rt-radius-pill);
+}
+
+/* Ряд кнопок действий: растягиваются на всю ширину, переносятся на узких экранах */
+.rt-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--rt-space-2);
+}
+
+.rt-actions > .btn,
+.rt-actions > button {
+  width: 100%;
+}
+
+/* Две колонки на планшете: настройки и статистика */
+.rt-panels {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--rt-space-3);
+  align-items: start;
+}
+
+@media (min-width: 768px) {
+  .rt-panels {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Выбор раунда и игрока в анализаторе */
+.rt-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--rt-space-2);
+}
+
+.rt-pair .dropdown,
+.rt-pair .dropdown > .btn {
+  width: 100%;
+}
+
+.rt-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--rt-space-2);
+}
+
+.rt-steps .btn {
+  width: 100%;
+}
+
+/* Текстовые блоки внутри карточек */
+.rt-lines {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rt-lines > li {
+  padding: var(--rt-space-2) var(--rt-space-3);
+  font-size: var(--rt-text-sm);
+  line-height: 1.4;
+}
+
+.rt-lines > li:nth-child(even) {
+  background-color: var(--rt-color-surface-2);
+}
+
+.rt-lines > li:first-child {
+  border-top-left-radius: var(--rt-radius-sm);
+  border-top-right-radius: var(--rt-radius-sm);
+}
+
+.rt-lines > li:last-child {
+  border-bottom-left-radius: var(--rt-radius-sm);
+  border-bottom-right-radius: var(--rt-radius-sm);
+}
+
+.rt-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--rt-space-3);
+  margin-bottom: var(--rt-space-4);
+}
+
+.rt-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rt-space-3);
+}
+
+.rt-prose p:last-child {
+  margin-bottom: 0;
+}
+
+/* ---------- Настройки (тело сворачиваемой карточки) ---------- */
+.rt-settings .row {
+  align-items: center;
+  border-top: 1px solid var(--rt-color-border);
+}
+
+.rt-settings .row:first-child {
+  border-top: 0;
+}
+
+.rt-settings .row > .col,
+.rt-settings .row > [class*="col-"] {
+  flex: 1 1 100%;
+  max-width: 100%;
+}
+
+.rt-settings .row > .col:first-child:not(.form-check) {
+  padding: var(--rt-space-3) 0 var(--rt-space-1);
+  font-size: var(--rt-text-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--rt-color-text-2);
+}
+
+.rt-settings .form-check {
+  width: 100%;
+}
+
+.rt-settings .blackText {
+  order: 3;
+  font-size: var(--rt-text-sm);
+  color: var(--rt-color-text-2);
+}
+
+/* ---------- Вопросы последнего раунда ---------- */
+.rt-score-input {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: var(--rt-space-2);
+  margin-top: var(--rt-space-2);
+}
+
+.rt-score-input .input-group {
+  flex-wrap: nowrap;
+}
+
+.rt-score-input .input-group + .input-group {
+  margin-top: 0;
+}
+
+@media (max-width: 479px) {
+  .rt-score-input {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .rt-score-input > .btn {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---------- Анимации ---------- */
+@keyframes rt-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes rt-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes rt-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Список языков в настройках */
+.rt-lang {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 48px;
+  padding: 0 var(--rt-space-4);
+  font: inherit;
+  color: var(--rt-color-text);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: var(--rt-radius-md);
+  cursor: pointer;
+  transition: background-color var(--rt-dur) var(--rt-ease);
+}
+
+.rt-lang:hover { background-color: var(--rt-color-surface-2); }
+
+.rt-lang--active {
+  font-weight: 700;
+  color: var(--rt-color-primary);
+  background-color: var(--rt-color-primary-soft);
+}
+
+.rt-more-list { margin: 0; padding: 0; list-style: none; }
+.rt-brand { color: var(--rt-color-primary); margin-left: var(--rt-space-2); }
+
+.rt-load { grid-column: 1 / -1; }
+
+/* Полоска процента в статистике */
+.rt-bar {
+  height: 8px;
+  margin: var(--rt-space-1) var(--rt-space-3) var(--rt-space-2);
+  overflow: hidden;
+  background-color: var(--rt-color-border);
+  border-radius: var(--rt-radius-pill);
+}
+
+.rt-bar > span {
+  display: block;
+  height: 100%;
+  background-color: var(--rt-color-primary);
+  border-radius: var(--rt-radius-pill);
+  transition: width var(--rt-dur-slow) var(--rt-ease);
+}
+
+.rt-bar--accent > span { background-color: var(--rt-color-accent); }
+
+/* Вопрос в тренере последнего раунда */
+.rt-question {
+  padding: var(--rt-space-3) 0;
+  border-top: 1px solid var(--rt-color-border);
+}
+
+.rt-question__text {
+  margin: 0 0 var(--rt-space-1);
+  font-weight: 600;
+}
+
+.rt-feedback--error {
+  color: var(--rt-color-danger-text);
+  background-color: var(--rt-color-danger-soft);
+}

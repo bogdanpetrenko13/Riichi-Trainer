@@ -1,6 +1,6 @@
 import React from 'react';
-import { Container, Collapse, Card, CardBody, Button, Row, Col, Input, Label } from 'reactstrap';
-import NumericInput from 'react-numeric-input';
+import { Row, Col, Input, Label } from 'reactstrap';
+import { Collapsible, NumberField } from '../ui';
 import { withTranslation } from "react-i18next";
 
 class Settings extends React.Component {
@@ -84,10 +84,7 @@ class Settings extends React.Component {
     render() {
         const { t } = this.props;
         return (
-            <Container>
-                <Button color="primary" onClick={this.toggle}>{t("settings.buttonLabel")}</Button>
-                <Collapse isOpen={!this.state.collapsed}>
-                    <Card><CardBody>
+            <Collapsible title={t("settings.buttonLabel")} icon="sliders" open={!this.state.collapsed} onToggle={this.toggle} bodyClassName="rt-settings">
                         <Row>
                             <Col className="form-check form-check-inline">
                                 <Input className="form-check-input" type="checkbox" id="verbose"
@@ -105,7 +102,7 @@ class Settings extends React.Component {
                         <Row>
                             <Col className="form-check form-check-inline">
                                 <Label className="form-check-label" for="numberOfRiichis">{t("defense.riichiCount")}&nbsp;</Label>
-                                <NumericInput className="form-check-input" type="number" id="numberOfRiichis"
+                                <NumberField id="numberOfRiichis"
                                     min={1} max={3} step={1}
                                     value={this.state.settings.numberOfRiichis} onChange={this.onSettingChanged} />
                             </Col>
@@ -113,7 +110,7 @@ class Settings extends React.Component {
                         <Row>
                             <Col className="form-check form-check-inline">
                                 <Label className="form-check-label" for="minimumTurnsBeforeRiichi">{t("defense.minTurns")}&nbsp;</Label>
-                                <NumericInput className="form-check-input" type="number" id="minimumTurnsBeforeRiichi"
+                                <NumberField id="minimumTurnsBeforeRiichi"
                                     min={1} max={8} step={1}
                                     value={this.state.settings.minimumTurnsBeforeRiichi} onChange={this.onSettingChanged} />
                             </Col>
@@ -121,7 +118,7 @@ class Settings extends React.Component {
                         <Row>
                             <Col className="form-check form-check-inline">
                                 <Label className="form-check-label" for="tilesInHand">{t("defense.tilesInHand")}&nbsp;</Label>
-                                <NumericInput className="form-check-input" type="number" id="tilesInHand"
+                                <NumberField id="tilesInHand"
                                     min={2} max={14} step={3}
                                     value={this.state.settings.tilesInHand} onChange={this.onSettingChanged} />
                             </Col>
@@ -136,7 +133,7 @@ class Settings extends React.Component {
                         <Row>
                             <Col className="form-check form-check-inline">
                                 <Label className="form-check-label" for="time">{t("settings.time")}&nbsp;</Label>
-                                <NumericInput className="form-check-input" type="number" id="time"
+                                <NumberField id="time"
                                     min={1} max={99} step={1}
                                     value={this.state.settings.time} onChange={this.onSettingChanged} />
                                 <span className="blackText">&nbsp;{t("settings.seconds")}</span>
@@ -145,15 +142,13 @@ class Settings extends React.Component {
                         <Row>
                             <Col className="form-check form-check-inline">
                                 <Label className="form-check-label" for="time">{t("settings.extraTime")}&nbsp;</Label>
-                                <NumericInput className="form-check-input" type="number" id="extraTime"
+                                <NumberField id="extraTime"
                                     min={0} max={99} step={1}
                                     value={this.state.settings.extraTime} onChange={this.onSettingChanged} />
                                 <span className="blackText">&nbsp;{t("settings.seconds")}</span>
                             </Col>
                         </Row>
-                    </CardBody></Card>
-                </Collapse>
-            </Container>
+                    </Collapsible>
         );
     }
 }

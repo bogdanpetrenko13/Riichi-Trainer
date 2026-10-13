@@ -11,11 +11,12 @@ function Tile(props) {
     return (
         <div className={props.className}>
             <img
-                className="tile"
+                className={props.onClick ? "tile rt-tile--interactive" : "tile"}
                 name={props.tile}
                 src={getTileImage(displayTile)}
                 title={getTileAsText(t, displayTile)}
                 alt={getTileAsText(t, displayTile)}
+                draggable="false"
                 onClick={props.onClick}
             />
             <span className="index">{props.showIndexes ? TILE_INDEXES[displayTile] : ""}</span>

@@ -1,0 +1,137 @@
+.appbar {
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+  padding-top: var(--rt-safe-top);
+  padding-left: var(--rt-safe-left);
+  padding-right: var(--rt-safe-right);
+  background-color: var(--rt-color-surface);
+  border-bottom: 1px solid var(--rt-color-border);
+}
+
+.appbarInner {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--rt-space-2);
+  max-width: var(--rt-page-max);
+  height: var(--rt-appbar-h);
+  margin: 0 auto;
+  padding: 0 var(--rt-space-2);
+}
+
+.appbarTitle {
+  margin: 0;
+  overflow: hidden;
+  font-size: var(--rt-text-md);
+  font-weight: 700;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.appbarSide {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.appbarRight {
+  justify-content: flex-end;
+}
+
+.bottomnav {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1020;
+  padding-bottom: var(--rt-safe-bottom);
+  padding-left: var(--rt-safe-left);
+  padding-right: var(--rt-safe-right);
+  background-color: var(--rt-color-surface);
+  border-top: 1px solid var(--rt-color-border);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.bottomnavList {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  max-width: var(--rt-page-max);
+  height: var(--rt-bottomnav-h);
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.bottomnavItem {
+  display: flex;
+  min-width: 0;
+}
+
+.navButton {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 4px 2px;
+  color: var(--rt-color-text-2);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  transition: color var(--rt-dur) var(--rt-ease);
+}
+
+.navButton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 28%;
+  right: 28%;
+  height: 3px;
+  background-color: var(--rt-color-primary);
+  border-radius: 0 0 var(--rt-radius-sm) var(--rt-radius-sm);
+  opacity: 0;
+  transform: scaleX(0.4);
+  transition: opacity var(--rt-dur) var(--rt-ease), transform var(--rt-dur) var(--rt-ease);
+}
+
+.navActive {
+  color: var(--rt-color-primary);
+  font-weight: 700;
+}
+
+.navActive::before {
+  opacity: 1;
+  transform: none;
+}
+
+.navLabel {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: var(--rt-text-xs);
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (hover: hover) {
+  .navButton:hover {
+    color: var(--rt-color-primary);
+  }
+}
+
+@media (max-height: 420px) {
+  .bottomnavList {
+    height: 48px;
+  }
+
+  .navLabel {
+    display: none;
+  }
+}

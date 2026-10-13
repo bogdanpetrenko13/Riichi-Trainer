@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, Input, InputGroup, InputGroupAddon, Col } from 'reactstrap';
+import { Input, InputGroup, InputGroupAddon } from 'reactstrap';
+import { Button } from './ui';
 import { withTranslation } from 'react-i18next';
 import { characterToSuit } from '../scripts/Utils';
 
@@ -75,14 +76,14 @@ class LoadButton extends React.Component {
     render() {
         let { t } = this.props;
         return (
-            <Col xs="12" sm="6" md="6" lg="8">
+            <div className="rt-load">
                 <InputGroup>
-                    <Input id="loadHandString" placeholder="123m456p789s12345z" />
+                    <Input id="loadHandString" placeholder="123m456p789s12345z" aria-label={t("trainer.loadButtonLabel")} autoCapitalize="off" autoCorrect="off" spellCheck="false" />
                     <InputGroupAddon addonType="append">
-                        <Button color="warning" onClick={() => this.onClick()}>{t("trainer.loadButtonLabel")}</Button>
+                        <Button variant="primary" icon="download" onClick={() => this.onClick()}>{t("trainer.loadButtonLabel")}</Button>
                     </InputGroupAddon>
                 </InputGroup>
-            </Col>
+            </div>
         )
     }
 }

@@ -1,0 +1,64 @@
+.segmented {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--rt-seg-count), minmax(0, 1fr));
+  padding: 4px;
+  background-color: var(--rt-color-surface-2);
+  border: 1px solid var(--rt-color-border);
+  border-radius: var(--rt-radius-md);
+}
+
+.indicator {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc((100% - 8px) / var(--rt-seg-count));
+  background-color: var(--rt-color-surface);
+  border-radius: var(--rt-radius-sm);
+  box-shadow: var(--rt-shadow-md);
+  transform: translateX(calc(100% * var(--rt-seg-index)));
+  transition: transform var(--rt-dur-slow) var(--rt-ease);
+  pointer-events: none;
+}
+
+.option {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--rt-space-2);
+  min-height: 44px;
+  padding: 0 var(--rt-space-3);
+  font: inherit;
+  font-size: var(--rt-text-sm);
+  font-weight: 600;
+  color: var(--rt-color-text-2);
+  background: transparent;
+  border: 0;
+  border-radius: var(--rt-radius-sm);
+  cursor: pointer;
+  transition: color var(--rt-dur) var(--rt-ease);
+}
+
+.option svg {
+  flex: none;
+}
+
+.text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.selected {
+  color: var(--rt-color-primary);
+}
+
+@media (hover: hover) {
+  .option:hover:not(.selected) {
+    color: var(--rt-color-text);
+  }
+}

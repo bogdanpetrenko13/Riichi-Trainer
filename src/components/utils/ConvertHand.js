@@ -1,5 +1,6 @@
 import React from 'react';
-import { Container, Button, Input, InputGroup, InputGroupAddon, ListGroupItem, ListGroup } from 'reactstrap';
+import { Input, InputGroup, InputGroupAddon } from 'reactstrap';
+import { Button, Card } from '../ui';
 import { convertHandToAsciiSymbols, convertHandToDiscordEmoji } from '../../scripts/HandConversions';
 import { withTranslation } from 'react-i18next';
 import { characterToSuit } from '../../scripts/Utils';
@@ -59,18 +60,20 @@ class ConvertHand extends React.Component {
     render() {
         let { t } = this.props;
         return (
-            <Container>
-                <InputGroup>
-                    <Input id="convertHandString" placeholder="123m456p789s12345z" />
-                    <InputGroupAddon addonType="append">
-                        <Button color="primary" onClick={() => this.onClick()}>{t("utils.convertButtonLabel")}</Button>
-                    </InputGroupAddon>
-                </InputGroup>
-                <ListGroup>
-                    <ListGroupItem>{t("utils.ascii")} {convertHandToAsciiSymbols(this.state.hand)}</ListGroupItem>
-                    <ListGroupItem>{t("utils.emoji")} {convertHandToDiscordEmoji(this.state.hand)}</ListGroupItem>
-                </ListGroup>
-            </Container>
+            <Card title={t("utils.convertHeader")} icon="wrench">
+                <div className="rt-stack">
+                    <InputGroup>
+                        <Input id="convertHandString" aria-label={t("utils.convertButtonLabel")} placeholder="123m456p789s12345z" autoCapitalize="off" autoCorrect="off" spellCheck="false" />
+                        <InputGroupAddon addonType="append">
+                            <Button variant="primary" icon="refresh" onClick={() => this.onClick()}>{t("utils.convertButtonLabel")}</Button>
+                        </InputGroupAddon>
+                    </InputGroup>
+                    <ul className="rt-lines">
+                        <li>{t("utils.ascii")} {convertHandToAsciiSymbols(this.state.hand)}</li>
+                        <li>{t("utils.emoji")} {convertHandToDiscordEmoji(this.state.hand)}</li>
+                    </ul>
+                </div>
+            </Card>
         )
     }
 }

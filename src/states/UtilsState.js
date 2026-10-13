@@ -1,20 +1,13 @@
 import React from 'react';
-import { Container } from 'reactstrap';
 import RandomGameState from '../components/utils/RandomGameState';
 import ConvertHand from '../components/utils/ConvertHand';
-import RCalculation from '../components/utils/RCalculation';
-import { useTranslation } from 'react-i18next';
 
-function UtilsState(props) {
-    let { t } = useTranslation();
+function UtilsState() {
     return (
-        <Container>
-            <h2 style={{ "textAlign": "center" }}>{t("utils.convertHeader")}</h2>
+        <div className="rt-page">
             <ConvertHand />
-            <br />
-            <h2 style={{ "textAlign": "center" }}>{t("utils.stateHeader")}</h2>
             <RandomGameState />
-        </Container>
+        </div>
     );
 }
 

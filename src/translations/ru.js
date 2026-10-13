@@ -1,5 +1,29 @@
 export const ru = {
     translations: {
+        app: {
+            name: "Riichi Trainer",
+            close: "Закрыть",
+            increase: "Увеличить",
+            decrease: "Уменьшить",
+            more: "Ещё",
+            moreTitle: "Все разделы",
+            navLabel: "Основная навигация",
+            settings: "Настройки",
+            help: "Справка",
+            about: "О приложении",
+            appearance: "Оформление",
+            theme: "Тема",
+            themeLight: "Светлая",
+            themeDark: "Тёмная",
+            themeSystem: "Системная",
+            tileSize: "Размер костей",
+            tileSmall: "S",
+            tileMedium: "M",
+            tileLarge: "L",
+            language: "Язык",
+            helpIntro: "Краткие инструкции по каждому разделу.",
+            aboutText: "Тренируйте эффективность руки, защиту, шантен и решения в конце игры. Работает полностью офлайн."
+        },
         values: {
             one: "единица",
             two: "двойка",

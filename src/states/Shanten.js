@@ -1,5 +1,6 @@
 import React from 'react';
-import { Container, Row, Button, Col, Input, InputGroup, InputGroupAddon, ListGroup, ListGroupItem, ListGroupItemHeading } from 'reactstrap';
+import { Input, InputGroup, InputGroupAddon, ListGroup, ListGroupItem } from 'reactstrap';
+import { Button, Collapsible } from '../components/ui';
 import Hand from '../components/Hand';
 import Settings from '../components/shanten-quiz/Settings';
 import StatsDisplay from '../components/shanten-quiz/StatsDisplay';
@@ -173,42 +174,39 @@ class ShantenQuiz extends React.Component {
         const currentTime = this.state.currentTime || 0;
 
         return (
-            <Container>
-                <Settings onChange={this.onSettingsChanged} />
-                <StatsDisplay values={this.state.stats} onReset={this.resetStats} useTimer={this.state.settings.useTimer} />
-                <Row className="mb-2 mt-2">
-                    <span>{t("shanten.instructions")}</span>
-                </Row>
-                <Hand tiles={this.state.hand} showIndexes={this.state.settings.showIndexes} />
-                <Row className="mt-2">
-                    <Col xs="6" sm="3" md="3" lg="2">
-                        <Button className="btn-block" color="warning" onClick={() => this.onNewHand()}>{t("shanten.newHandButtonLabel")}</Button>
-                    </Col>
-                </Row>
-                <Row className="mt-2">
-                    <Col xs="12" sm="8" md="6">
-                        <InputGroup>
-                            <Input type="number" value={this.state.guess} placeholder={t("shanten.guessPlaceholder")} onChange={(e) => this.setState({ guess: e.target.value })} />
-                            <InputGroupAddon addonType="append">
-                                <Button color="primary" onClick={this.onSubmitGuess}>{t("shanten.submitGuessButtonLabel")}</Button>
-                            </InputGroupAddon>
-                        </InputGroup>
-                    </Col>
-                </Row>
-                {this.state.settings.useTimer ?
-                    <Row className="mt-2" style={{ justifyContent: 'flex-end', marginRight: 1 }}><span>{currentTime.toFixed(1)}</span></Row>
-                    : ""
-                }
-                <ListGroup className="mt-2">
-                    <ListGroupItemHeading><span>{t("shanten.history.buttonLabel")}</span></ListGroupItemHeading>
-                    {this.state.history.map((entry, index) => (
-                        <ListGroupItem key={index} className={entry.className}>
-                            {entry.text}
-                            {this.state.settings.showHandInHistory && <Hand tiles={entry.hand} showIndexes={this.state.settings.showIndexes} />}
-                        </ListGroupItem>
-                    ))}
-                </ListGroup>
-            </Container>
+            <div className="rt-page">
+                <div className="rt-panels">
+                    <Settings onChange={this.onSettingsChanged} />
+                    <StatsDisplay values={this.state.stats} onReset={this.resetStats} useTimer={this.state.settings.useTimer} />
+                </div>
+                <section className="rt-board">
+                    <p className="rt-instructions">{t("shanten.instructions")}</p>
+                    <Hand tiles={this.state.hand} showIndexes={this.state.settings.showIndexes} />
+                    {this.state.settings.useTimer ?
+                        <div className="rt-timer rt-num">{currentTime.toFixed(1)}</div>
+                        : null
+                    }
+                </section>
+                <InputGroup>
+                    <Input type="number" inputMode="numeric" value={this.state.guess} aria-label={t("shanten.guessPlaceholder")} placeholder={t("shanten.guessPlaceholder")} onChange={(e) => this.setState({ guess: e.target.value })} />
+                    <InputGroupAddon addonType="append">
+                        <Button variant="primary" icon="check" onClick={this.onSubmitGuess}>{t("shanten.submitGuessButtonLabel")}</Button>
+                    </InputGroupAddon>
+                </InputGroup>
+                <div className="rt-actions">
+                    <Button variant="accent" icon="refresh" onClick={() => this.onNewHand()}>{t("shanten.newHandButtonLabel")}</Button>
+                </div>
+                <Collapsible title={t("shanten.history.buttonLabel")} icon="history" defaultOpen>
+                    <ListGroup>
+                        {this.state.history.map((entry, index) => (
+                            <ListGroupItem key={index} className={entry.className}>
+                                {entry.text}
+                                {this.state.settings.showHandInHistory && <Hand compact tiles={entry.hand} showIndexes={this.state.settings.showIndexes} />}
+                            </ListGroupItem>
+                        ))}
+                    </ListGroup>
+                </Collapsible>
+            </div>
         );
     }
 }

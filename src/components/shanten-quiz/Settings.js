@@ -1,6 +1,6 @@
 import React from 'react';
-import { Container, Collapse, Card, CardBody, Button, Row, Col, Input, Label } from 'reactstrap';
-import NumericInput from 'react-numeric-input';
+import { Row, Col, Input, Label } from 'reactstrap';
+import { Collapsible, NumberField } from '../ui';
 import { withTranslation } from "react-i18next";
 
 const SETTINGS_KEY = "shantenSettings";
@@ -79,10 +79,7 @@ class Settings extends React.Component {
     render() {
         const { t } = this.props;
         return (
-            <Container>
-                <Button color="primary" onClick={this.toggle}>{t("settings.buttonLabel")}</Button>
-                <Collapse isOpen={!this.state.collapsed}>
-                    <Card><CardBody>
+            <Collapsible title={t("settings.buttonLabel")} icon="sliders" open={!this.state.collapsed} onToggle={this.toggle} bodyClassName="rt-settings">
                         <Row>
                             <Col className="form-check form-check-inline">
                                 <Input className="form-check-input" type="checkbox" id="useTimer"
@@ -93,7 +90,7 @@ class Settings extends React.Component {
                         <Row>
                             <Col className="form-check form-check-inline">
                                 <Label className="form-check-label" for="time">{t("settings.time")}&nbsp;</Label>
-                                <NumericInput className="form-check-input" type="number" id="time"
+                                <NumberField id="time"
                                     min={1} max={99} step={1}
                                     value={this.state.settings.time} onChange={this.onSettingChanged} />
                                 <span className="blackText">&nbsp;{t("settings.seconds")}</span>
@@ -113,9 +110,7 @@ class Settings extends React.Component {
                                 <Label className="form-check-label" for="showHandInHistory">{t("settings.shanten.showHandInHistory")}</Label>
                             </Col>
                         </Row>
-                    </CardBody></Card>
-                </Collapse>
-            </Container>
+                    </Collapsible>
         );
     }
 }

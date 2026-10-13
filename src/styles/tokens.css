@@ -1,0 +1,202 @@
+/* =========================================================
+   Riichi Trainer — дизайн-токены
+   Все цвета, отступы, радиусы, тени и тайминги живут здесь.
+   Тема переключается классом на <html>: theme-light / theme-dark.
+   ========================================================= */
+
+:root,
+:root.theme-light {
+  color-scheme: light;
+
+  /* Поверхности */
+  --rt-color-bg: #f7f4ec;
+  --rt-color-surface: #ffffff;
+  --rt-color-surface-2: #f0ece1;
+  --rt-color-felt: #e6ede6;
+  --rt-color-border: #e2dccf;
+  --rt-color-border-strong: #cdc5b3;
+  --rt-color-switch-off: #8e8a7f;
+  --rt-color-overlay: rgba(28, 31, 29, 0.48);
+
+  /* Текст (вторичные оттенки подобраны под контраст ≥ 4.5:1 на всех поверхностях) */
+  --rt-color-text: #232323;
+  --rt-color-text-2: #5c5c5c;
+  --rt-color-text-muted: #6b6b6b;
+  --rt-color-disabled: #8c8c8c;
+  --rt-color-link: #2e4a3b;
+
+  /* Основной акцент — бамбук */
+  --rt-color-primary: #2e4a3b;
+  --rt-color-primary-hover: #24392d;
+  --rt-color-on-primary: #ffffff;
+  --rt-color-primary-soft: #e3ece6;
+
+  /* Вторичный акцент — терракота (чуть глубже, чтобы белый текст проходил 4.5:1) */
+  --rt-color-accent: #b5503a;
+  --rt-color-accent-hover: #9c442f;
+  --rt-color-on-accent: #ffffff;
+  --rt-color-accent-soft: #f6e4de;
+
+  /* Статусы */
+  --rt-color-success: #3f7d5a;
+  --rt-color-success-hover: #346a4c;
+  --rt-color-on-success: #ffffff;
+  --rt-color-success-soft: #e4f1e9;
+  --rt-color-success-text: #1f5237;
+
+  --rt-color-warning: #c98b2d;
+  --rt-color-warning-hover: #b87d24;
+  --rt-color-on-warning: #232323;
+  --rt-color-warning-soft: #fbf0d8;
+  --rt-color-warning-text: #6b4708;
+
+  --rt-color-danger: #b33a3a;
+  --rt-color-danger-hover: #9a2f2f;
+  --rt-color-on-danger: #ffffff;
+  --rt-color-danger-soft: #f8e5e3;
+  --rt-color-danger-text: #7a2121;
+
+  --rt-color-info: #3b6b8f;
+  --rt-color-info-hover: #305a79;
+  --rt-color-on-info: #ffffff;
+  --rt-color-info-soft: #e2edf5;
+  --rt-color-info-text: #234a66;
+
+  --rt-color-focus-ring: #b5503a;
+  --rt-color-focus-soft: rgba(46, 74, 59, 0.22);
+
+  /* Тени */
+  --rt-shadow-sm: 0 1px 2px rgba(35, 35, 35, 0.05);
+  --rt-shadow-md: 0 2px 8px rgba(35, 35, 35, 0.06);
+  --rt-shadow-lg: 0 8px 24px rgba(35, 35, 35, 0.10);
+  --rt-shadow-xl: 0 16px 40px rgba(35, 35, 35, 0.14);
+  --rt-shadow-tile: 0 2px 0 rgba(35, 35, 35, 0.16), 0 3px 6px rgba(35, 35, 35, 0.14);
+}
+
+:root.theme-dark {
+  color-scheme: dark;
+
+  --rt-color-bg: #1c1f1d;
+  --rt-color-surface: #262a27;
+  --rt-color-surface-2: #2f3430;
+  --rt-color-felt: #222b25;
+  --rt-color-border: #3a3f3b;
+  --rt-color-border-strong: #4b514c;
+  --rt-color-switch-off: #6b716c;
+  --rt-color-overlay: rgba(0, 0, 0, 0.62);
+
+  --rt-color-text: #ececec;
+  --rt-color-text-2: #a9ada9;
+  --rt-color-text-muted: #9aa09a;
+  --rt-color-disabled: #6f756f;
+  --rt-color-link: #8fc19c;
+
+  --rt-color-primary: #7fb08c;
+  --rt-color-primary-hover: #93c0a0;
+  --rt-color-on-primary: #10201a;
+  --rt-color-primary-soft: #2a3a31;
+
+  --rt-color-accent: #e08768;
+  --rt-color-accent-hover: #e99a7f;
+  --rt-color-on-accent: #2a1008;
+  --rt-color-accent-soft: #3d2a24;
+
+  --rt-color-success: #6fbf8e;
+  --rt-color-success-hover: #86cca1;
+  --rt-color-on-success: #0d2417;
+  --rt-color-success-soft: #22362a;
+  --rt-color-success-text: #a7dcbb;
+
+  --rt-color-warning: #e0b058;
+  --rt-color-warning-hover: #e8c070;
+  --rt-color-on-warning: #2a1d05;
+  --rt-color-warning-soft: #3a3120;
+  --rt-color-warning-text: #efd397;
+
+  --rt-color-danger: #e57373;
+  --rt-color-danger-hover: #ec8b8b;
+  --rt-color-on-danger: #2b0b0b;
+  --rt-color-danger-soft: #3d2626;
+  --rt-color-danger-text: #f4b0b0;
+
+  --rt-color-info: #7fb0d6;
+  --rt-color-info-hover: #96c0e0;
+  --rt-color-on-info: #0d2233;
+  --rt-color-info-soft: #22313d;
+  --rt-color-info-text: #b3d2ea;
+
+  --rt-color-focus-ring: #e08768;
+  --rt-color-focus-soft: rgba(127, 176, 140, 0.3);
+
+  --rt-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --rt-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --rt-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --rt-shadow-xl: 0 16px 40px rgba(0, 0, 0, 0.55);
+  --rt-shadow-tile: 0 2px 0 rgba(0, 0, 0, 0.5), 0 3px 6px rgba(0, 0, 0, 0.4);
+}
+
+:root {
+  /* Типографика. Шрифты системные: ничего не скачивается, всё работает офлайн. */
+  --rt-font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", sans-serif;
+  --rt-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Roboto Mono", "Liberation Mono", monospace;
+
+  --rt-text-xs: 0.75rem;
+  --rt-text-sm: 0.875rem;
+  --rt-text-base: 1rem;
+  --rt-text-md: 1.125rem;
+  --rt-text-lg: 1.375rem;
+  --rt-text-xl: 1.75rem;
+  --rt-text-2xl: 2.25rem;
+  --rt-text-3xl: 3rem;
+
+  --rt-leading-text: 1.5;
+  --rt-leading-heading: 1.2;
+
+  /* Отступы */
+  --rt-space-1: 4px;
+  --rt-space-2: 8px;
+  --rt-space-3: 12px;
+  --rt-space-4: 16px;
+  --rt-space-5: 20px;
+  --rt-space-6: 24px;
+  --rt-space-7: 32px;
+  --rt-space-8: 40px;
+  --rt-space-9: 48px;
+  --rt-space-10: 64px;
+
+  /* Радиусы */
+  --rt-radius-xs: 4px;
+  --rt-radius-sm: 8px;
+  --rt-radius-md: 12px;
+  --rt-radius-lg: 16px;
+  --rt-radius-pill: 999px;
+
+  /* Движение */
+  --rt-dur-fast: 120ms;
+  --rt-dur: 180ms;
+  --rt-dur-slow: 260ms;
+  --rt-ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Каркас приложения и safe-area (вырезы, скруглённые углы) */
+  --rt-appbar-h: 56px;
+  --rt-bottomnav-h: 60px;
+  --rt-safe-top: env(safe-area-inset-top, 0px);
+  --rt-safe-right: env(safe-area-inset-right, 0px);
+  --rt-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --rt-safe-left: env(safe-area-inset-left, 0px);
+  --rt-page-max: 960px;
+
+  /* Размер тайлов в руке (меняется классом tiles-s / tiles-m / tiles-l на <html>) */
+  --rt-hand-cols-narrow: 7;
+  --rt-hand-tile-max: 52px;
+}
+
+:root.tiles-s {
+  --rt-hand-cols-narrow: 8;
+  --rt-hand-tile-max: 44px;
+}
+
+:root.tiles-l {
+  --rt-hand-cols-narrow: 5;
+  --rt-hand-tile-max: 62px;
+}

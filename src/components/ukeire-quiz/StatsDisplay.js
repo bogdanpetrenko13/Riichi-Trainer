@@ -1,12 +1,13 @@
 import React from 'react';
-import { Container, Collapse, Card, CardBody, Button, Row, Col } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
+import { Button, Collapsible, Modal } from '../ui';
 
 class StatsDisplay extends React.Component {
     constructor(props) {
         super(props);
         this.toggleStats = this.toggleStats.bind(this);
         this.toggleConfirm = this.toggleConfirm.bind(this);
+        this.onConfirmReset = this.onConfirmReset.bind(this);
         this.state = {
             statsCollapsed: true,
             confirmCollapsed: true
@@ -19,6 +20,11 @@ class StatsDisplay extends React.Component {
 
     toggleConfirm() {
         this.setState({ confirmCollapsed: !this.state.confirmCollapsed });
+    }
+
+    onConfirmReset() {
+        this.props.onReset();
+        this.setState({ confirmCollapsed: true });
     }
 
     render() {
@@ -39,55 +45,41 @@ class StatsDisplay extends React.Component {
         let { t } = this.props;
 
         return (
-            <Container>
-                <Button color="primary" onClick={this.toggleStats}>{t("stats.buttonLabel")}</Button>
-                <Collapse isOpen={!this.state.statsCollapsed}>
-                    <Card><CardBody>
-                        <Row>
-                            {t("stats.info")}
-                        </Row>
-                        <Row>
-                            {t("stats.ready", { count: this.props.values.totalTenpai })}
-                        </Row>
-                        <Row>
-                            {t("stats.discards", { count: this.props.values.totalDiscards })}
-                        </Row>
-                        <Row>
-                            {t("stats.average", { average: averageDiscards })}
-                        </Row>
-                        <Row>
-                            {t("stats.optimal", { count: this.props.values.totalOptimalDiscards })}
-                        </Row>
-                        <Row>
-                            {t("stats.optimalRate", { percent: optimalDiscardRate, achieved: this.props.values.totalOptimalDiscards, total: this.props.values.totalDiscards })}
-                        </Row>
-                        <Row>
-                            {t("stats.efficiency", { count: this.props.values.totalEfficiency })}
-                        </Row>
-                        <Row>
-                            {t("stats.possible", { count: this.props.values.totalPossibleEfficiency })}
-                        </Row>
-                        <Row>
-                            {t("stats.overall", { percent: efficiency, achieved: this.props.values.totalEfficiency, total: this.props.values.totalPossibleEfficiency })}
-                        </Row>
-                        <Row className="mt-4">
-                            <Button color="danger" onClick={this.toggleConfirm}>{t("stats.reset")}</Button>
-                        </Row>
-                        <Row>
-                            <Collapse isOpen={!this.state.confirmCollapsed}>
-                                <Card><CardBody>
-                                    <Row>{t("stats.confirmation")}</Row>
-                                    <Row>
-                                        <Button color="danger" onClick={this.props.onReset}>{t("stats.yes")}</Button>
-                                        <Col xs="1" />
-                                        <Button color="success" onClick={this.toggleConfirm}>{t("stats.no")}</Button>
-                                    </Row>
-                                </CardBody></Card>
-                            </Collapse>
-                        </Row>
-                    </CardBody></Card>
-                </Collapse>
-            </Container>
+            <React.Fragment>
+                <Collapsible title={t("stats.buttonLabel")} icon="barChart" open={!this.state.statsCollapsed} onToggle={this.toggleStats}>
+                    <p className="rt-muted">{t("stats.info")}</p>
+                    <ul className="rt-lines rt-num">
+                        <li>{t("stats.ready", { count: this.props.values.totalTenpai })}</li>
+                        <li>{t("stats.discards", { count: this.props.values.totalDiscards })}</li>
+                        <li>{t("stats.average", { average: averageDiscards })}</li>
+                        <li>{t("stats.optimal", { count: this.props.values.totalOptimalDiscards })}</li>
+                        <li>{t("stats.optimalRate", { percent: optimalDiscardRate, achieved: this.props.values.totalOptimalDiscards, total: this.props.values.totalDiscards })}</li>
+                    </ul>
+                    <div className="rt-bar" aria-hidden="true"><span style={{ width: optimalDiscardRate + '%' }} /></div>
+                    <ul className="rt-lines rt-num">
+                        <li>{t("stats.efficiency", { count: this.props.values.totalEfficiency })}</li>
+                        <li>{t("stats.possible", { count: this.props.values.totalPossibleEfficiency })}</li>
+                        <li>{t("stats.overall", { percent: efficiency, achieved: this.props.values.totalEfficiency, total: this.props.values.totalPossibleEfficiency })}</li>
+                    </ul>
+                    <div className="rt-bar rt-bar--accent" aria-hidden="true"><span style={{ width: efficiency + '%' }} /></div>
+                    <div className="rt-mt-4">
+                        <Button variant="danger" icon="refresh" onClick={this.toggleConfirm}>{t("stats.reset")}</Button>
+                    </div>
+                </Collapsible>
+                <Modal
+                    open={!this.state.confirmCollapsed}
+                    onClose={this.toggleConfirm}
+                    title={t("stats.reset")}
+                    footer={
+                        <React.Fragment>
+                            <Button variant="secondary" onClick={this.toggleConfirm}>{t("stats.no")}</Button>
+                            <Button variant="danger" onClick={this.onConfirmReset}>{t("stats.yes")}</Button>
+                        </React.Fragment>
+                    }
+                >
+                    <p>{t("stats.confirmation")}</p>
+                </Modal>
+            </React.Fragment>
         );
     }
 }

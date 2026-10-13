@@ -1,5 +1,4 @@
 import React from 'react';
-import { Row } from 'reactstrap';
 import Tile from './Tile';
 
 function SortedHand(props) {
@@ -8,7 +7,7 @@ function SortedHand(props) {
     let hand = props.tiles;
 
     if (!hand) {
-        return <Row />;
+        return <div className="rt-hand" />;
     }
 
     let lastDraw = props.lastDraw;
@@ -27,7 +26,7 @@ function SortedHand(props) {
 
     if (lastDraw > -1) {
         tiles.push((
-            <Tile className="handTile"
+            <Tile className="handTile drawTile"
                 key={index++}
                 tile={lastDraw}
                 onClick={props.onTileClick}
@@ -37,9 +36,9 @@ function SortedHand(props) {
     }
 
     return (
-        <Row>
+        <div className={props.compact ? "rt-hand rt-hand--compact" : "rt-hand"} role="group">
             {tiles}
-        </Row>
+        </div>
     );
 }
 

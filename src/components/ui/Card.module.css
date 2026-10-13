@@ -1,0 +1,60 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  color: var(--rt-color-text);
+  background-color: var(--rt-color-surface);
+  border: 1px solid var(--rt-color-border);
+  border-radius: var(--rt-radius-md);
+  box-shadow: var(--rt-shadow-sm);
+  transition: box-shadow var(--rt-dur) var(--rt-ease), transform var(--rt-dur) var(--rt-ease);
+}
+
+.interactive {
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .interactive:hover {
+    box-shadow: var(--rt-shadow-lg);
+    transform: translateY(-1px);
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--rt-space-3);
+  padding: var(--rt-space-4) var(--rt-space-4) 0;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: var(--rt-space-2);
+  margin: 0;
+  font-size: var(--rt-text-lg);
+  font-weight: 600;
+  line-height: var(--rt-leading-heading);
+}
+
+.title svg {
+  flex: none;
+  color: var(--rt-color-primary);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--rt-space-2);
+}
+
+.body {
+  padding: var(--rt-space-4);
+}
+
+.footer {
+  padding: var(--rt-space-3) var(--rt-space-4);
+  border-top: 1px solid var(--rt-color-border);
+}

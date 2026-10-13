@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Row, Button, Col } from 'reactstrap';
+import { Button } from '../components/ui';
 import Hand from '../components/Hand';
 import History from "../components/History";
 import Settings from '../components/ukeire-quiz/Settings';
@@ -581,44 +581,40 @@ class UkeireQuiz extends React.Component {
         let blind = this.state.players.length && this.state.players[0].discards.length && this.state.settings.blind && !this.state.isComplete;
 
         return (
-            <Container>
-                <Settings onChange={this.onSettingsChanged} />
-                <StatsDisplay values={this.state.stats} onReset={() => this.resetStats()} />
-                <Row>
-                    {this.state.disclaimerSeen ? "" : <span>{t("trainer.disclaimer")}</span>}
-                </Row>
-                <ValueTileDisplay roundWind={this.state.roundWind} seatWind={this.state.seatWind} dora={this.state.dora} showIndexes={this.state.settings.showIndexes} />
-                <Row className="mb-2 mt-2">
-                    <span>{t("trainer.instructions")}</span>
-                </Row>
-                {this.state.settings.sort
-                    ? <Hand tiles={this.state.hand}
-                        lastDraw={this.state.lastDraw}
-                        onTileClick={this.onTileClicked}
-                        showIndexes={this.state.settings.showIndexes && !blind}
-                        blind={blind} />
-                    : <SortedHand tiles={this.state.shuffle}
-                        lastDraw={this.state.lastDraw}
-                        onTileClick={this.onTileClicked}
-                        showIndexes={this.state.settings.showIndexes && !blind}
-                        blind={blind} />
-                }
-                {this.state.settings.useTimer ?
-                    <Row className="mt-2" style={{justifyContent:'flex-end', marginRight:1}}><span>{this.state.currentTime.toFixed(1)} + {this.state.currentBonus.toFixed(1)}</span></Row>
-                    : ""
-                }
-                <Row className="mt-2">
-                    <Col xs="6" sm="3" md="3" lg="2">
-                        <Button className="btn-block" color={this.state.isComplete ? "success" : "warning"} onClick={() => this.onNewHand()}>{t("trainer.newHandButtonLabel")}</Button>
-                    </Col>
+            <div className="rt-page">
+                <div className="rt-panels">
+                    <Settings onChange={this.onSettingsChanged} />
+                    <StatsDisplay values={this.state.stats} onReset={() => this.resetStats()} />
+                </div>
+                {this.state.disclaimerSeen ? null : <p className="rt-note">{t("trainer.disclaimer")}</p>}
+                <section className="rt-board">
+                    <ValueTileDisplay roundWind={this.state.roundWind} seatWind={this.state.seatWind} dora={this.state.dora} showIndexes={this.state.settings.showIndexes} />
+                    <p className="rt-instructions">{t("trainer.instructions")}</p>
+                    {this.state.settings.sort
+                        ? <Hand tiles={this.state.hand}
+                            lastDraw={this.state.lastDraw}
+                            onTileClick={this.onTileClicked}
+                            showIndexes={this.state.settings.showIndexes && !blind}
+                            blind={blind} />
+                        : <SortedHand tiles={this.state.shuffle}
+                            lastDraw={this.state.lastDraw}
+                            onTileClick={this.onTileClicked}
+                            showIndexes={this.state.settings.showIndexes && !blind}
+                            blind={blind} />
+                    }
+                    {this.state.settings.useTimer ?
+                        <div className="rt-timer rt-num">{this.state.currentTime.toFixed(1)} + {this.state.currentBonus.toFixed(1)}</div>
+                        : null
+                    }
+                </section>
+                <div className="rt-actions">
+                    <Button variant={this.state.isComplete ? "success" : "accent"} icon="refresh" onClick={() => this.onNewHand()}>{t("trainer.newHandButtonLabel")}</Button>
                     <CopyButton hand={this.state.hand} />
                     <LoadButton callback={this.loadHand} />
-                </Row>
-                <Row className="mt-2 no-gutters">
-                    <History history={this.state.history} concise={this.state.settings.extraConcise} verbose={this.state.settings.verbose} spoilers={this.state.settings.spoilers}/>
-                    <DiscardPool players={this.state.players} discardCount={this.state.discardCount} wallCount={this.state.tilePool && this.state.tilePool.length} showIndexes={this.state.settings.showIndexes} />
-                </Row>
-            </Container>
+                </div>
+                <History history={this.state.history} concise={this.state.settings.extraConcise} verbose={this.state.settings.verbose} spoilers={this.state.settings.spoilers}/>
+                <DiscardPool players={this.state.players} discardCount={this.state.discardCount} wallCount={this.state.tilePool && this.state.tilePool.length} showIndexes={this.state.settings.showIndexes} />
+            </div>
         );
     }
 }
