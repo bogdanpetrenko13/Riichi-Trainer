@@ -1,21 +1,23 @@
-/* src/index.css — современная тема для Riichi Trainer */
+/* =========================================
+   Riichi Trainer — Modern UI Theme
+   Стек: React 16, Bootstrap 4, CRA 3
+   ========================================= */
 
 :root {
-  /* Цвета */
-  --rt-bg: #f7f4ec;              /* тёплый бумажный фон */
-  --rt-surface: #ffffff;         /* карточки */
-  --rt-surface-2: #f0ece1;       /* вторичный фон */
-  --rt-text: #232323;            /* основной текст */
-  --rt-text-muted: #6b6b6b;      /* вторичный текст */
-  --rt-border: #e2dccf;          /* границы */
-  --rt-primary: #2e4a3b;         /* бамбуковый зелёный */
-  --rt-primary-hover: #24392d;
-  --rt-accent: #c45a42;          /* терракота */
-  --rt-accent-hover: #a94b36;
-  --rt-danger: #b33a3a;
-  --rt-success: #3f7d5a;
+  /* Цветовая палитра */
+  --rt-bg: #f7f4ec;              /* Тёплый бумажный фон */
+  --rt-surface: #ffffff;         /* Карточки, панели */
+  --rt-surface-2: #f0ece1;       /* Вторичный фон (заголовки таблиц) */
+  --rt-text: #232323;            /* Основной текст */
+  --rt-text-muted: #6b6b6b;      /* Вторичный текст */
+  --rt-border: #e2dccf;          /* Границы */
+  
+  --rt-primary: #337ab7;         /* Синий (Bootstrap 4 primary) */
+  --rt-warning: #f0ad4e;         /* Жёлтый (Bootstrap 4 warning) */
+  --rt-info: #5bc0de;            /* Голубой (Bootstrap 4 info) */
+  --rt-danger: #d9534f;          /* Красный (Bootstrap 4 danger) */
 
-  /* Типографика */
+  /* Типографика и геометрия */
   --rt-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
              "Helvetica Neue", Arial, "Noto Sans", sans-serif;
   --rt-radius: 12px;
@@ -25,7 +27,7 @@
   --rt-transition: 180ms ease-in-out;
 }
 
-/* Базовые стили */
+/* --- Базовые стили --- */
 html, body, #root {
   height: 100%;
 }
@@ -40,7 +42,6 @@ body {
   font-size: 16px;
   margin: 0;
   padding: 0;
-  /* Отключаем «резинку» на Android */
   overscroll-behavior: none;
 }
 
@@ -56,13 +57,13 @@ h1 { font-size: 1.75rem; }
 h2 { font-size: 1.4rem; }
 h3 { font-size: 1.15rem; }
 
-/* Кнопки: единый стиль, крупные тач-зоны */
+/* --- Кнопки --- */
 .btn {
   font-family: var(--rt-font);
   font-weight: 500;
   border-radius: var(--rt-radius-sm);
   padding: 0.6rem 1.1rem;
-  min-height: 44px;                 /* удобно для пальца */
+  min-height: 44px;
   font-size: 1rem;
   transition: background-color var(--rt-transition),
               border-color var(--rt-transition),
@@ -71,93 +72,70 @@ h3 { font-size: 1.15rem; }
   border: 1px solid transparent;
   box-shadow: none;
   cursor: pointer;
+  margin: 4px;
 }
-.btn:active {
-  transform: translateY(1px);
-}
-.btn:focus,
-.btn:focus-visible {
-  outline: 3px solid rgba(46, 74, 59, 0.35);
+.btn:active { transform: translateY(1px); }
+.btn:focus, .btn:focus-visible {
+  outline: 3px solid rgba(51, 122, 183, 0.35);
   outline-offset: 2px;
-  box-shadow: none;
 }
 
-.btn-primary {
-  background-color: var(--rt-primary);
-  border-color: var(--rt-primary);
-  color: #fff;
-}
-.btn-primary:hover,
-.btn-primary:focus {
-  background-color: var(--rt-primary-hover);
-  border-color: var(--rt-primary-hover);
-}
-.btn-primary:disabled {
-  background-color: #a9b7ad;
-  border-color: #a9b7ad;
-  opacity: 0.8;
-  cursor: not-allowed;
-}
+.btn-primary { background-color: var(--rt-primary); border-color: var(--rt-primary); color: #fff; }
+.btn-primary:hover { background-color: #286090; border-color: #204d74; color: #fff; }
 
-.btn-secondary {
-  background-color: var(--rt-surface);
-  border-color: var(--rt-border);
-  color: var(--rt-text);
-}
-.btn-secondary:hover {
-  background-color: var(--rt-surface-2);
-}
+.btn-warning { background-color: var(--rt-warning); border-color: var(--rt-warning); color: #212529; }
+.btn-warning:hover { background-color: #ec971f; border-color: #d58512; color: #212529; }
 
-.btn-danger {
-  background-color: var(--rt-danger);
-  border-color: var(--rt-danger);
-  color: #fff;
-}
+.btn-info { background-color: var(--rt-info); border-color: var(--rt-info); color: #fff; }
+.btn-info:hover { background-color: #31b0d5; border-color: #269abc; color: #fff; }
 
-/* Карточки */
-.card,
-.rt-card {
+.btn-danger { background-color: var(--rt-danger); border-color: var(--rt-danger); color: #fff; }
+.btn-danger:hover { background-color: #c9302c; border-color: #ac2925; color: #fff; }
+
+.btn-secondary { background-color: var(--rt-surface); border-color: var(--rt-border); color: var(--rt-text); }
+.btn-secondary:hover { background-color: var(--rt-surface-2); }
+
+/* --- Карточки и Панели --- */
+.card, .rt-card, .panel {
   background-color: var(--rt-surface);
   border: 1px solid var(--rt-border);
   border-radius: var(--rt-radius);
   box-shadow: var(--rt-shadow);
   padding: 1rem 1.1rem;
-  transition: box-shadow var(--rt-transition),
-              transform var(--rt-transition);
+  margin-bottom: 1rem;
+  transition: box-shadow var(--rt-transition), transform var(--rt-transition);
 }
-.card:hover,
-.rt-card:hover {
-  box-shadow: var(--rt-shadow-lg);
-}
+.card:hover, .rt-card:hover { box-shadow: var(--rt-shadow-lg); }
 
-/* Навигация / шапка */
+/* --- Навигация --- */
 .navbar {
   background-color: var(--rt-surface);
   border-bottom: 1px solid var(--rt-border);
   padding: 0.6rem 0.9rem;
   min-height: 56px;
 }
-.navbar a,
-.navbar .nav-link {
+.navbar a, .navbar .nav-link {
   color: var(--rt-text);
   font-weight: 500;
   padding: 0.5rem 0.75rem;
   border-radius: var(--rt-radius-sm);
   transition: background-color var(--rt-transition);
 }
-.navbar a:hover,
-.navbar .nav-link:hover {
+.navbar a:hover, .navbar .nav-link:hover {
   background-color: var(--rt-surface-2);
   color: var(--rt-text);
+  text-decoration: none;
 }
 
-/* Таблицы / статистика */
+/* --- Таблицы --- */
 .table {
   background-color: var(--rt-surface);
   border-radius: var(--rt-radius);
   overflow: hidden;
   border: 1px solid var(--rt-border);
   font-size: 0.95rem;
+  width: 100%;
+  margin-bottom: 1rem;
 }
 .table thead th {
   background-color: var(--rt-surface-2);
@@ -167,16 +145,14 @@ h3 { font-size: 1.15rem; }
   font-size: 0.75rem;
   letter-spacing: 0.04em;
   border-bottom: 1px solid var(--rt-border);
+  padding: 0.75rem;
 }
-.table tbody tr:nth-child(even) {
-  background-color: #fbf9f4;
-}
-.table tbody tr:hover {
-  background-color: #f3efe5;
-}
+.table tbody td { padding: 0.75rem; border-top: 1px solid var(--rt-border); }
+.table tbody tr:nth-child(even) { background-color: #fbf9f4; }
+.table tbody tr:hover { background-color: #f3efe5; }
 
-/* Поля ввода */
-input, select, textarea {
+/* --- Поля ввода --- */
+input, select, textarea, .form-control {
   font-family: var(--rt-font);
   font-size: 1rem;
   padding: 0.55rem 0.75rem;
@@ -184,57 +160,67 @@ input, select, textarea {
   border-radius: var(--rt-radius-sm);
   background-color: var(--rt-surface);
   color: var(--rt-text);
-  transition: border-color var(--rt-transition),
-              box-shadow var(--rt-transition);
+  transition: border-color var(--rt-transition), box-shadow var(--rt-transition);
   min-height: 44px;
+  width: 100%;
+  box-sizing: border-box;
 }
-input:focus, select:focus, textarea:focus {
+input:focus, select:focus, textarea:focus, .form-control:focus {
   outline: none;
   border-color: var(--rt-primary);
-  box-shadow: 0 0 0 3px rgba(46, 74, 59, 0.18);
+  box-shadow: 0 0 0 3px rgba(51, 122, 183, 0.18);
 }
 
-/* Модальные окна */
+/* --- Модальные окна --- */
 .modal-content {
   border-radius: var(--rt-radius);
   border: none;
   box-shadow: var(--rt-shadow-lg);
   background-color: var(--rt-surface);
 }
-.modal-header,
-.modal-footer {
-  border-color: var(--rt-border);
+.modal-header, .modal-footer { border-color: var(--rt-border); padding: 1rem; }
+.modal-body { padding: 1rem; }
+
+/* --- Ссылки --- */
+a { color: var(--rt-primary); text-decoration: none; transition: color var(--rt-transition); }
+a:hover { color: #23527c; text-decoration: underline; }
+
+/* =========================================
+   ИСПРАВЛЕНИЕ ДЛЯ ТАЙЛОВ МАДЖОНГА
+   ========================================= */
+
+/* 1. Ограничиваем все картинки, чтобы они не вылезали за экран */
+img {
+  max-width: 100%;
+  height: auto;
 }
 
-/* Ссылки */
-a {
-  color: var(--rt-primary);
-  text-decoration: none;
-  transition: color var(--rt-transition);
-}
-a:hover {
-  color: var(--rt-primary-hover);
-  text-decoration: underline;
+/* 2. Жёстко задаём размер тайлов на руке */
+.tile, .tile img, .hand-tile, .hand-tile img, 
+.hand img, .tiles-row img, .tile-container img,
+.discard img, .discard-tile img {
+  max-height: 64px !important;   /* Оптимальная высота для телефона */
+  width: auto !important;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  margin: 2px;
+  display: inline-block;
 }
 
-/* Скругления на мобильных */
+/* 3. Контейнер для тайлов: переносит их на новую строку */
+.hand, .hand-container, .tiles-row, .tile-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  padding: 8px 0;
+  overflow-x: auto; /* Разрешаем скролл, если совсем не влезают */
+}
+
+/* Убираем агрессивную подсветку тапов на Android */
 * {
-  -webkit-tap-highlight-color: rgba(46, 74, 59, 0.12);
-}
-
-/* Уважение к системе: тёмная тема (только если пользователь сам включил в ОС) */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --rt-bg: #1c1f1d;
-    --rt-surface: #262a27;
-    --rt-surface-2: #2f3430;
-    --rt-text: #ececec;
-    --rt-text-muted: #a9ada9;
-    --rt-border: #3a3f3b;
-    --rt-primary: #7fb08c;
-    --rt-primary-hover: #9cc4a6;
-    --rt-accent: #e08768;
-  }
-  .table tbody tr:nth-child(even) { background-color: #2a2e2b; }
-  .table tbody tr:hover { background-color: #333833; }
+  -webkit-tap-highlight-color: rgba(51, 122, 183, 0.12);
 }
