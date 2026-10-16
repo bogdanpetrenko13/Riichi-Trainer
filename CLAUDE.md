@@ -37,11 +37,11 @@ Claude's container can't reach npm. Without `node_modules`, build a preview
 with `scripts/preview/build.sh` (needs an esbuild binary in `ESBUILD=` and
 React reachable via `NODE_PATH`) and open `.preview/index.html`.
 
-Dependencies: CI runs `npm ci`. After changing `package.json`, run the
-**Refresh package-lock.json** workflow
-(`gh api -X POST repos/bogdanpetrenko13/riichi-trainer/actions/workflows/lockfile.yml/dispatches -f ref=<branch>`),
-then `git pull`. Its push does not trigger the build; dispatch
-`android-build.yml` after it.
+Dependencies: CI runs `npm ci`. After a push that changes `package.json`, the
+**Refresh package-lock.json** workflow runs by itself and commits the lock
+file; then `git pull`. Its push does not trigger the build, so dispatch it:
+`gh api -X POST repos/bogdanpetrenko13/Riichi-Trainer/actions/workflows/android-build.yml/dispatches -f ref=<branch>`.
+(Workflows can be dispatched by hand only once they exist on `develop`.)
 
 CI (`.github/workflows/android-build.yml`): unit tests, web build, debug APK
 signed with the fixed key. On `develop` the APK is published as the

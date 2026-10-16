@@ -1,12 +1,13 @@
 name: Refresh package-lock.json
 
-# Run by hand (Actions -> "Refresh package-lock.json" -> Run workflow) after
-# changing dependencies in package.json: resolves them with the same Node /
+# Runs on every push that changes package.json (or by hand): resolves them with the same Node /
 # npm as the APK build and commits package-lock.json, which the build then
 # installs exactly with `npm ci`. (Claude's container cannot reach the npm
 # registry, so the lock file is produced here.)
 on:
   workflow_dispatch:
+  push:
+    paths: [ package.json ]
 
 permissions:
   contents: write
