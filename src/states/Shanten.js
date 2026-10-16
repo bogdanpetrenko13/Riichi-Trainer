@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, InputGroup, InputGroupAddon, ListGroup, ListGroupItem } from 'reactstrap';
+import { Input, InputGroup, InputGroupAddon, ListGroup, ListGroupItem } from '../components/ui/legacy';
 import { Button, Collapsible } from '../components/ui';
 import Hand from '../components/Hand';
 import Settings from '../components/shanten-quiz/Settings';
@@ -8,7 +8,7 @@ import { generateHand } from '../scripts/GenerateHand';
 import { calculateMinimumShanten } from "../scripts/ShantenCalculator";
 import { convertHandToTileIndexArray } from "../scripts/HandConversions";
 import { shuffleArray } from '../scripts/Utils';
-import { withTranslation } from 'react-i18next';
+import { withTranslation } from '../i18n';
 import { CSS_CLASSES } from '../Constants';
 
 class ShantenQuiz extends React.Component {

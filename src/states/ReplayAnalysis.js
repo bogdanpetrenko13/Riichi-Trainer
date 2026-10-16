@@ -2,14 +2,14 @@ import React from 'react';
 import {
     Dropdown, DropdownItem, DropdownMenu, DropdownToggle,
     Row, ListGroup, ListGroupItem, Input
-} from 'reactstrap';
+} from '../components/ui/legacy';
 import { Button, Card, Collapsible } from '../components/ui';
 import * as ParseTenhouReplay from '../scripts/ParseTenhouReplay';
 import * as ParseMajsoulReplay from '../scripts/ParseMajsoulReplay';
 import Hand from '../components/Hand';
 import { convertIndexesToTenhouTiles, convertTilesToAsciiSymbols } from '../scripts/TileConversions';
 import { convertHandToTenhouString } from '../scripts/HandConversions';
-import { withTranslation } from 'react-i18next';
+import { withTranslation } from '../i18n';
 
 class ReplayAnalysis extends React.Component {
     constructor(props) {

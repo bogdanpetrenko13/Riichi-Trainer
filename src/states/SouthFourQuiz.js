@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, InputGroup, InputGroupAddon, Label } from 'reactstrap';
+import { Input, InputGroup, InputGroupAddon, Label } from '../components/ui/legacy';
 import { Button, Card } from '../components/ui';
 import { getPoints } from '../scripts/ScoreCalculation';
 import Player from '../models/Player';
@@ -7,7 +7,7 @@ import { randomInt, validateFu, shuffleArray } from '../scripts/Utils';
 import { SEAT_NAMES, RON_SCORES, TSUMO_SCORES } from '../Constants';
 import GyakutenQuestion from '../components/south-four-quiz/GyakutenQuestion';
 import SouthFourResultMessage from "../models/SouthFourResultMessage";
-import { withTranslation } from 'react-i18next';
+import { withTranslation } from '../i18n';
 import LocalizedMessage from '../models/LocalizedMessage';
 
 class SouthFourQuiz extends React.Component {

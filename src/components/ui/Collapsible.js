@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Collapse } from 'reactstrap';
+import { Collapse } from './legacy';
 import Icon from './Icon';
 import cx from './cx';
 import styles from './Collapsible.module.css';

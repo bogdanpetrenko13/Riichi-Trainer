@@ -1,6 +1,6 @@
 import React from 'react';
-import { ListGroupItem, Collapse, Row } from 'reactstrap';
-import { withTranslation } from 'react-i18next';
+import { ListGroupItem, Collapse, Row } from './ui/legacy';
+import { withTranslation } from '../i18n';
 
 class HistoryMessage extends React.Component {
     /* PROPS

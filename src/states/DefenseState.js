@@ -1,5 +1,5 @@
 import React from 'react';
-import { withTranslation } from "react-i18next";
+import { withTranslation } from '../i18n';
 import { Button, Collapsible } from '../components/ui';
 import DiscardTable from '../components/DiscardTable';
 import Hand from '../components/Hand';

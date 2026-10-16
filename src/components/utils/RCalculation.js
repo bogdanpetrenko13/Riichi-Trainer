@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Button, Input, InputGroup, InputGroupAddon, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Row } from 'reactstrap';
+import { Container, Button, Input, InputGroup, InputGroupAddon, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Row } from '../ui/legacy';
 
 class RCalculation extends React.Component {
     constructor(props) {

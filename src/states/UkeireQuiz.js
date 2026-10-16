@@ -18,7 +18,7 @@ import { shuffleArray, removeRandomItem, getRandomItem } from '../scripts/Utils'
 import SortedHand from '../components/SortedHand';
 import Player from '../models/Player';
 import { PLAYER_NAMES } from '../Constants';
-import { withTranslation } from 'react-i18next';
+import { withTranslation } from '../i18n';
 import LocalizedMessage from '../models/LocalizedMessage';
 import UkeireHistoryData from '../components/ukeire-quiz/UkeireHistoryData';
 import HistoryData from '../models/HistoryData';

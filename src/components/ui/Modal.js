@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../../i18n';
 import Button from './Button';
 import cx from './cx';
 import styles from './Modal.module.css';

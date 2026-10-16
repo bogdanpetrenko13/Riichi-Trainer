@@ -1,7 +1,7 @@
 {
   "appId": "com.riichitrainer.app",
   "appName": "Riichi Trainer",
-  "webDir": "build",
+  "webDir": "dist",
   "backgroundColor": "#f7f4ec",
   "android": {
     "allowMixedContent": false

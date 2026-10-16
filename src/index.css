@@ -6,6 +6,7 @@
 
 @import "./styles/tokens.css";
 @import "./styles/base.css";
+@import "./styles/legacy.css";
 @import "./styles/bootstrap-theme.css";
 @import "./styles/tiles.css";
 @import "./styles/layout.css";

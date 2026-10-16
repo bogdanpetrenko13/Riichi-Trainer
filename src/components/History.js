@@ -1,8 +1,8 @@
 import React from 'react';
-import { ListGroup } from 'reactstrap';
+import { ListGroup } from './ui/legacy';
 import HistoryMessage from './HistoryMessage';
 import { Collapsible } from './ui';
-import { withTranslation } from 'react-i18next';
+import { withTranslation } from '../i18n';
 
 class History extends React.Component {
     render() {

@@ -1,7 +1,7 @@
 import React from 'react';
 import Tile from './Tile';
 import { SEAT_NAMES } from '../Constants';
-import { withTranslation } from 'react-i18next';
+import { withTranslation } from '../i18n';
 import './DiscardTable.css';
 
 class DiscardTable extends React.Component {

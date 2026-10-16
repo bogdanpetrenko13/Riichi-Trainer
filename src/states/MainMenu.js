@@ -5,7 +5,7 @@ import UtilsState from "./UtilsState";
 import HandExplorer from "./HandExplorer";
 import Shanten from './Shanten';
 import SouthFourQuiz from './SouthFourQuiz';
-import { withTranslation } from "react-i18next";
+import { withTranslation } from '../i18n';
 import DefenseState from './DefenseState';
 import AppSettings from '../screens/AppSettings';
 import Help from '../screens/Help';

@@ -6,7 +6,7 @@ import { calculateDiscardUkeire } from '../../scripts/UkeireCalculator';
 import calculateStandardShanten from '../../scripts/ShantenCalculator';
 import { ALL_TILES_REMAINING } from '../../Constants';
 import { evaluateBestDiscard } from '../../scripts/Evaluations';
-import { withTranslation } from 'react-i18next';
+import { withTranslation } from '../../i18n';
 
 class ResultingHandInfo extends React.Component {
     constructor(props) {

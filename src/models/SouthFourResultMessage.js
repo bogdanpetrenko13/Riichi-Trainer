@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row } from "reactstrap";
+import { Container, Row } from '../components/ui/legacy';
 import { PLACEMENTS, SEAT_NAMES } from "../Constants";
 
 export default class SouthFourResultMessage {

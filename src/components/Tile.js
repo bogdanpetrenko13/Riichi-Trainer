@@ -1,6 +1,6 @@
 import React from 'react';
 import { getTileImage, getTileAsText } from '../scripts/TileConversions';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../i18n';
 import { TILE_INDEXES } from '../Constants';
 
 function Tile(props) {

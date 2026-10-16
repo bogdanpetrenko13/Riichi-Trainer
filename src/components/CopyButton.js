@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from './ui';
 import { convertHandToTenhouString } from '../scripts/HandConversions';
-import { withTranslation } from 'react-i18next';
+import { withTranslation } from '../i18n';
 
 class CopyButton extends React.Component {
     constructor(props) {

@@ -3,7 +3,7 @@ import { Button, Card } from '../ui';
 import Player from '../../models/Player';
 import { convertTilesToAsciiSymbols, convertIndexesToTenhouTiles, getTileAsText } from '../../scripts/TileConversions';
 import { ROUND_PARAMETERS, SEAT_NAMES } from '../../Constants';
-import { withTranslation } from 'react-i18next';
+import { withTranslation } from '../../i18n';
 
 class RandomGameState extends React.Component {
     constructor(props) {

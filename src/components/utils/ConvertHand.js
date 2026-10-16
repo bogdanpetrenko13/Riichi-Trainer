@@ -1,8 +1,8 @@
 import React from 'react';
-import { Input, InputGroup, InputGroupAddon } from 'reactstrap';
+import { Input, InputGroup, InputGroupAddon } from '../ui/legacy';
 import { Button, Card } from '../ui';
 import { convertHandToAsciiSymbols, convertHandToDiscordEmoji } from '../../scripts/HandConversions';
-import { withTranslation } from 'react-i18next';
+import { withTranslation } from '../../i18n';
 import { characterToSuit } from '../../scripts/Utils';
 
 class ConvertHand extends React.Component {

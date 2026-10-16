@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../i18n';
 import { Card, Segmented, Icon, cx } from '../components/ui';
 import { getThemePreference, setThemePreference, getTileSize, setTileSize } from '../theme';
 

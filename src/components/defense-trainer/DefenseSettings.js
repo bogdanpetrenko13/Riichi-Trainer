@@ -1,7 +1,7 @@
 import React from 'react';
-import { Row, Col, Input, Label } from 'reactstrap';
+import { Row, Col, Input, Label } from '../ui/legacy';
 import { Collapsible, NumberField } from '../ui';
-import { withTranslation } from "react-i18next";
+import { withTranslation } from '../../i18n';
 
 class Settings extends React.Component {
     constructor(props) {

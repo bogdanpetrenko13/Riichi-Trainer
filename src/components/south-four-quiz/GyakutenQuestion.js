@@ -1,7 +1,7 @@
 import React from 'react';
 import ScoreInput from './ScoreInput';
 import { PLACEMENTS } from '../../Constants';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../../i18n';
 
 function GyakutenQuestion(props) {
     let { t } = useTranslation();

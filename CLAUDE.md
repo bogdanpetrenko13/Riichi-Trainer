@@ -1,0 +1,49 @@
+# Riichi Trainer: notes for Claude
+
+Riichi mahjong drills for Android (fork of riichi-trainer): efficiency
+(ukeire), shanten, defence, south-4 scoring, hand explorer, replay analysis.
+React 18 + TypeScript + Vite, Capacitor 6 for the APK, GitHub Actions for
+builds. Repo `bogdanpetrenko13/riichi-trainer`, working branch `develop`, app
+id `com.riichitrainer.app`. The owner writes in Russian; reply in Russian.
+Sister project: Riichi Night (same stack and design language).
+
+## Hard rules
+
+- `signing/debug.keystore` is a debug key with the public `android`
+  passwords, committed on purpose so every CI build installs over the last.
+  Never use it for release builds.
+- Commit messages end with the attribution lines the session gives you.
+
+## Layout
+
+| Path | What |
+|---|---|
+| `src/main.tsx` | Entry point |
+| `src/i18n/index.tsx` | Own i18n (replaces i18next): nested keys, `{{var}}`, `$t()` nesting, `_plural`; language in localStorage `i18nextLng` |
+| `src/translations/*.js` | 9 languages; `en` is the reference |
+| `src/states/*` | The trainer screens (legacy JS, being ported) |
+| `src/components/ui/*` | UI kit (tokens, `rt-*` classes); `legacy.js` renders the old reactstrap components |
+| `src/styles/legacy.css` | Layout classes the old Bootstrap markup still uses |
+| `tests/*.test.ts` | Unit tests (Node test runner via `scripts/run-tests.mjs`) |
+
+## Checks
+
+```bash
+npm test                       # unit tests
+npm run build                  # tsc -b + vite build into dist/
+```
+
+Claude's container can't reach npm. Without `node_modules`, build a preview
+with `scripts/preview/build.sh` (needs an esbuild binary in `ESBUILD=` and
+React reachable via `NODE_PATH`) and open `.preview/index.html`.
+
+Dependencies: CI runs `npm ci`. After changing `package.json`, run the
+**Refresh package-lock.json** workflow
+(`gh api -X POST repos/bogdanpetrenko13/riichi-trainer/actions/workflows/lockfile.yml/dispatches -f ref=<branch>`),
+then `git pull`. Its push does not trigger the build; dispatch
+`android-build.yml` after it.
+
+CI (`.github/workflows/android-build.yml`): unit tests, web build, debug APK
+signed with the fixed key. On `develop` the APK is published as the
+pre-release **dev-latest** (download via `gh api` release assets; workflow
+artifacts are not reachable from the container).

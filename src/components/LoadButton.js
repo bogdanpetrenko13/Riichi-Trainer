@@ -1,7 +1,7 @@
 import React from 'react';
-import { Input, InputGroup, InputGroupAddon } from 'reactstrap';
+import { Input, InputGroup, InputGroupAddon } from './ui/legacy';
 import { Button } from './ui';
-import { withTranslation } from 'react-i18next';
+import { withTranslation } from '../i18n';
 import { characterToSuit } from '../scripts/Utils';
 
 class LoadButton extends React.Component {

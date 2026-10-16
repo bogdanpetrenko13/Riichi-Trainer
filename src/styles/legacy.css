@@ -1,0 +1,22 @@
+/* Layout basics Bootstrap used to provide for the class names the legacy
+   components (components/ui/legacy.js) still render. Colours and borders come
+   from bootstrap-theme.css. */
+*, *::before, *::after { box-sizing: border-box; }
+.container { width: 100%; margin: 0 auto; padding: 0 12px; }
+.row { display: flex; flex-wrap: wrap; margin: 0 -6px; }
+.row > .col { flex: 1 0 0%; min-width: 0; padding: 0 6px; }
+.form-control { display: block; width: 100%; min-height: 44px; padding: 8px 12px; font: inherit; border-radius: 10px; }
+.input-group { position: relative; display: flex; flex-wrap: wrap; align-items: stretch; width: 100%; }
+.input-group > .form-control { position: relative; flex: 1 1 auto; width: 1%; min-width: 0; }
+.input-group-prepend, .input-group-append { display: flex; }
+.list-group { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+.list-group-item { position: relative; display: block; }
+.dropdown { position: relative; display: inline-block; }
+.dropdown-toggle::after { content: ""; display: inline-block; margin-left: 6px; border-top: 5px solid; border-right: 5px solid transparent; border-left: 5px solid transparent; vertical-align: middle; }
+.dropdown-menu { position: absolute; top: 100%; left: 0; z-index: 20; min-width: 180px; max-height: 60vh; overflow: auto; margin-top: 4px; padding: 6px 0; display: flex; flex-direction: column; }
+.dropdown-item { display: block; width: 100%; padding: 10px 16px; text-align: left; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; }
+.dropdown-item.disabled { opacity: 0.5; cursor: default; }
+.form-check-inline { display: inline-flex; align-items: center; margin-right: 12px; }
+.form-check-input { margin: 0 6px 0 0; }
+.btn { display: inline-flex; align-items: center; justify-content: center; font: inherit; cursor: pointer; }
+.btn-block { display: flex; width: 100%; }

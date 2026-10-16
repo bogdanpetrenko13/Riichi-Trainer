@@ -4,7 +4,7 @@ import Hand from '../components/Hand';
 import LoadButton from '../components/LoadButton';
 import HandFutures from '../components/hand-explorer/HandFutures';
 import { fillHand } from '../scripts/GenerateHand';
-import { withTranslation } from 'react-i18next';
+import { withTranslation } from '../i18n';
 
 class HandExplorer extends React.Component {
     constructor(props) {

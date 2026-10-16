@@ -1,6 +1,6 @@
 import React from 'react';
 import Tile from './Tile';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../i18n';
 
 function ValueTileDisplay(props) {
     let { t } = useTranslation();
