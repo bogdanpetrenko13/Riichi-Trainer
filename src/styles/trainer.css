@@ -440,3 +440,22 @@
   font-size: var(--rt-text-sm);
   color: var(--rt-color-warning-text);
 }
+
+.rt-review__insight {
+  margin: var(--rt-space-2) 0;
+  font-size: var(--rt-text-base);
+  line-height: var(--rt-leading-text);
+}
+
+.rt-review__tiles {
+  margin: var(--rt-space-2) 0;
+  font-size: var(--rt-text-sm);
+  color: var(--rt-color-text-2);
+}
+
+.rt-review__tiles > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin-top: var(--rt-space-1);
+}

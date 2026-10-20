@@ -55,6 +55,18 @@ export const en = {
             tapToSelect: "Select the tile you would discard, then press Discard (or tap it again). The answer is shown only after you decide.",
             hint: "Hint",
             hintedNote: "Hint used: this discard does not count as optimal.",
+            insight: {
+                optimal: "Best discard: no other discard accepts more tiles ({{count}}).",
+                equal: "Equal to the best: another discard also accepts {{best}} tiles, so either is fine for efficiency.",
+                stalls: "This discard gives up progress: after it no tile moves the hand closer to tenpai, while the best discard accepts {{best}}.",
+                close: "Almost as good: you accept {{count}} tiles, the best accepts {{best}}. The gap is small, so hand value, wait shape or safety can outweigh it.",
+                fewer: "You accept {{count}} tiles, the best discard accepts {{best}}: {{diff}} fewer chances to move closer to tenpai.",
+                safeOptimal: "Safest tile available against the current threats.",
+                safeEqual: "Equally safe as the best choice.",
+                safeWorse: "Safer options existed: the best tile rates {{gap}} higher on the safety scale.",
+                lostLabel: "Tiles you stop accepting",
+                gainedLabel: "Only your discard accepts"
+            },
             tapQuick: "Tap a tile to discard it right away.",
             acceptance: "Acceptance: {{count}}",
             improves: "Tiles that improve the hand",

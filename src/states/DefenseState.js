@@ -7,6 +7,7 @@ import ReviewPanel from '../components/ReviewPanel';
 import ModeSwitch from '../components/ModeSwitch';
 import { getTrainerMode, setTrainerMode } from '../trainerMode';
 import { getTileAsText } from '../scripts/TileConversions';
+import { explainSafety } from '../scripts/Explain';
 import DiscardTable from '../components/DiscardTable';
 import Hand from '../components/Hand';
 import History from '../components/History';
@@ -544,7 +545,7 @@ class DefenseState extends React.Component {
             preview: null,
             hinted: false,
             whyOpen: false,
-            review: { rows: reviewRows, chosen: chosenTile, best: bestTile, data: safetyEntry, hinted: this.state.hinted },
+            review: { rows: reviewRows, chosen: chosenTile, best: bestTile, data: safetyEntry, hinted: this.state.hinted, insight: explainSafety(averageSafety[chosenTile], bestSafety, chosenTile, bestTile) },
             streak: wasBest ? this.state.streak + 1 : 0,
         });
     }
@@ -671,6 +672,7 @@ class DefenseState extends React.Component {
                         format={(value) => String(Math.floor(value * 10) / 10)}
                         lines={review.data.getMessage(t, true, true, false).split("<br/>")}
                         hinted={review.hinted}
+                        insight={review.insight}
                         whyOpen={this.state.whyOpen}
                         onToggleWhy={() => this.setState({ whyOpen: !this.state.whyOpen })}
                         onNext={() => this.setState({ review: null, whyOpen: false })}

@@ -7,7 +7,7 @@ import Tile from './Tile';
  * Review after a discard: one bar per distinct tile, marked "yours" and "best".
  * rows: [{ tile, value }]; format(value) gives the label; lines are the "Why?" explanation.
  */
-function ReviewPanel({ rows, chosen, best, format, lines, whyOpen, onToggleWhy, onNext, maxValue, hinted }) {
+function ReviewPanel({ rows, chosen, best, format, lines, whyOpen, onToggleWhy, onNext, maxValue, hinted, insight }) {
     const { t } = useTranslation();
     const max = maxValue || Math.max(1, ...rows.map((row) => row.value));
 
@@ -28,6 +28,19 @@ function ReviewPanel({ rows, chosen, best, format, lines, whyOpen, onToggleWhy, 
                     </li>
                 ))}
             </ul>
+            {insight ? <p className="rt-review__insight">{t('play.insight.' + insight.key, insight.params)}</p> : null}
+            {whyOpen && insight && insight.lost.length > 0 ? (
+                <div className="rt-review__tiles">
+                    <span>{t('play.insight.lostLabel')}</span>
+                    <div>{insight.lost.map((tile) => <Tile key={tile} className="discardTile" tile={tile} />)}</div>
+                </div>
+            ) : null}
+            {whyOpen && insight && insight.gained.length > 0 ? (
+                <div className="rt-review__tiles">
+                    <span>{t('play.insight.gainedLabel')}</span>
+                    <div>{insight.gained.map((tile) => <Tile key={tile} className="discardTile" tile={tile} />)}</div>
+                </div>
+            ) : null}
             {whyOpen ? (
                 <div className="rt-review__why">{lines.map((line, index) => <p key={index}>{line}</p>)}</div>
             ) : null}

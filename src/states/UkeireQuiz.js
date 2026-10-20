@@ -18,6 +18,7 @@ import { generateHand, fillHand } from '../scripts/GenerateHand';
 import { calculateDiscardUkeire, calculateUkeireFromOnlyHand } from "../scripts/UkeireCalculator";
 import { calculateMinimumShanten, calculateStandardShanten } from "../scripts/ShantenCalculator";
 import { convertRedFives, getTileAsText } from "../scripts/TileConversions";
+import { explainUkeire } from "../scripts/Explain";
 import { convertHandToTenhouString, convertHandToTileIndexArray } from "../scripts/HandConversions";
 import { evaluateBestDiscard } from "../scripts/Evaluations";
 import { shuffleArray, removeRandomItem, getRandomItem } from '../scripts/Utils';
@@ -540,7 +541,7 @@ class UkeireQuiz extends React.Component {
             preview: null,
             hinted: false,
             whyOpen: false,
-            review: { rows: reviewRows, chosen: convertRedFives(chosenTile), best: bestTile, data: historyData, hinted: this.state.hinted },
+            review: { rows: reviewRows, chosen: convertRedFives(chosenTile), best: bestTile, data: historyData, hinted: this.state.hinted, insight: explainUkeire(chosenUkeire, ukeire[bestTile], convertRedFives(chosenTile), convertRedFives(bestTile)) },
             streak: wasBest ? this.state.streak + 1 : 0,
             avgTime: avgTime,
         }, () => {
@@ -758,6 +759,7 @@ class UkeireQuiz extends React.Component {
                 whyOpen={this.state.whyOpen}
                 onToggleWhy={() => this.setState({ whyOpen: !this.state.whyOpen })}
                 hinted={review.hinted}
+                insight={review.insight}
                 onNext={() => this.setState({ review: null, whyOpen: false })}
             />
         );
