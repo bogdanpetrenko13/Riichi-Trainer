@@ -1,0 +1,398 @@
+/* =========================================================
+   Экран тренера: рука в доке внизу, подъём тайла, разбор.
+   ========================================================= */
+
+.rt-trainer {
+  /* место под док с рукой и кнопкой «Сбросить» */
+  padding-bottom: 150px;
+}
+
+.rt-trainer__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--rt-space-2);
+}
+
+.rt-trainer__bar .rt-values {
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: var(--rt-space-1);
+}
+
+.rt-trainer__bar .rt-value {
+  padding: 4px var(--rt-space-2) 4px var(--rt-space-3);
+}
+
+/* ---------- Док с рукой ---------- */
+.rt-dock {
+  position: fixed;
+  right: 0;
+  bottom: calc(var(--rt-bottomnav-h) + var(--rt-safe-bottom));
+  left: 0;
+  z-index: 1010;
+  padding: var(--rt-space-2) calc(var(--rt-space-2) + var(--rt-safe-right)) var(--rt-space-2) calc(var(--rt-space-2) + var(--rt-safe-left));
+  background-color: var(--rt-color-felt);
+  border-top: 1px solid var(--rt-color-border);
+  box-shadow: 0 -4px 12px rgba(35, 35, 35, 0.08);
+}
+
+.rt-dock__inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rt-space-2);
+  max-width: var(--rt-page-max);
+  margin: 0 auto;
+}
+
+/* Одна строка: все тайлы руки помещаются по ширине экрана */
+.rt-dock .rt-hand {
+  grid-template-columns: repeat(14, minmax(0, 1fr));
+  max-width: 760px;
+  gap: 2px;
+  padding-top: 12px;
+}
+
+.rt-dock .index {
+  top: -12px;
+  right: -2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  font-size: 10px;
+  line-height: 16px;
+}
+
+/* Выбранный тайл приподнят и подсвечен */
+.rt-tile--selected .tile {
+  transform: translateY(-12px);
+  filter: drop-shadow(0 0 0 var(--rt-color-accent)) drop-shadow(0 6px 4px rgba(35, 35, 35, 0.35));
+  outline: 2px solid var(--rt-color-accent);
+  outline-offset: 1px;
+  border-radius: 3px;
+}
+
+.rt-tile--selected .tile:hover {
+  transform: translateY(-12px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rt-tile--selected .tile {
+    transition: none;
+  }
+}
+
+/* ---------- Чипы: серия, время ---------- */
+.rt-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--rt-space-2);
+}
+
+.rt-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rt-space-2);
+  min-height: 32px;
+  padding: 0 var(--rt-space-3);
+  font-size: var(--rt-text-sm);
+  background-color: var(--rt-color-surface);
+  border: 1px solid var(--rt-color-border);
+  border-radius: var(--rt-radius-pill);
+}
+
+.rt-chip__label {
+  color: var(--rt-color-text-2);
+}
+
+/* ---------- Предпросмотр выбранного сброса ---------- */
+.rt-peek {
+  padding: var(--rt-space-3) var(--rt-space-4);
+  background-color: var(--rt-color-surface);
+  border: 1px solid var(--rt-color-border);
+  border-radius: var(--rt-radius-md);
+  box-shadow: var(--rt-shadow-sm);
+  animation: rt-fade-in var(--rt-dur) var(--rt-ease);
+}
+
+.rt-peek__head {
+  display: flex;
+  align-items: center;
+  gap: var(--rt-space-2);
+  color: var(--rt-color-primary);
+}
+
+.rt-peek__label {
+  margin-top: var(--rt-space-2);
+  font-size: var(--rt-text-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--rt-color-text-2);
+}
+
+.rt-peek__tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: var(--rt-space-2);
+}
+
+.rt-peek__tiles .discardTile {
+  width: 32px;
+}
+
+/* ---------- Разбор сброса ---------- */
+.rt-review {
+  padding: var(--rt-space-3) var(--rt-space-4);
+  background-color: var(--rt-color-surface);
+  border: 1px solid var(--rt-color-border);
+  border-radius: var(--rt-radius-md);
+  box-shadow: var(--rt-shadow-sm);
+  animation: rt-fade-in var(--rt-dur-slow) var(--rt-ease);
+}
+
+.rt-review__title {
+  margin: 0 0 var(--rt-space-2);
+  font-size: var(--rt-text-md);
+}
+
+.rt-review__list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rt-review__row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 2.2em auto;
+  align-items: center;
+  gap: var(--rt-space-2);
+  padding: 2px 4px;
+  border-radius: var(--rt-radius-sm);
+}
+
+.rt-review__row.is-chosen {
+  background-color: var(--rt-color-accent-soft);
+}
+
+.rt-review__bar {
+  height: 10px;
+  overflow: hidden;
+  background-color: var(--rt-color-border);
+  border-radius: var(--rt-radius-pill);
+}
+
+.rt-review__bar > span {
+  display: block;
+  height: 100%;
+  background-color: var(--rt-color-primary);
+  border-radius: var(--rt-radius-pill);
+  transition: width var(--rt-dur-slow) var(--rt-ease);
+}
+
+.rt-review__row.is-best .rt-review__bar > span {
+  background-color: var(--rt-color-success);
+}
+
+.rt-review__value {
+  font-size: var(--rt-text-sm);
+  font-weight: 600;
+  text-align: right;
+}
+
+.rt-review__badges {
+  display: inline-flex;
+  gap: 4px;
+  min-width: 4.5em;
+}
+
+.rt-badge {
+  padding: 1px 8px;
+  font-size: var(--rt-text-xs);
+  font-weight: 700;
+  border-radius: var(--rt-radius-pill);
+}
+
+.rt-badge--you {
+  color: var(--rt-color-on-accent);
+  background-color: var(--rt-color-accent);
+}
+
+.rt-badge--best {
+  color: var(--rt-color-success-text);
+  background-color: var(--rt-color-success-soft);
+}
+
+.rt-review__why {
+  margin-top: var(--rt-space-3);
+  font-size: var(--rt-text-sm);
+  color: var(--rt-color-text-2);
+}
+
+.rt-review__why p {
+  margin: 0 0 var(--rt-space-1);
+}
+
+.rt-review__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--rt-space-2);
+  margin-top: var(--rt-space-3);
+}
+
+.rt-setting-block {
+  margin-bottom: var(--rt-space-4);
+}
+
+/* ---------- Главный экран ---------- */
+.rt-goal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rt-space-2);
+  padding: var(--rt-space-4);
+  background-color: var(--rt-color-surface);
+  border: 1px solid var(--rt-color-border);
+  border-radius: var(--rt-radius-md);
+  box-shadow: var(--rt-shadow-sm);
+}
+
+.rt-goal__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--rt-space-3);
+  font-size: var(--rt-text-sm);
+}
+
+.rt-goal__bar {
+  margin: 0;
+  height: 10px;
+}
+
+.rt-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--rt-space-3);
+}
+
+@media (min-width: 640px) {
+  .rt-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.rt-excard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--rt-space-3);
+  min-height: 104px;
+  padding: var(--rt-space-4);
+  font: inherit;
+  font-weight: 600;
+  color: var(--rt-color-text);
+  text-align: left;
+  background-color: var(--rt-color-surface);
+  border: 1px solid var(--rt-color-border);
+  border-radius: var(--rt-radius-md);
+  box-shadow: var(--rt-shadow-sm);
+  cursor: pointer;
+  transition: transform var(--rt-dur) var(--rt-ease), box-shadow var(--rt-dur) var(--rt-ease);
+}
+
+.rt-excard svg {
+  color: var(--rt-color-primary);
+}
+
+@media (hover: hover) {
+  .rt-excard:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--rt-shadow-md);
+  }
+}
+
+.rt-excard:active {
+  transform: scale(0.98);
+}
+
+.rt-trainer__hint {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--rt-space-2);
+}
+
+.rt-trainer__hint .rt-instructions {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* ---------- «Последний раунд»: чипы хан/фу ---------- */
+.rt-lastround__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--rt-space-2);
+}
+
+.rt-lastround__outcome {
+  margin: 0;
+  padding: var(--rt-space-3) var(--rt-space-4);
+  font-size: var(--rt-text-sm);
+  font-weight: 600;
+  color: var(--rt-color-primary);
+  background-color: var(--rt-color-primary-soft);
+  border-radius: var(--rt-radius-md);
+}
+
+.rt-lastround__done {
+  margin: 0;
+  font-size: var(--rt-text-lg);
+  font-weight: 700;
+}
+
+.rt-choice-group__label {
+  margin-bottom: var(--rt-space-2);
+  font-size: var(--rt-text-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--rt-color-text-2);
+}
+
+.rt-choice-group__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--rt-space-2);
+}
+
+.rt-choice {
+  min-width: 48px;
+  min-height: 44px;
+  padding: 0 var(--rt-space-3);
+  font: inherit;
+  font-weight: 600;
+  color: var(--rt-color-text);
+  background-color: var(--rt-color-surface);
+  border: 1px solid var(--rt-color-border-strong);
+  border-radius: var(--rt-radius-md);
+  cursor: pointer;
+  transition: background-color var(--rt-dur) var(--rt-ease), color var(--rt-dur) var(--rt-ease);
+}
+
+.rt-choice.is-selected {
+  color: #ffffff;
+  background-color: var(--rt-color-primary);
+  border-color: var(--rt-color-primary);
+}
+
+.rt-choice:disabled {
+  color: var(--rt-color-disabled);
+  cursor: not-allowed;
+}

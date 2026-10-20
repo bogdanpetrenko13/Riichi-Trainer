@@ -23,6 +23,9 @@ Sister project: Riichi Night (same stack and design language).
 | `src/translations/en.js`, `ru.js` | The two languages (others were dropped); `en` is the reference, `ru` must have the same keys |
 | `src/states/*` | The trainer screens (legacy JS, being ported) |
 | `src/components/ui/*` | UI kit (tokens, `rt-*` classes); `legacy.js` renders the old reactstrap components |
+| `src/screens/*` | Home (exercise cards, daily goal), Settings, Help, About |
+| `src/progress.js` | localStorage helpers for the home screen (daily goal, last exercise, trainer summary) |
+| `src/styles/trainer.css` | Trainer dock, review bars, home cards, last-round chips |
 | `src/styles/legacy.css` | Layout classes the old Bootstrap markup still uses |
 | `tests/*.test.ts` | Unit tests (Node test runner via `scripts/run-tests.mjs`) |
 

@@ -1,5 +1,7 @@
 import React from 'react';
-import { Button } from '../components/ui';
+import { Button, Modal, Segmented, Icon, cx, showToast, dismissToast } from '../components/ui';
+import Tile from '../components/Tile';
+import { bumpDaily } from '../progress';
 import Hand from '../components/Hand';
 import History from "../components/History";
 import Settings from '../components/ukeire-quiz/Settings';
@@ -11,7 +13,7 @@ import StatsDisplay from "../components/ukeire-quiz/StatsDisplay";
 import { generateHand, fillHand } from '../scripts/GenerateHand';
 import { calculateDiscardUkeire, calculateUkeireFromOnlyHand } from "../scripts/UkeireCalculator";
 import { calculateMinimumShanten, calculateStandardShanten } from "../scripts/ShantenCalculator";
-import { convertRedFives } from "../scripts/TileConversions";
+import { convertRedFives, getTileAsText } from "../scripts/TileConversions";
 import { convertHandToTenhouString, convertHandToTileIndexArray } from "../scripts/HandConversions";
 import { evaluateBestDiscard } from "../scripts/Evaluations";
 import { shuffleArray, removeRandomItem, getRandomItem } from '../scripts/Utils';
@@ -23,6 +25,24 @@ import LocalizedMessage from '../models/LocalizedMessage';
 import UkeireHistoryData from '../components/ukeire-quiz/UkeireHistoryData';
 import HistoryData from '../models/HistoryData';
 
+const MODE_KEY = 'rt-trainer-mode';
+const DISCLAIMER_KEY = 'rt-disclaimer-seen';
+
+function readStored(key, fallback) {
+    try {
+        const value = window.localStorage.getItem(key);
+        return value === null ? fallback : value;
+    } catch {
+        return fallback;
+    }
+}
+
+function writeStored(key, value) {
+    try {
+        window.localStorage.setItem(key, value);
+    } catch { }
+}
+
 class UkeireQuiz extends React.Component {
     constructor(props) {
         super(props);
@@ -32,7 +52,25 @@ class UkeireQuiz extends React.Component {
         this.updateTime = this.onUpdateTime.bind(this);
         this.timerUpdate = null;
         this.timer = null;
+        this.autoTimer = null;
+        this.turnStart = Date.now();
+        this.times = [];
+        this.onTileSelected = this.onTileSelected.bind(this);
+        this.onDiscardSelected = this.onDiscardSelected.bind(this);
+        this.setMode = this.setMode.bind(this);
+        this.togglePause = this.togglePause.bind(this);
+        this.dismissDisclaimer = this.dismissDisclaimer.bind(this);
         this.state = {
+            mode: readStored(MODE_KEY, 'confirm') === 'quick' ? 'quick' : 'confirm',
+            selected: -1,
+            preview: null,
+            review: null,
+            whyOpen: false,
+            streak: 0,
+            avgTime: 0,
+            paused: false,
+            settingsOpen: false,
+            disclaimerOpen: readStored(DISCLAIMER_KEY, '') !== '1',
             hand: null,
             lastDraw: -1,
             remainingTiles: null,
@@ -86,6 +124,9 @@ class UkeireQuiz extends React.Component {
     }
 
     componentWillUnmount() {
+        clearTimeout(this.autoTimer);
+        if (this.lastToast) dismissToast(this.lastToast);
+
         if (this.timer != null) {
             clearTimeout(this.timer);
             clearInterval(this.timerUpdate);
@@ -174,7 +215,13 @@ class UkeireQuiz extends React.Component {
         if (lastDraw !== false) hand[lastDraw]++;
         shuffle = shuffleArray(shuffle);
 
+        this.turnStart = Date.now();
+
         this.setState({
+            selected: -1,
+            preview: null,
+            review: null,
+            whyOpen: false,
             hand: hand,
             remainingTiles: availableTiles,
             tilePool: tilePool,
@@ -210,6 +257,8 @@ class UkeireQuiz extends React.Component {
 
     /** Generates a new hand and fresh game state. */
     onNewHand() {
+        clearTimeout(this.autoTimer);
+
         if (this.timer != null) {
             clearTimeout(this.timer);
             clearInterval(this.timerUpdate);
@@ -356,6 +405,17 @@ class UkeireQuiz extends React.Component {
         let chosenUkeire = ukeire[convertRedFives(chosenTile)];
 
         let handString = convertHandToTenhouString(hand);
+
+        // Acceptance of every distinct discard, for the review bars
+        let reviewCounts = convertRedFives(hand);
+        let reviewRows = [];
+        for (let i = 0; i < reviewCounts.length; i++) {
+            if (reviewCounts[i] > 0) reviewRows.push({ tile: i, value: ukeire[i].value });
+        }
+        reviewRows.sort((a, b) => b.value - a.value);
+        let reviewChosen = convertRedFives(chosenTile);
+        reviewRows = reviewRows.filter((row) => row.value > 0 || row.tile === reviewChosen);
+
         hand[chosenTile]--;
 
         let shanten = shantenFunction(hand);
@@ -429,6 +489,20 @@ class UkeireQuiz extends React.Component {
         let history = this.state.history;
         history.unshift(historyData);
 
+        // Streak and average time per discard
+        let wasBest = chosenUkeire.value === ukeire[bestTile].value;
+        this.times.push((Date.now() - this.turnStart) / 1000);
+        this.turnStart = Date.now();
+        let avgTime = this.times.reduce((sum, time) => sum + time, 0) / this.times.length;
+
+        if (this.state.mode === 'quick') {
+            let { t } = this.props;
+            if (this.lastToast) dismissToast(this.lastToast);
+            this.lastToast = showToast(wasBest
+                ? { type: 'success', duration: 1600, message: t('play.quickOk', { count: chosenUkeire.value }) }
+                : { type: 'warning', duration: 2600, message: t('play.quickMiss', { tile: getTileAsText(t, bestTile, false), best: ukeire[bestTile].value, count: chosenUkeire.value }) });
+        }
+
         let shuffle = this.state.shuffle.slice();
 
         if (chosenTile !== this.state.lastDraw) {
@@ -456,7 +530,70 @@ class UkeireQuiz extends React.Component {
             shuffle: shuffle,
             disclaimerSeen: true,
             currentTime: this.state.settings.time,
-        }, isComplete ? () => this.saveStats() : undefined);
+            selected: -1,
+            preview: null,
+            whyOpen: false,
+            review: { rows: reviewRows, chosen: convertRedFives(chosenTile), best: bestTile, data: historyData },
+            streak: wasBest ? this.state.streak + 1 : 0,
+            avgTime: avgTime,
+        }, () => {
+            if (isComplete) {
+                this.saveStats();
+                this.scheduleAutoHand();
+            }
+        });
+    }
+
+    /** Tap handler used by the hand: select first in confirm mode, discard at once in quick mode. */
+    onTileSelected(event) {
+        if (this.state.isComplete) return;
+
+        let tile = parseInt(event.target.name);
+
+        if (this.state.mode === 'quick' || this.state.selected === tile) {
+            this.onTileClicked(event);
+            return;
+        }
+
+        let shantenFunction = this.state.settings.exceptions ? calculateMinimumShanten : calculateStandardShanten;
+        let ukeire = calculateDiscardUkeire(this.state.hand.slice(), this.state.remainingTiles.slice(), shantenFunction);
+        let chosen = ukeire[convertRedFives(tile)];
+
+        this.setState({
+            selected: tile,
+            preview: { value: chosen.value, tiles: chosen.tiles },
+            review: null,
+        });
+    }
+
+    onDiscardSelected() {
+        if (this.state.selected > -1) this.onTileClicked({ target: { name: this.state.selected } });
+    }
+
+    setMode(mode) {
+        writeStored(MODE_KEY, mode);
+        clearTimeout(this.autoTimer);
+        this.setState({ mode: mode, selected: -1, preview: null }, () => this.scheduleAutoHand());
+    }
+
+    /** In quick mode a finished hand is replaced by a new one after a short pause. */
+    scheduleAutoHand(delay = 1600) {
+        clearTimeout(this.autoTimer);
+
+        if (this.state.mode === 'quick' && this.state.isComplete && !this.state.paused) {
+            this.autoTimer = setTimeout(() => this.onNewHand(), delay);
+        }
+    }
+
+    togglePause() {
+        let paused = !this.state.paused;
+        clearTimeout(this.autoTimer);
+        this.setState({ paused: paused }, () => { if (!paused) this.scheduleAutoHand(300); });
+    }
+
+    dismissDisclaimer() {
+        writeStored(DISCLAIMER_KEY, '1');
+        this.setState({ disclaimerOpen: false });
     }
 
     onUpdateTime() {
@@ -479,6 +616,7 @@ class UkeireQuiz extends React.Component {
         stats.totalEfficiency += this.state.achievedTotal;
         stats.totalPossibleEfficiency += this.state.possibleTotal;
         stats.totalOptimalDiscards += this.state.optimalCount;
+        bumpDaily();
 
         this.setState({
             stats: stats
@@ -576,37 +714,121 @@ class UkeireQuiz extends React.Component {
         });
     }
 
+    renderPreview(t) {
+        let preview = this.state.preview;
+
+        return (
+            <section className="rt-peek" aria-live="polite">
+                <div className="rt-peek__head">
+                    <Icon name="target" size={18} />
+                    <strong className="rt-num">{t("play.acceptance", { count: preview.value })}</strong>
+                </div>
+                {preview.tiles.length > 0 ? (
+                    <React.Fragment>
+                        <div className="rt-peek__label">{t("play.improves")}</div>
+                        <div className="rt-peek__tiles">
+                            {preview.tiles.map((tile) => <Tile key={tile} className="discardTile" tile={tile} showIndexes={this.state.settings.showIndexes} />)}
+                        </div>
+                    </React.Fragment>
+                ) : null}
+            </section>
+        );
+    }
+
+    renderReview(t) {
+        let review = this.state.review;
+        let max = Math.max(1, ...review.rows.map((row) => row.value));
+        let lines = review.data.getMessage(t, false, true, true).split("<br/>");
+
+        return (
+            <section className="rt-review" aria-live="polite">
+                <h3 className="rt-review__title">{t("play.review")}</h3>
+                <ul className="rt-review__list">
+                    {review.rows.map((row) => (
+                        <li key={row.tile} className={cx("rt-review__row", row.tile === review.chosen && "is-chosen", row.tile === review.best && "is-best")}>
+                            <Tile className="discardTile" tile={row.tile} />
+                            <div className="rt-review__bar" aria-hidden="true"><span style={{ width: (row.value / max * 100) + "%" }} /></div>
+                            <span className="rt-num rt-review__value">{row.value}</span>
+                            <span className="rt-review__badges">
+                                {row.tile === review.chosen ? <span className="rt-badge rt-badge--you">{t("play.you")}</span> : null}
+                                {row.tile === review.best ? <span className="rt-badge rt-badge--best">{t("play.best")}</span> : null}
+                            </span>
+                        </li>
+                    ))}
+                </ul>
+                {this.state.whyOpen ? (
+                    <div className="rt-review__why">{lines.map((line, index) => <p key={index}>{line}</p>)}</div>
+                ) : null}
+                <div className="rt-review__actions">
+                    <Button size="sm" variant="secondary" onClick={() => this.setState({ whyOpen: !this.state.whyOpen })}>{t("play.why")}</Button>
+                    <Button size="sm" variant="primary" iconRight="chevronRight" onClick={() => this.setState({ review: null, whyOpen: false })}>{t("play.next")}</Button>
+                </div>
+            </section>
+        );
+    }
+
     render() {
         let { t } = this.props;
         let blind = this.state.players.length && this.state.players[0].discards.length && this.state.settings.blind && !this.state.isComplete;
+        let quick = this.state.mode === 'quick';
+
+        let modeSwitch = (
+            <div className="rt-setting-block">
+                <div className="rt-muted rt-mb-2">{t("play.mode")}</div>
+                <Segmented
+                    ariaLabel={t("play.mode")}
+                    value={this.state.mode}
+                    onChange={this.setMode}
+                    options={[
+                        { value: 'confirm', label: t("play.modeConfirm") },
+                        { value: 'quick', label: t("play.modeQuick") },
+                    ]}
+                />
+            </div>
+        );
+
+        let handProps = {
+            lastDraw: this.state.lastDraw,
+            onTileClick: this.onTileSelected,
+            selected: this.state.selected > -1 ? this.state.selected : undefined,
+            showIndexes: this.state.settings.showIndexes && !blind,
+            blind: blind,
+        };
 
         return (
-            <div className="rt-page">
-                <div className="rt-panels">
-                    <Settings onChange={this.onSettingsChanged} />
-                    <StatsDisplay values={this.state.stats} onReset={() => this.resetStats()} />
+            <div className="rt-page rt-trainer">
+                <Settings
+                    onChange={this.onSettingsChanged}
+                    open={this.state.settingsOpen}
+                    onClose={() => this.setState({ settingsOpen: false })}
+                    header={modeSwitch}
+                />
+                <Modal
+                    open={this.state.disclaimerOpen}
+                    onClose={this.dismissDisclaimer}
+                    title={t("play.disclaimerTitle")}
+                    footer={<Button variant="primary" onClick={this.dismissDisclaimer}>{t("play.gotIt")}</Button>}
+                >
+                    <p>{t("trainer.disclaimer")}</p>
+                </Modal>
+
+                <ValueTileDisplay roundWind={this.state.roundWind} seatWind={this.state.seatWind} dora={this.state.dora} showIndexes={this.state.settings.showIndexes} />
+
+                {quick || this.state.settings.useTimer ? (
+                    <div className="rt-chips">
+                        {quick ? <span className="rt-chip"><span className="rt-chip__label">{t("play.streak")}</span> <b className="rt-num">{this.state.streak}</b></span> : null}
+                        {quick ? <span className="rt-chip"><span className="rt-chip__label">{t("play.avgTime")}</span> <b className="rt-num">{this.state.avgTime.toFixed(1)}{t("play.seconds")}</b></span> : null}
+                        {this.state.settings.useTimer ? <span className="rt-chip rt-num">{this.state.currentTime.toFixed(1)} + {this.state.currentBonus.toFixed(1)}</span> : null}
+                        {quick ? <Button size="sm" variant="ghost" icon={this.state.paused ? "play" : "minus"} onClick={this.togglePause}>{this.state.paused ? t("play.resume") : t("play.pause")}</Button> : null}
+                    </div>
+                ) : null}
+
+                <div className="rt-trainer__hint">
+                    <p className="rt-instructions">{this.state.isComplete ? "" : (quick ? t("play.tapQuick") : t("play.tapToSelect"))}</p>
+                    <Button size="sm" variant="secondary" icon="sliders" onClick={() => this.setState({ settingsOpen: true })}>{t("settings.buttonLabel")}</Button>
                 </div>
-                {this.state.disclaimerSeen ? null : <p className="rt-note">{t("trainer.disclaimer")}</p>}
-                <section className="rt-board">
-                    <ValueTileDisplay roundWind={this.state.roundWind} seatWind={this.state.seatWind} dora={this.state.dora} showIndexes={this.state.settings.showIndexes} />
-                    <p className="rt-instructions">{t("trainer.instructions")}</p>
-                    {this.state.settings.sort
-                        ? <Hand tiles={this.state.hand}
-                            lastDraw={this.state.lastDraw}
-                            onTileClick={this.onTileClicked}
-                            showIndexes={this.state.settings.showIndexes && !blind}
-                            blind={blind} />
-                        : <SortedHand tiles={this.state.shuffle}
-                            lastDraw={this.state.lastDraw}
-                            onTileClick={this.onTileClicked}
-                            showIndexes={this.state.settings.showIndexes && !blind}
-                            blind={blind} />
-                    }
-                    {this.state.settings.useTimer ?
-                        <div className="rt-timer rt-num">{this.state.currentTime.toFixed(1)} + {this.state.currentBonus.toFixed(1)}</div>
-                        : null
-                    }
-                </section>
+                {this.state.preview ? this.renderPreview(t) : this.state.review && !quick ? this.renderReview(t) : null}
+
                 <div className="rt-actions">
                     <Button variant={this.state.isComplete ? "success" : "accent"} icon="refresh" onClick={() => this.onNewHand()}>{t("trainer.newHandButtonLabel")}</Button>
                     <CopyButton hand={this.state.hand} />
@@ -614,6 +836,24 @@ class UkeireQuiz extends React.Component {
                 </div>
                 <History history={this.state.history} concise={this.state.settings.extraConcise} verbose={this.state.settings.verbose} spoilers={this.state.settings.spoilers}/>
                 <DiscardPool players={this.state.players} discardCount={this.state.discardCount} wallCount={this.state.tilePool && this.state.tilePool.length} showIndexes={this.state.settings.showIndexes} />
+                <StatsDisplay values={this.state.stats} onReset={() => this.resetStats()} />
+
+                <div className="rt-dock">
+                    <div className="rt-dock__inner">
+                        {!quick ? (
+                            <Button
+                                variant="accent"
+                                block
+                                disabled={this.state.selected < 0 || this.state.isComplete}
+                                onClick={this.onDiscardSelected}
+                            >{t("play.discard")}</Button>
+                        ) : null}
+                        {this.state.settings.sort
+                            ? <Hand tiles={this.state.hand} {...handProps} />
+                            : <SortedHand tiles={this.state.shuffle} {...handProps} />
+                        }
+                    </div>
+                </div>
             </div>
         );
     }

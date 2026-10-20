@@ -10,6 +10,8 @@ import DefenseState from './DefenseState';
 import AppSettings from '../screens/AppSettings';
 import Help from '../screens/Help';
 import About from '../screens/About';
+import Home from '../screens/Home';
+import { getLastState, setLastState } from '../progress';
 import { AppBar, BottomNav, Button, Icon, Modal, ToastHost } from '../components/ui';
 
 const STATES = {
@@ -23,17 +25,21 @@ const STATES = {
     SETTINGS: 7,
     HELP: 8,
     ABOUT: 9,
+    HOME: 10,
 };
 
+/** Screens that count as exercises (shown on the home screen, remembered for «Continue»). */
+const EXERCISES = [STATES.UKEIRE, STATES.DEFENSE, STATES.SOUTH_FOUR, STATES.REPLAY, STATES.EXPLORER, STATES.SHANTEN, STATES.UTILS];
+
 /** Пункты нижней навигации: id совпадает с номером состояния, кроме «Ещё». */
-const NAV_STATES = [STATES.UKEIRE, STATES.DEFENSE, STATES.REPLAY, STATES.SOUTH_FOUR];
+const NAV_STATES = [STATES.UKEIRE, STATES.DEFENSE, STATES.SOUTH_FOUR, STATES.REPLAY];
 
 class MainMenu extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            active: 0,
+            active: STATES.HOME,
             moreOpen: false
         }
 
@@ -43,6 +49,8 @@ class MainMenu extends React.Component {
     }
 
     onSetActivePage(index) {
+        if (EXERCISES.indexOf(index) > -1) setLastState(index);
+
         this.setState({
             active: index,
             moreOpen: false
@@ -80,8 +88,22 @@ class MainMenu extends React.Component {
             case STATES.SETTINGS: return t("app.settings");
             case STATES.HELP: return t("app.help");
             case STATES.ABOUT: return t("app.about");
+            case STATES.HOME: return t("app.name");
             default: return t("menu.trainer");
         }
+    }
+
+    getExercises() {
+        let { t } = this.props;
+        return [
+            { id: STATES.UKEIRE, label: t("menu.trainer"), icon: "target" },
+            { id: STATES.DEFENSE, label: t("menu.defense"), icon: "shield" },
+            { id: STATES.SOUTH_FOUR, label: t("menu.allLast"), icon: "barChart" },
+            { id: STATES.REPLAY, label: t("menu.analyzer"), icon: "search" },
+            { id: STATES.EXPLORER, label: t("menu.explorer"), icon: "layers" },
+            { id: STATES.SHANTEN, label: t("menu.shanten"), icon: "compass" },
+            { id: STATES.UTILS, label: t("menu.utils"), icon: "wrench" },
+        ];
     }
 
     renderPage() {
@@ -106,6 +128,8 @@ class MainMenu extends React.Component {
                 return <Help />;
             case STATES.ABOUT:
                 return <About />;
+            case STATES.HOME:
+                return <Home exercises={this.getExercises()} lastId={getLastState()} onOpen={this.onSetActivePage} />;
             default:
                 return <UkeireQuiz />;
         }
@@ -116,14 +140,15 @@ class MainMenu extends React.Component {
         let active = this.state.active;
 
         let items = [
-            { id: STATES.UKEIRE, label: t("menu.trainer"), icon: "target" },
-            { id: STATES.DEFENSE, label: t("menu.defense"), icon: "shield" },
-            { id: STATES.REPLAY, label: t("menu.analyzer"), icon: "search" },
-            { id: STATES.SOUTH_FOUR, label: t("menu.allLast"), icon: "barChart" },
+            { id: STATES.UKEIRE, label: t("app.navDiscard"), icon: "target" },
+            { id: STATES.DEFENSE, label: t("app.navDefense"), icon: "shield" },
+            { id: STATES.SOUTH_FOUR, label: t("app.navScore"), icon: "barChart" },
+            { id: STATES.REPLAY, label: t("app.navReview"), icon: "search" },
             { id: 'more', label: t("app.more"), icon: "more" },
         ];
 
         let moreLinks = [
+            { id: STATES.HOME, label: t("home.home"), icon: "tile" },
             { id: STATES.EXPLORER, label: t("menu.explorer"), icon: "layers" },
             { id: STATES.SHANTEN, label: t("menu.shanten"), icon: "compass" },
             { id: STATES.UTILS, label: t("menu.utils"), icon: "wrench" },
@@ -132,13 +157,15 @@ class MainMenu extends React.Component {
             { id: STATES.ABOUT, label: t("app.about"), icon: "info" },
         ];
 
-        let activeNav = NAV_STATES.indexOf(active) > -1 ? active : 'more';
+        let activeNav = NAV_STATES.indexOf(active) > -1 ? active : (active === STATES.HOME ? null : 'more');
 
         return (
             <div className="rt-app">
                 <AppBar
                     title={this.getTitle()}
-                    left={<Icon name="tile" size={24} className="rt-brand" />}
+                    left={active === STATES.HOME
+                        ? <Icon name="tile" size={24} className="rt-brand" />
+                        : <Button variant="ghost" icon="chevronLeft" aria-label={t("home.back")} onClick={() => this.onSetActivePage(STATES.HOME)} />}
                     right={<Button variant="ghost" icon="sliders" aria-label={t("app.settings")} onClick={() => this.onSetActivePage(STATES.SETTINGS)} />}
                 />
                 <main className="rt-main">

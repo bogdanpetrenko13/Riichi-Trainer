@@ -1,6 +1,11 @@
 import React from 'react';
 import Tile from './Tile';
 
+/** Adds the lifted look to the tile the player has selected (compares the tile index). */
+function tileClass(base, selected, tile) {
+    return selected !== undefined && selected === tile ? base + ' rt-tile--selected' : base;
+}
+
 function SortedHand(props) {
     const tiles = [];
 
@@ -15,7 +20,7 @@ function SortedHand(props) {
 
     for (let i = 0; i < hand.length; i++) {
         tiles.push((
-            <Tile className="handTile"
+            <Tile className={tileClass("handTile", props.selected, hand[i])}
                 key={index++}
                 tile={hand[i]}
                 onClick={props.onTileClick}
@@ -26,7 +31,7 @@ function SortedHand(props) {
 
     if (lastDraw > -1) {
         tiles.push((
-            <Tile className="handTile drawTile"
+            <Tile className={tileClass("handTile drawTile", props.selected, lastDraw)}
                 key={index++}
                 tile={lastDraw}
                 onClick={props.onTileClick}

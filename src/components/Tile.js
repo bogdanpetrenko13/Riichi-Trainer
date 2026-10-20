@@ -18,6 +18,14 @@ function Tile(props) {
                 alt={getTileAsText(t, displayTile)}
                 draggable="false"
                 onClick={props.onClick}
+                role={props.onClick ? "button" : undefined}
+                tabIndex={props.onClick ? 0 : undefined}
+                onKeyDown={props.onClick ? (event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        props.onClick({ target: { name: props.tile } });
+                    }
+                } : undefined}
             />
             <span className="index">{props.showIndexes ? TILE_INDEXES[displayTile] : ""}</span>
         </div>
