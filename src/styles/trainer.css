@@ -426,3 +426,17 @@
   color: var(--rt-color-on-primary);
   background-color: var(--rt-color-primary);
 }
+
+.rt-trainer__hintbtns {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--rt-space-2);
+  flex: 0 0 auto;
+}
+
+.rt-review__note {
+  margin: 0 0 var(--rt-space-2);
+  font-size: var(--rt-text-sm);
+  color: var(--rt-color-warning-text);
+}

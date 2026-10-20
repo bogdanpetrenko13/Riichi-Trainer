@@ -59,6 +59,7 @@ class UkeireQuiz extends React.Component {
         this.turnStart = Date.now();
         this.times = [];
         this.onTileSelected = this.onTileSelected.bind(this);
+        this.onHint = this.onHint.bind(this);
         this.onDiscardSelected = this.onDiscardSelected.bind(this);
         this.setMode = this.setMode.bind(this);
         this.togglePause = this.togglePause.bind(this);
@@ -67,6 +68,7 @@ class UkeireQuiz extends React.Component {
             mode: getTrainerMode(),
             selected: -1,
             preview: null,
+            hinted: false,
             review: null,
             whyOpen: false,
             streak: 0,
@@ -223,6 +225,7 @@ class UkeireQuiz extends React.Component {
         this.setState({
             selected: -1,
             preview: null,
+            hinted: false,
             review: null,
             whyOpen: false,
             hand: hand,
@@ -493,7 +496,7 @@ class UkeireQuiz extends React.Component {
         history.unshift(historyData);
 
         // Streak and average time per discard
-        let wasBest = chosenUkeire.value === ukeire[bestTile].value;
+        let wasBest = chosenUkeire.value === ukeire[bestTile].value && !this.state.hinted;
         this.times.push((Date.now() - this.turnStart) / 1000);
         this.turnStart = Date.now();
         let avgTime = this.times.reduce((sum, time) => sum + time, 0) / this.times.length;
@@ -523,7 +526,7 @@ class UkeireQuiz extends React.Component {
             remainingTiles: remainingTiles,
             players: players,
             discardCount: this.state.discardCount + 1,
-            optimalCount: this.state.optimalCount + (chosenUkeire.value === ukeire[bestTile].value ? 1 : 0),
+            optimalCount: this.state.optimalCount + (wasBest ? 1 : 0),
             hasCopied: false,
             achievedTotal: achievedTotal,
             possibleTotal: possibleTotal,
@@ -535,8 +538,9 @@ class UkeireQuiz extends React.Component {
             currentTime: this.state.settings.time,
             selected: -1,
             preview: null,
+            hinted: false,
             whyOpen: false,
-            review: { rows: reviewRows, chosen: convertRedFives(chosenTile), best: bestTile, data: historyData },
+            review: { rows: reviewRows, chosen: convertRedFives(chosenTile), best: bestTile, data: historyData, hinted: this.state.hinted },
             streak: wasBest ? this.state.streak + 1 : 0,
             avgTime: avgTime,
         }, () => {
@@ -558,15 +562,19 @@ class UkeireQuiz extends React.Component {
             return;
         }
 
+        // Selecting a tile reveals nothing: the answer is only shown after the discard is confirmed.
+        this.setState({ selected: tile, preview: null, review: null });
+    }
+
+    /** Optional hint: shows the acceptance of the selected tile, but the discard no longer counts as optimal. */
+    onHint() {
+        if (this.state.selected < 0 || this.state.isComplete) return;
+
         let shantenFunction = this.state.settings.exceptions ? calculateMinimumShanten : calculateStandardShanten;
         let ukeire = calculateDiscardUkeire(this.state.hand.slice(), this.state.remainingTiles.slice(), shantenFunction);
-        let chosen = ukeire[convertRedFives(tile)];
+        let chosen = ukeire[convertRedFives(this.state.selected)];
 
-        this.setState({
-            selected: tile,
-            preview: { value: chosen.value, tiles: chosen.tiles },
-            review: null,
-        });
+        this.setState({ hinted: true, preview: { value: chosen.value, tiles: chosen.tiles } });
     }
 
     onDiscardSelected() {
@@ -749,6 +757,7 @@ class UkeireQuiz extends React.Component {
                 lines={review.data.getMessage(t, false, true, true).split("<br/>")}
                 whyOpen={this.state.whyOpen}
                 onToggleWhy={() => this.setState({ whyOpen: !this.state.whyOpen })}
+                hinted={review.hinted}
                 onNext={() => this.setState({ review: null, whyOpen: false })}
             />
         );
@@ -799,7 +808,12 @@ class UkeireQuiz extends React.Component {
 
                 <div className="rt-trainer__hint">
                     <p className="rt-instructions">{this.state.isComplete ? "" : (quick ? t("play.tapQuick") : t("play.tapToSelect"))}</p>
-                    <Button size="sm" variant="secondary" icon="sliders" onClick={() => this.setState({ settingsOpen: true })}>{t("settings.buttonLabel")}</Button>
+                    <div className="rt-trainer__hintbtns">
+                        {!quick && !this.state.isComplete && this.state.selected > -1 && !this.state.preview ? (
+                            <Button size="sm" variant="ghost" icon="info" onClick={this.onHint}>{t("play.hint")}</Button>
+                        ) : null}
+                        <Button size="sm" variant="secondary" icon="sliders" onClick={() => this.setState({ settingsOpen: true })}>{t("settings.buttonLabel")}</Button>
+                    </div>
                 </div>
                 {this.state.preview ? this.renderPreview(t) : this.state.review && !quick ? this.renderReview(t) : null}
 

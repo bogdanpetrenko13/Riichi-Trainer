@@ -29,6 +29,7 @@ class DefenseState extends React.Component {
         super(props);
         this.onTileClicked = this.onTileClicked.bind(this);
         this.onTileSelected = this.onTileSelected.bind(this);
+        this.onHint = this.onHint.bind(this);
         this.onDiscardSelected = this.onDiscardSelected.bind(this);
         this.setMode = this.setMode.bind(this);
         this.onSettingsChanged = this.onSettingsChanged.bind(this);
@@ -39,6 +40,7 @@ class DefenseState extends React.Component {
             mode: getTrainerMode(),
             selected: -1,
             preview: null,
+            hinted: false,
             review: null,
             whyOpen: false,
             streak: 0,
@@ -249,6 +251,7 @@ class DefenseState extends React.Component {
         this.setState({
             selected: -1,
             preview: null,
+            hinted: false,
             review: null,
             whyOpen: false,
             players: players,
@@ -520,7 +523,7 @@ class DefenseState extends React.Component {
         );
         history.unshift(safetyEntry);
 
-        let wasBest = averageSafety[chosenTile] === bestSafety;
+        let wasBest = averageSafety[chosenTile] === bestSafety && !this.state.hinted;
 
         if (this.state.mode === 'quick') {
             if (this.lastToast) dismissToast(this.lastToast);
@@ -539,8 +542,9 @@ class DefenseState extends React.Component {
             currentTime: this.state.settings.time,
             selected: -1,
             preview: null,
+            hinted: false,
             whyOpen: false,
-            review: { rows: reviewRows, chosen: chosenTile, best: bestTile, data: safetyEntry },
+            review: { rows: reviewRows, chosen: chosenTile, best: bestTile, data: safetyEntry, hinted: this.state.hinted },
             streak: wasBest ? this.state.streak + 1 : 0,
         });
     }
@@ -556,14 +560,18 @@ class DefenseState extends React.Component {
             return;
         }
 
+        // Selecting a tile reveals nothing: the answer is only shown after the discard is confirmed.
+        this.setState({ selected: tile, preview: null, review: null });
+    }
+
+    /** Optional hint: shows the safety of the selected tile, but the discard no longer counts as best. */
+    onHint() {
+        if (this.state.selected < 0 || this.state.isComplete) return;
+
         let players = this.state.players;
         let averageSafety = this.getAverageSafety(players[0], players);
 
-        this.setState({
-            selected: tile,
-            preview: { rating: averageSafety[tile] },
-            review: null,
-        });
+        this.setState({ hinted: true, preview: { rating: averageSafety[this.state.selected] } });
     }
 
     onDiscardSelected() {
@@ -638,7 +646,12 @@ class DefenseState extends React.Component {
                 {ready ? (
                     <div className="rt-trainer__hint">
                         <p className="rt-instructions">{quick ? t("defense.instructions") : t("defense.instructionsConfirm")}</p>
-                        <Button size="sm" variant="secondary" icon="sliders" onClick={() => this.setState({ settingsOpen: true })}>{t("settings.buttonLabel")}</Button>
+                        <div className="rt-trainer__hintbtns">
+                            {!quick && !this.state.isComplete && this.state.selected > -1 && !preview ? (
+                                <Button size="sm" variant="ghost" icon="info" onClick={this.onHint}>{t("play.hint")}</Button>
+                            ) : null}
+                            <Button size="sm" variant="secondary" icon="sliders" onClick={() => this.setState({ settingsOpen: true })}>{t("settings.buttonLabel")}</Button>
+                        </div>
                     </div>
                 ) : null}
 
@@ -657,6 +670,7 @@ class DefenseState extends React.Component {
                         maxValue={SAFETY_RATING_EXPLANATIONS.length - 1}
                         format={(value) => String(Math.floor(value * 10) / 10)}
                         lines={review.data.getMessage(t, true, true, false).split("<br/>")}
+                        hinted={review.hinted}
                         whyOpen={this.state.whyOpen}
                         onToggleWhy={() => this.setState({ whyOpen: !this.state.whyOpen })}
                         onNext={() => this.setState({ review: null, whyOpen: false })}

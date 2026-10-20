@@ -7,13 +7,14 @@ import Tile from './Tile';
  * Review after a discard: one bar per distinct tile, marked "yours" and "best".
  * rows: [{ tile, value }]; format(value) gives the label; lines are the "Why?" explanation.
  */
-function ReviewPanel({ rows, chosen, best, format, lines, whyOpen, onToggleWhy, onNext, maxValue }) {
+function ReviewPanel({ rows, chosen, best, format, lines, whyOpen, onToggleWhy, onNext, maxValue, hinted }) {
     const { t } = useTranslation();
     const max = maxValue || Math.max(1, ...rows.map((row) => row.value));
 
     return (
         <section className="rt-review" aria-live="polite">
             <h3 className="rt-review__title">{t('play.review')}</h3>
+            {hinted ? <p className="rt-review__note">{t('play.hintedNote')}</p> : null}
             <ul className="rt-review__list">
                 {rows.map((row) => (
                     <li key={row.tile} className={cx('rt-review__row', row.tile === chosen && 'is-chosen', row.tile === best && 'is-best')}>

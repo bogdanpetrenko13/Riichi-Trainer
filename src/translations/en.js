@@ -52,7 +52,9 @@ export const en = {
             modeConfirm: "Confirm",
             modeQuick: "Quick",
             discard: "Discard",
-            tapToSelect: "Tap a tile to see its acceptance. Tap it again, or press Discard, to throw it.",
+            tapToSelect: "Select the tile you would discard, then press Discard (or tap it again). The answer is shown only after you decide.",
+            hint: "Hint",
+            hintedNote: "Hint used: this discard does not count as optimal.",
             tapQuick: "Tap a tile to discard it right away.",
             acceptance: "Acceptance: {{count}}",
             improves: "Tiles that improve the hand",
@@ -352,7 +354,7 @@ export const en = {
             }
         },
         defense: {
-            instructionsConfirm: "Tap a tile to see its safety. Tap it again, or press Discard, to throw it.",
+            instructionsConfirm: "Select the tile you would discard, then press Discard (or tap it again). Its safety is shown only after you decide.",
             quickOk: "Safest tile! Rating {{rating}}",
             quickMiss: "Safer: {{tile}} (rating {{best}}, yours {{rating}})",
             instructions: "Discard the safest tile.",
