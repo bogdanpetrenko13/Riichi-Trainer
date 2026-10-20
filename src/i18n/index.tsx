@@ -6,15 +6,8 @@
  * choice survives the update).
  */
 import { useSyncExternalStore, type ComponentType } from "react";
-import { de } from "../translations/de";
 import { en } from "../translations/en";
-import { fr } from "../translations/fr";
-import { ja } from "../translations/ja";
-import { ko } from "../translations/ko";
-import { pl } from "../translations/pl";
-import { pt } from "../translations/pt";
 import { ru } from "../translations/ru";
-import { zh_CN } from "../translations/zh_CN";
 
 type Tree = { [key: string]: string | Tree };
 type Params = Record<string, unknown>;
@@ -22,17 +15,9 @@ export type TFunction = (key: string, params?: Params) => string;
 
 const RESOURCES: Record<string, Tree> = {
   en: en.translations,
-  de: de.translations,
-  fr: fr.translations,
-  ja: ja.translations,
-  ko: ko.translations,
-  pl: pl.translations,
-  pt: pt.translations,
   ru: ru.translations,
-  zh: zh_CN.translations,
-  zh_CN: zh_CN.translations,
 };
-export const LANGUAGES = ["en", "ru", "de", "fr", "pl", "pt", "ja", "ko", "zh"];
+export const LANGUAGES = ["ru", "en"];
 const STORAGE_KEY = "i18nextLng";
 const DEFAULTS: Params = { repeats: "0" };
 
@@ -45,11 +30,11 @@ function lookup(tree: Tree | undefined, key: string): string | undefined {
   return typeof node === "string" ? node : undefined;
 }
 
-/** "ru-RU" -> "ru", "zh-CN" -> "zh"; unknown -> "en". */
+/** "ru-RU" -> "ru"; any other language -> "en". */
 export function normalize(lang: string | null | undefined): string {
   if (!lang) return "en";
   const l = lang.replace("-", "_");
-  if (RESOURCES[l]) return l === "zh_CN" ? "zh" : l;
+  if (RESOURCES[l]) return l;
   const base = l.split("_")[0].toLowerCase();
   return RESOURCES[base] ? base : "en";
 }

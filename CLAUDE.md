@@ -19,8 +19,8 @@ Sister project: Riichi Night (same stack and design language).
 | Path | What |
 |---|---|
 | `src/main.tsx` | Entry point |
-| `src/i18n/index.tsx` | Own i18n (replaces i18next): nested keys, `{{var}}`, `$t()` nesting, `_plural`; language in localStorage `i18nextLng` |
-| `src/translations/*.js` | 9 languages; `en` is the reference |
+| `src/i18n/index.tsx` | Own i18n (replaces i18next, ru + en): nested keys, `{{var}}`, `$t()` nesting, `_plural`; language in localStorage `i18nextLng` |
+| `src/translations/en.js`, `ru.js` | The two languages (others were dropped); `en` is the reference, `ru` must have the same keys |
 | `src/states/*` | The trainer screens (legacy JS, being ported) |
 | `src/components/ui/*` | UI kit (tokens, `rt-*` classes); `legacy.js` renders the old reactstrap components |
 | `src/styles/legacy.css` | Layout classes the old Bootstrap markup still uses |

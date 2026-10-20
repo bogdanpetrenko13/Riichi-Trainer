@@ -4,15 +4,8 @@ import { Card, Segmented, Icon, cx } from '../components/ui';
 import { getThemePreference, setThemePreference, getTileSize, setTileSize } from '../theme';
 
 const LANGUAGES = [
-    { code: 'en', label: 'English' },
-    { code: 'ja', label: '日本語' },
     { code: 'ru', label: 'Русский' },
-    { code: 'fr', label: 'Français' },
-    { code: 'pl', label: 'polski' },
-    { code: 'pt', label: 'Português Brasileiro' },
-    { code: 'zh_CN', label: '简体中文' },
-    { code: 'ko', label: '한국어' },
-    { code: 'de', label: 'Deutsch' },
+    { code: 'en', label: 'English' },
 ];
 
 /** Настройки приложения: тема, размер костей, язык. */
@@ -34,7 +27,7 @@ function AppSettings() {
     const current = (i18n.language || 'en').replace('-', '_');
 
     function isCurrent(code) {
-        return current === code || (code === 'zh_CN' && current.indexOf('zh') === 0) || (code !== 'zh_CN' && current.split('_')[0] === code);
+        return current.split('_')[0] === code;
     }
 
     return (

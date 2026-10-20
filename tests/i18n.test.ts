@@ -14,7 +14,7 @@ function keys(tree: Tree, prefix = ""): string[] {
 
 test("languages are normalised", () => {
   assert.equal(normalize("ru-RU"), "ru");
-  assert.equal(normalize("zh-CN"), "zh");
+  assert.equal(normalize("de-DE"), "en");
   assert.equal(normalize("xx"), "en");
   assert.equal(normalize(null), "en");
 });
