@@ -43,6 +43,8 @@ jobs:
           if [ ! -d android ]; then npx cap add android; fi
           # App icon and splash screens (scripts/make-icons.py trainer)
           cp -r resources/android/res/. android/app/src/main/res/
+          # Immersive full-screen activity (hides status and navigation bars)
+          cp resources/android/java/MainActivity.java android/app/src/main/java/com/riichitrainer/app/MainActivity.java
           npx cap sync android
 
       - name: Build debug APK
