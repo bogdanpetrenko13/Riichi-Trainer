@@ -25,6 +25,8 @@ Sister project: Riichi Night (same stack and design language).
 | `src/components/ui/*` | UI kit (tokens, `rt-*` classes); `legacy.js` renders the old reactstrap components |
 | `src/screens/*` | Home (exercise cards, daily goal), Settings, Help, About |
 | `src/progress.js` | localStorage helpers for the home screen (daily goal, last exercise, trainer summary) |
+| `src/trainerMode.js`, `components/Dock.js`, `ModeSwitch.js`, `ReviewPanel.js` | Shared trainer kit: confirm/quick mode (localStorage `rt-trainer-mode`), bottom dock, mode switch, review bars; used by ukeire and defense trainers |
+| `src/styles/tokens.css` | Themes: light «Бумага» (warm paper, borderless cards, serif headings), dark «Ночь» (amber accent); default theme `system` |
 | `src/styles/trainer.css` | Trainer dock, review bars, home cards, last-round chips |
 | `src/styles/legacy.css` | Layout classes the old Bootstrap markup still uses |
 | `tests/*.test.ts` | Unit tests (Node test runner via `scripts/run-tests.mjs`) |

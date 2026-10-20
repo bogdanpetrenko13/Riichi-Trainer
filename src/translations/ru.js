@@ -135,6 +135,7 @@ export const ru = {
             concise: {
                 discard: "Сброс: {{tile}}",
                 acceptance: " (тайлов: {{count}}).",
+                tilesExpanded: " {{tiles}}.",
                 acceptance_plural: " (тайлов: {{count}}).",
                 loweredShanten: " (ухудшение шантен).",
                 optimal: " Лучший:",
@@ -149,6 +150,7 @@ export const ru = {
             verbose: {
                 discard: "Вы выбрали сбросить {{tile}}, и",
                 acceptance: " количество тайлов улучающих вашу руку теперь {{count}}.",
+                tilesExpanded: " {{tiles}}.",
                 acceptance_plural: " количество тайлов улучающих вашу руку теперь {{count}}.",
                 loweredShanten: " увеличили свой шантен - до тенпая стало больше шагов.",
                 optimal: " Лучший выбор для сброса",
@@ -179,6 +181,7 @@ export const ru = {
             redFives: "Количество акадор:",
             verbose: "Полные имена тайлов (\"единица бамбуков\" или \"1s\")",
             concise: "Краткие объяснения",
+            showIndexes: "Показывать номера тайлов",
             spoilers: "Показывать что было лучшим выбором",
             shuffle: "Замешивать использованные тайлы назад в стену когда начинается новая рука",
             simulate: "Добавить виртуальных игроков сбрасывающих тайлы",
@@ -190,7 +193,10 @@ export const ru = {
             useTimer: "Включить таймер",
             time: "Время для каждого решения:",
             extraTime: "Дополнительное время для каждой руки:",
-            seconds: "секунды"
+            seconds: "секунды",
+            shanten: {
+                showHandInHistory: "Показывать руку в истории"
+            },
         },
         stats: {
             buttonLabel: "Статистика",
@@ -230,7 +236,8 @@ export const ru = {
             explorer: "Разбор вариантов",
             utils: "Утилиты",
             language: "Язык",
-            defense: "Защита"
+            defense: "Защита",
+            shanten: "Шантен"
         },
         allLast: {
             placements: {
@@ -345,6 +352,9 @@ export const ru = {
             }
         },
         defense: {
+            instructionsConfirm: "Нажмите тайл, чтобы увидеть его безопасность. Повторное нажатие или «Сбросить» сбросит его.",
+            quickOk: "Самый безопасный тайл! Рейтинг {{rating}}",
+            quickMiss: "Безопаснее: {{tile}} (рейтинг {{best}}, у вас {{rating}})",
             instructions: "Сбросьте самый безопасный тайл.",
             finalHands: "Руки в конце раздачи:",
             hand: "{{player}}: {{hand}}",
@@ -354,6 +364,32 @@ export const ru = {
             riichiCount: "Количество ричи: ",
             minTurns: "Минимальное число ходов до объявления ричи: ",
             tilesInHand: "Количество тайлов в руке: "
+        },
+        shanten: {
+            tapAnswer: "Сколько шантенов у этой руки? Нажмите ответ.",
+            quickOk: "Верно: {{shanten}} шантен",
+            quickMiss: "Не совсем: это {{shanten}} шантен (вы ответили {{guess}})",
+            noAnswer: "Время вышло: это {{shanten}} шантен",
+            streakLabel: "Серия",
+            historyOk: "{{guess}} шантен: верно",
+            historyMiss: "Вы ответили {{guess}}, а было {{shanten}} шантен",
+            historyNone: "Нет ответа, было {{shanten}} шантен",
+            instructions: "Хотите быстрее считать шантен? Этот тренажёр поможет потренироваться.",
+            newHandButtonLabel: "Новая рука",
+            guessPlaceholder: "Ваш ответ",
+            submitGuessButtonLabel: "Ответить",
+            history: {
+                buttonLabel: "История",
+            },
+            stats: {
+                buttonLabel: "Статистика",
+                correctGuesses: "Верных ответов: {{count}} / {{total}} ({{percent}}%)",
+                averageTime: "Среднее время: {{time}} с",
+                reset: "Сбросить статистику",
+                confirmation: "Точно сбросить статистику?",
+                yes: "Да",
+                no: "Нет",
+            },
         },
         utils: {
             convertHeader: "Преобразование руки",

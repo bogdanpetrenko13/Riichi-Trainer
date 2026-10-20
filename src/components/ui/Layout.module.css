@@ -5,8 +5,8 @@
   padding-top: var(--rt-safe-top);
   padding-left: var(--rt-safe-left);
   padding-right: var(--rt-safe-right);
-  background-color: var(--rt-color-surface);
-  border-bottom: 1px solid var(--rt-color-border);
+  background-color: var(--rt-color-bg);
+  border-bottom: 1px solid var(--rt-appbar-border);
 }
 
 .appbarInner {

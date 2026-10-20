@@ -1,6 +1,12 @@
 import React from 'react';
 import { withTranslation } from '../i18n';
-import { Button, Collapsible } from '../components/ui';
+import { Button, Collapsible, Icon, showToast, dismissToast } from '../components/ui';
+import Tile from '../components/Tile';
+import Dock from '../components/Dock';
+import ReviewPanel from '../components/ReviewPanel';
+import ModeSwitch from '../components/ModeSwitch';
+import { getTrainerMode, setTrainerMode } from '../trainerMode';
+import { getTileAsText } from '../scripts/TileConversions';
 import DiscardTable from '../components/DiscardTable';
 import Hand from '../components/Hand';
 import History from '../components/History';
@@ -22,11 +28,21 @@ class DefenseState extends React.Component {
     constructor(props) {
         super(props);
         this.onTileClicked = this.onTileClicked.bind(this);
+        this.onTileSelected = this.onTileSelected.bind(this);
+        this.onDiscardSelected = this.onDiscardSelected.bind(this);
+        this.setMode = this.setMode.bind(this);
         this.onSettingsChanged = this.onSettingsChanged.bind(this);
         this.updateTime = this.onUpdateTime.bind(this);
         this.timerUpdate = null;
         this.timer = null;
         this.state = {
+            mode: getTrainerMode(),
+            selected: -1,
+            preview: null,
+            review: null,
+            whyOpen: false,
+            streak: 0,
+            settingsOpen: false,
             lastDraw: 0,
             isComplete: false,
             /** @type Player[] */
@@ -53,6 +69,7 @@ class DefenseState extends React.Component {
     }
 
     componentWillUnmount() {
+        if (this.lastToast) dismissToast(this.lastToast);
         if (this.timer != null) {
             clearTimeout(this.timer);
             clearInterval(this.timerUpdate);
@@ -230,6 +247,10 @@ class DefenseState extends React.Component {
         shuffle = shuffleArray(shuffle);
 
         this.setState({
+            selected: -1,
+            preview: null,
+            review: null,
+            whyOpen: false,
             players: players,
             tilePool: tilePool,
             history: [new HistoryData(new LocalizedMessage("trainer.start", { hand: convertHandToTenhouString(players[0].hand) }))],
@@ -425,6 +446,14 @@ class DefenseState extends React.Component {
         let chosenTile = parseInt(event.target.name);
         let players = this.state.players.slice();
         let averageSafety = this.getAverageSafety(players[0], players);
+
+        // Safety of every distinct tile in the hand, for the review bars
+        let reviewRows = [];
+        for (let i = 0; i < players[0].hand.length; i++) {
+            if (players[0].hand[i] > 0) reviewRows.push({ tile: i, value: averageSafety[i] });
+        }
+        reviewRows.sort((a, b) => b.value - a.value);
+
         players[0].discardTile(chosenTile);
         this.tileDiscardedAfterRiichi(chosenTile, players);
 
@@ -482,13 +511,23 @@ class DefenseState extends React.Component {
         let bestSafety = Math.max(...averageSafety);
         let bestTile = averageSafety.indexOf(bestSafety);
 
-        history.unshift(new SafetyHistoryData(
+        let safetyEntry = new SafetyHistoryData(
             chosenTile,
             averageSafety[chosenTile],
             bestTile,
             bestSafety,
             draw
-        ));
+        );
+        history.unshift(safetyEntry);
+
+        let wasBest = averageSafety[chosenTile] === bestSafety;
+
+        if (this.state.mode === 'quick') {
+            if (this.lastToast) dismissToast(this.lastToast);
+            this.lastToast = showToast(wasBest
+                ? { type: 'success', duration: 1600, message: t('defense.quickOk', { rating: Math.floor(averageSafety[chosenTile] * 10) / 10 }) }
+                : { type: 'warning', duration: 2600, message: t('defense.quickMiss', { tile: getTileAsText(t, bestTile, false), best: Math.floor(bestSafety * 10) / 10, rating: Math.floor(averageSafety[chosenTile] * 10) / 10 }) });
+        }
 
         this.setState({
             players: players,
@@ -498,7 +537,42 @@ class DefenseState extends React.Component {
             history: history,
             isComplete: isComplete,
             currentTime: this.state.settings.time,
+            selected: -1,
+            preview: null,
+            whyOpen: false,
+            review: { rows: reviewRows, chosen: chosenTile, best: bestTile, data: safetyEntry },
+            streak: wasBest ? this.state.streak + 1 : 0,
         });
+    }
+
+    /** Tap on a tile: select it in confirm mode (second tap confirms), discard at once in quick mode. */
+    onTileSelected(event) {
+        if (this.state.isComplete) return;
+
+        let tile = parseInt(event.target.name);
+
+        if (this.state.mode === 'quick' || this.state.selected === tile) {
+            this.onTileClicked(event);
+            return;
+        }
+
+        let players = this.state.players;
+        let averageSafety = this.getAverageSafety(players[0], players);
+
+        this.setState({
+            selected: tile,
+            preview: { rating: averageSafety[tile] },
+            review: null,
+        });
+    }
+
+    onDiscardSelected() {
+        if (this.state.selected > -1) this.onTileClicked({ target: { name: this.state.selected } });
+    }
+
+    setMode(mode) {
+        setTrainerMode(mode);
+        this.setState({ mode: mode, selected: -1, preview: null });
     }
 
     onUpdateTime() {
@@ -540,37 +614,86 @@ class DefenseState extends React.Component {
             return <li key={index}>{t("defense.safetyRating", { rating: index, explanation: t(explanation) })}</li>
         }).reverse();
 
+        let quick = this.state.mode === 'quick';
+        let ready = this.state.players.length > 0;
+        let preview = this.state.preview;
+        let review = this.state.review;
+
         return (
-            <div className="rt-page">
-                <div className="rt-panels">
-                    <DefenseSettings onChange={this.onSettingsChanged} />
-                    <Collapsible title={t("defense.safetyRatings")} icon="shield" open={!this.state.chartCollapsed} onToggle={() => this.toggleChart()}>
-                        <p className="rt-muted">{t("defense.averagedSafetyRating")}</p>
-                        <ul className="rt-lines">
-                            {safetyRatings}
-                        </ul>
-                    </Collapsible>
-                </div>
-                {this.state.players.length > 0 &&
-                    <React.Fragment>
-                        <p className="rt-instructions">{t("defense.instructions")}</p>
-                        <DiscardTable players={this.state.players} discardCount={this.state.discardCount} wallCount={this.state.tilePool && this.state.tilePool.length} showIndexes={this.state.settings.showIndexes} />
-                        <section className="rt-board">
-                            <Hand tiles={this.state.players[0].hand}
-                                lastDraw={this.state.lastDraw}
-                                onTileClick={this.onTileClicked}
-                                showIndexes={this.state.settings.showIndexes} />
-                            {this.state.settings.useTimer ?
-                                <div className="rt-timer rt-num">{this.state.currentTime.toFixed(1)} + {this.state.currentBonus.toFixed(1)}</div>
-                                : null
-                            }
-                        </section>
-                        <div className="rt-actions">
-                            <Button variant={this.state.isComplete ? "success" : "accent"} icon="refresh" onClick={() => this.onNewHand()}>{t("trainer.newHandButtonLabel")}</Button>
+            <div className="rt-page rt-trainer">
+                <DefenseSettings
+                    onChange={this.onSettingsChanged}
+                    open={this.state.settingsOpen}
+                    onClose={() => this.setState({ settingsOpen: false })}
+                    header={<ModeSwitch mode={this.state.mode} onChange={this.setMode} />}
+                />
+
+                {ready && (quick || this.state.settings.useTimer) ? (
+                    <div className="rt-chips">
+                        {quick ? <span className="rt-chip"><span className="rt-chip__label">{t("play.streak")}</span> <b className="rt-num">{this.state.streak}</b></span> : null}
+                        {this.state.settings.useTimer ? <span className="rt-chip rt-num">{this.state.currentTime.toFixed(1)} + {this.state.currentBonus.toFixed(1)}</span> : null}
+                    </div>
+                ) : null}
+
+                {ready ? (
+                    <div className="rt-trainer__hint">
+                        <p className="rt-instructions">{quick ? t("defense.instructions") : t("defense.instructionsConfirm")}</p>
+                        <Button size="sm" variant="secondary" icon="sliders" onClick={() => this.setState({ settingsOpen: true })}>{t("settings.buttonLabel")}</Button>
+                    </div>
+                ) : null}
+
+                {preview ? (
+                    <section className="rt-peek" aria-live="polite">
+                        <div className="rt-peek__head">
+                            <Icon name="shield" size={18} />
+                            <strong className="rt-num">{t("defense.safetyRating", { rating: Math.floor(preview.rating * 10) / 10, explanation: t(SAFETY_RATING_EXPLANATIONS[Math.floor(preview.rating)]) })}</strong>
                         </div>
-                        <History history={this.state.history} concise={true} verbose={this.state.settings.verbose} spoilers={this.state.settings.spoilers} />
-                    </React.Fragment>
-                }
+                    </section>
+                ) : review && !quick ? (
+                    <ReviewPanel
+                        rows={review.rows}
+                        chosen={review.chosen}
+                        best={review.best}
+                        maxValue={SAFETY_RATING_EXPLANATIONS.length - 1}
+                        format={(value) => String(Math.floor(value * 10) / 10)}
+                        lines={review.data.getMessage(t, true, true, false).split("<br/>")}
+                        whyOpen={this.state.whyOpen}
+                        onToggleWhy={() => this.setState({ whyOpen: !this.state.whyOpen })}
+                        onNext={() => this.setState({ review: null, whyOpen: false })}
+                    />
+                ) : null}
+
+                {ready ? <DiscardTable players={this.state.players} discardCount={this.state.discardCount} wallCount={this.state.tilePool && this.state.tilePool.length} showIndexes={this.state.settings.showIndexes} /> : null}
+
+                <div className="rt-actions">
+                    <Button variant={this.state.isComplete ? "success" : "accent"} icon="refresh" onClick={() => this.onNewHand()}>{t("trainer.newHandButtonLabel")}</Button>
+                </div>
+
+                <Collapsible title={t("defense.safetyRatings")} icon="shield" open={!this.state.chartCollapsed} onToggle={() => this.toggleChart()}>
+                    <p className="rt-muted">{t("defense.averagedSafetyRating")}</p>
+                    <ul className="rt-lines">
+                        {safetyRatings}
+                    </ul>
+                </Collapsible>
+                {ready ? <History history={this.state.history} concise={true} verbose={this.state.settings.verbose} spoilers={this.state.settings.spoilers} /> : null}
+
+                {ready ? (
+                    <Dock>
+                        {!quick ? (
+                            <Button
+                                variant="accent"
+                                block
+                                disabled={this.state.selected < 0 || this.state.isComplete}
+                                onClick={this.onDiscardSelected}
+                            >{t("play.discard")}</Button>
+                        ) : null}
+                        <Hand tiles={this.state.players[0].hand}
+                            lastDraw={this.state.lastDraw}
+                            onTileClick={this.onTileSelected}
+                            selected={this.state.selected > -1 ? this.state.selected : undefined}
+                            showIndexes={this.state.settings.showIndexes} />
+                    </Dock>
+                ) : null}
             </div>
         );
     }

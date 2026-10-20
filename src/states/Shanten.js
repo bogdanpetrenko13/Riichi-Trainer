@@ -1,6 +1,7 @@
 import React from 'react';
-import { Input, InputGroup, InputGroupAddon, ListGroup, ListGroupItem } from '../components/ui/legacy';
-import { Button, Collapsible } from '../components/ui';
+import { ListGroup, ListGroupItem } from '../components/ui/legacy';
+import { Button, Collapsible, showToast, dismissToast, cx } from '../components/ui';
+import Dock from '../components/Dock';
 import Hand from '../components/Hand';
 import Settings from '../components/shanten-quiz/Settings';
 import StatsDisplay from '../components/shanten-quiz/StatsDisplay';
@@ -16,6 +17,7 @@ class ShantenQuiz extends React.Component {
         super(props);
         this.onSettingsChanged = this.onSettingsChanged.bind(this);
         this.onSubmitGuess = this.onSubmitGuess.bind(this);
+        this.onAnswer = this.onAnswer.bind(this);
         this.updateTime = this.onUpdateTime.bind(this);
         this.resetStats = this.resetStats.bind(this);
         this.timerUpdate = null;
@@ -25,6 +27,8 @@ class ShantenQuiz extends React.Component {
             shanten: null,
             shuffle: [],
             guess: '',
+            streak: 0,
+            settingsOpen: false,
             history: [],
             settings: {
                 useTimer: false,
@@ -46,6 +50,7 @@ class ShantenQuiz extends React.Component {
     }
 
     componentWillUnmount() {
+        if (this.lastToast) dismissToast(this.lastToast);
         if (this.timer != null) {
             clearTimeout(this.timer);
             clearInterval(this.timerUpdate);
@@ -123,11 +128,22 @@ class ShantenQuiz extends React.Component {
     }
 
     getHistoryMessage(guess, shanten) {
-        if (!guess) {
-            return `You did not enter a guess. It was ${shanten}.`;
+        let { t } = this.props;
+
+        if (guess === '') {
+            return t("shanten.historyNone", { shanten: shanten });
         }
 
-        return `You guessed ${guess} shanten. It was ${shanten}.`;
+        if (parseInt(guess) === shanten) {
+            return t("shanten.historyOk", { guess: guess });
+        }
+
+        return t("shanten.historyMiss", { guess: guess, shanten: shanten });
+    }
+
+    /** One tap on an answer chip submits it. */
+    onAnswer(value) {
+        this.setState({ guess: String(value) }, this.onSubmitGuess);
     }
 
     /** Handles the user's guess submission. */
@@ -147,7 +163,14 @@ class ShantenQuiz extends React.Component {
             stats.correctGuesses += 1;
         }
 
-        this.setState({ history, stats });
+        let correct = parseInt(guess) === shanten;
+        let { t } = this.props;
+        if (this.lastToast) dismissToast(this.lastToast);
+        this.lastToast = showToast(correct
+            ? { type: 'success', duration: 1400, message: t("shanten.quickOk", { shanten: shanten }) }
+            : { type: 'warning', duration: 2600, message: guess === '' ? t("shanten.noAnswer", { shanten: shanten }) : t("shanten.quickMiss", { shanten: shanten, guess: guess }) });
+
+        this.setState({ history, stats, streak: correct ? this.state.streak + 1 : 0 });
         this.onNewHand();
     }
 
@@ -172,30 +195,36 @@ class ShantenQuiz extends React.Component {
     render() {
         let { t } = this.props;
         const currentTime = this.state.currentTime || 0;
+        const answers = [-1, 0, 1, 2, 3, 4, 5, 6];
 
         return (
-            <div className="rt-page">
-                <div className="rt-panels">
-                    <Settings onChange={this.onSettingsChanged} />
-                    <StatsDisplay values={this.state.stats} onReset={this.resetStats} useTimer={this.state.settings.useTimer} />
+            <div className="rt-page rt-trainer">
+                <Settings
+                    onChange={this.onSettingsChanged}
+                    open={this.state.settingsOpen}
+                    onClose={() => this.setState({ settingsOpen: false })}
+                />
+
+                <div className="rt-chips">
+                    <span className="rt-chip"><span className="rt-chip__label">{t("shanten.streakLabel")}</span> <b className="rt-num">{this.state.streak}</b></span>
+                    {this.state.settings.useTimer ? <span className="rt-chip rt-num">{currentTime.toFixed(1)}</span> : null}
                 </div>
+
+                <div className="rt-trainer__hint">
+                    <p className="rt-instructions">{t("shanten.tapAnswer")}</p>
+                    <Button size="sm" variant="secondary" icon="sliders" onClick={() => this.setState({ settingsOpen: true })}>{t("settings.buttonLabel")}</Button>
+                </div>
+
                 <section className="rt-board">
-                    <p className="rt-instructions">{t("shanten.instructions")}</p>
                     <Hand tiles={this.state.hand} showIndexes={this.state.settings.showIndexes} />
-                    {this.state.settings.useTimer ?
-                        <div className="rt-timer rt-num">{currentTime.toFixed(1)}</div>
-                        : null
-                    }
                 </section>
-                <InputGroup>
-                    <Input type="number" inputMode="numeric" value={this.state.guess} aria-label={t("shanten.guessPlaceholder")} placeholder={t("shanten.guessPlaceholder")} onChange={(e) => this.setState({ guess: e.target.value })} />
-                    <InputGroupAddon addonType="append">
-                        <Button variant="primary" icon="check" onClick={this.onSubmitGuess}>{t("shanten.submitGuessButtonLabel")}</Button>
-                    </InputGroupAddon>
-                </InputGroup>
+
                 <div className="rt-actions">
                     <Button variant="accent" icon="refresh" onClick={() => this.onNewHand()}>{t("shanten.newHandButtonLabel")}</Button>
                 </div>
+
+                <StatsDisplay values={this.state.stats} onReset={this.resetStats} useTimer={this.state.settings.useTimer} />
+
                 <Collapsible title={t("shanten.history.buttonLabel")} icon="history" defaultOpen>
                     <ListGroup>
                         {this.state.history.map((entry, index) => (
@@ -206,6 +235,14 @@ class ShantenQuiz extends React.Component {
                         ))}
                     </ListGroup>
                 </Collapsible>
+
+                <Dock>
+                    <div className="rt-answers" role="group" aria-label={t("shanten.guessPlaceholder")}>
+                        {answers.map((value) => (
+                            <button key={value} type="button" className={cx("rt-choice rt-num")} onClick={() => this.onAnswer(value)}>{value}</button>
+                        ))}
+                    </div>
+                </Dock>
             </div>
         );
     }

@@ -1,7 +1,11 @@
 import React from 'react';
-import { Button, Modal, Segmented, Icon, cx, showToast, dismissToast } from '../components/ui';
+import { Button, Modal, Icon, showToast, dismissToast } from '../components/ui';
 import Tile from '../components/Tile';
 import { bumpDaily } from '../progress';
+import ReviewPanel from '../components/ReviewPanel';
+import Dock from '../components/Dock';
+import ModeSwitch from '../components/ModeSwitch';
+import { getTrainerMode, setTrainerMode } from '../trainerMode';
 import Hand from '../components/Hand';
 import History from "../components/History";
 import Settings from '../components/ukeire-quiz/Settings';
@@ -25,7 +29,6 @@ import LocalizedMessage from '../models/LocalizedMessage';
 import UkeireHistoryData from '../components/ukeire-quiz/UkeireHistoryData';
 import HistoryData from '../models/HistoryData';
 
-const MODE_KEY = 'rt-trainer-mode';
 const DISCLAIMER_KEY = 'rt-disclaimer-seen';
 
 function readStored(key, fallback) {
@@ -61,7 +64,7 @@ class UkeireQuiz extends React.Component {
         this.togglePause = this.togglePause.bind(this);
         this.dismissDisclaimer = this.dismissDisclaimer.bind(this);
         this.state = {
-            mode: readStored(MODE_KEY, 'confirm') === 'quick' ? 'quick' : 'confirm',
+            mode: getTrainerMode(),
             selected: -1,
             preview: null,
             review: null,
@@ -571,7 +574,7 @@ class UkeireQuiz extends React.Component {
     }
 
     setMode(mode) {
-        writeStored(MODE_KEY, mode);
+        setTrainerMode(mode);
         clearTimeout(this.autoTimer);
         this.setState({ mode: mode, selected: -1, preview: null }, () => this.scheduleAutoHand());
     }
@@ -737,33 +740,17 @@ class UkeireQuiz extends React.Component {
 
     renderReview(t) {
         let review = this.state.review;
-        let max = Math.max(1, ...review.rows.map((row) => row.value));
-        let lines = review.data.getMessage(t, false, true, true).split("<br/>");
 
         return (
-            <section className="rt-review" aria-live="polite">
-                <h3 className="rt-review__title">{t("play.review")}</h3>
-                <ul className="rt-review__list">
-                    {review.rows.map((row) => (
-                        <li key={row.tile} className={cx("rt-review__row", row.tile === review.chosen && "is-chosen", row.tile === review.best && "is-best")}>
-                            <Tile className="discardTile" tile={row.tile} />
-                            <div className="rt-review__bar" aria-hidden="true"><span style={{ width: (row.value / max * 100) + "%" }} /></div>
-                            <span className="rt-num rt-review__value">{row.value}</span>
-                            <span className="rt-review__badges">
-                                {row.tile === review.chosen ? <span className="rt-badge rt-badge--you">{t("play.you")}</span> : null}
-                                {row.tile === review.best ? <span className="rt-badge rt-badge--best">{t("play.best")}</span> : null}
-                            </span>
-                        </li>
-                    ))}
-                </ul>
-                {this.state.whyOpen ? (
-                    <div className="rt-review__why">{lines.map((line, index) => <p key={index}>{line}</p>)}</div>
-                ) : null}
-                <div className="rt-review__actions">
-                    <Button size="sm" variant="secondary" onClick={() => this.setState({ whyOpen: !this.state.whyOpen })}>{t("play.why")}</Button>
-                    <Button size="sm" variant="primary" iconRight="chevronRight" onClick={() => this.setState({ review: null, whyOpen: false })}>{t("play.next")}</Button>
-                </div>
-            </section>
+            <ReviewPanel
+                rows={review.rows}
+                chosen={review.chosen}
+                best={review.best}
+                lines={review.data.getMessage(t, false, true, true).split("<br/>")}
+                whyOpen={this.state.whyOpen}
+                onToggleWhy={() => this.setState({ whyOpen: !this.state.whyOpen })}
+                onNext={() => this.setState({ review: null, whyOpen: false })}
+            />
         );
     }
 
@@ -772,20 +759,7 @@ class UkeireQuiz extends React.Component {
         let blind = this.state.players.length && this.state.players[0].discards.length && this.state.settings.blind && !this.state.isComplete;
         let quick = this.state.mode === 'quick';
 
-        let modeSwitch = (
-            <div className="rt-setting-block">
-                <div className="rt-muted rt-mb-2">{t("play.mode")}</div>
-                <Segmented
-                    ariaLabel={t("play.mode")}
-                    value={this.state.mode}
-                    onChange={this.setMode}
-                    options={[
-                        { value: 'confirm', label: t("play.modeConfirm") },
-                        { value: 'quick', label: t("play.modeQuick") },
-                    ]}
-                />
-            </div>
-        );
+        let modeSwitch = <ModeSwitch mode={this.state.mode} onChange={this.setMode} />;
 
         let handProps = {
             lastDraw: this.state.lastDraw,
@@ -838,22 +812,20 @@ class UkeireQuiz extends React.Component {
                 <DiscardPool players={this.state.players} discardCount={this.state.discardCount} wallCount={this.state.tilePool && this.state.tilePool.length} showIndexes={this.state.settings.showIndexes} />
                 <StatsDisplay values={this.state.stats} onReset={() => this.resetStats()} />
 
-                <div className="rt-dock">
-                    <div className="rt-dock__inner">
-                        {!quick ? (
-                            <Button
-                                variant="accent"
-                                block
-                                disabled={this.state.selected < 0 || this.state.isComplete}
-                                onClick={this.onDiscardSelected}
-                            >{t("play.discard")}</Button>
-                        ) : null}
-                        {this.state.settings.sort
-                            ? <Hand tiles={this.state.hand} {...handProps} />
-                            : <SortedHand tiles={this.state.shuffle} {...handProps} />
-                        }
-                    </div>
-                </div>
+                <Dock>
+                    {!quick ? (
+                        <Button
+                            variant="accent"
+                            block
+                            disabled={this.state.selected < 0 || this.state.isComplete}
+                            onClick={this.onDiscardSelected}
+                        >{t("play.discard")}</Button>
+                    ) : null}
+                    {this.state.settings.sort
+                        ? <Hand tiles={this.state.hand} {...handProps} />
+                        : <SortedHand tiles={this.state.shuffle} {...handProps} />
+                    }
+                </Dock>
             </div>
         );
     }

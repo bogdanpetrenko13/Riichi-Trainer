@@ -1,6 +1,6 @@
 import React from 'react';
 import { Row, Col, Input, Label } from '../ui/legacy';
-import { Collapsible, NumberField } from '../ui';
+import { Modal, NumberField } from '../ui';
 import { withTranslation } from '../../i18n';
 
 class Settings extends React.Component {
@@ -84,7 +84,9 @@ class Settings extends React.Component {
     render() {
         const { t } = this.props;
         return (
-            <Collapsible title={t("settings.buttonLabel")} icon="sliders" open={!this.state.collapsed} onToggle={this.toggle} bodyClassName="rt-settings">
+            <Modal open={!!this.props.open} onClose={this.props.onClose} title={t("settings.buttonLabel")}>
+                {this.props.header}
+                <div className="rt-settings">
                         <Row>
                             <Col className="form-check form-check-inline">
                                 <Input className="form-check-input" type="checkbox" id="verbose"
@@ -148,7 +150,8 @@ class Settings extends React.Component {
                                 <span className="blackText">&nbsp;{t("settings.seconds")}</span>
                             </Col>
                         </Row>
-                    </Collapsible>
+                    </div>
+            </Modal>
         );
     }
 }

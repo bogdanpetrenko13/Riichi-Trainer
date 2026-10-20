@@ -352,6 +352,9 @@ export const en = {
             }
         },
         defense: {
+            instructionsConfirm: "Tap a tile to see its safety. Tap it again, or press Discard, to throw it.",
+            quickOk: "Safest tile! Rating {{rating}}",
+            quickMiss: "Safer: {{tile}} (rating {{best}}, yours {{rating}})",
             instructions: "Discard the safest tile.",
             finalHands: "Final Hands:",
             hand: "{{player}}: {{hand}}",
@@ -363,6 +366,14 @@ export const en = {
             tilesInHand: "Number of tiles in hand: "
         },
         shanten: {
+            tapAnswer: "How many shanten is this hand? Tap the answer.",
+            quickOk: "Correct: {{shanten}} shanten",
+            quickMiss: "Not quite: it is {{shanten}} shanten (you said {{guess}})",
+            noAnswer: "Time is up: it was {{shanten}} shanten",
+            streakLabel: "Streak",
+            historyOk: "{{guess}} shanten: correct",
+            historyMiss: "You said {{guess}}, it was {{shanten}} shanten",
+            historyNone: "No answer, it was {{shanten}} shanten",
             instructions: "Looking to improve your speed at calculating shanten? This tool will help you practice.",
             "newHandButtonLabel": "New Hand",
             "guessPlaceholder": "Your guess",

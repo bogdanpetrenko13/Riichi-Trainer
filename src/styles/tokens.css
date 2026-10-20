@@ -9,11 +9,11 @@
   color-scheme: light;
 
   /* Поверхности */
-  --rt-color-bg: #f7f4ec;
-  --rt-color-surface: #ffffff;
-  --rt-color-surface-2: #f0ece1;
-  --rt-color-felt: #e6ede6;
-  --rt-color-border: #e2dccf;
+  --rt-color-bg: #f3eee1;
+  --rt-color-surface: #fffdf8;
+  --rt-color-surface-2: #ede7d6;
+  --rt-color-felt: #ece6d6;
+  --rt-color-border: #e6dfcd;
   --rt-color-border-strong: #cdc5b3;
   --rt-color-switch-off: #8e8a7f;
   --rt-color-overlay: rgba(28, 31, 29, 0.48);
@@ -26,8 +26,8 @@
   --rt-color-link: #2e4a3b;
 
   /* Основной акцент — бамбук */
-  --rt-color-primary: #2e4a3b;
-  --rt-color-primary-hover: #24392d;
+  --rt-color-primary: #35503f;
+  --rt-color-primary-hover: #2a4033;
   --rt-color-on-primary: #ffffff;
   --rt-color-primary-soft: #e3ece6;
 
@@ -71,18 +71,24 @@
   --rt-shadow-lg: 0 8px 24px rgba(35, 35, 35, 0.10);
   --rt-shadow-xl: 0 16px 40px rgba(35, 35, 35, 0.14);
   --rt-shadow-tile: 0 2px 0 rgba(35, 35, 35, 0.16), 0 3px 6px rgba(35, 35, 35, 0.14);
+
+  /* Карточки и шапка: в светлой теме без рамок, объём даёт мягкая тень */
+  --rt-card-border: transparent;
+  --rt-card-shadow: 0 6px 22px rgba(60, 45, 20, 0.08);
+  --rt-appbar-border: transparent;
+  --rt-radius-card: 20px;
 }
 
 :root.theme-dark {
   color-scheme: dark;
 
-  --rt-color-bg: #1c1f1d;
-  --rt-color-surface: #262a27;
-  --rt-color-surface-2: #2f3430;
-  --rt-color-felt: #222b25;
-  --rt-color-border: #3a3f3b;
-  --rt-color-border-strong: #4b514c;
-  --rt-color-switch-off: #6b716c;
+  --rt-color-bg: #15181a;
+  --rt-color-surface: #1f2326;
+  --rt-color-surface-2: #292e31;
+  --rt-color-felt: #1b2420;
+  --rt-color-border: #31373a;
+  --rt-color-border-strong: #454c50;
+  --rt-color-switch-off: #656c70;
   --rt-color-overlay: rgba(0, 0, 0, 0.62);
 
   --rt-color-text: #ececec;
@@ -96,10 +102,10 @@
   --rt-color-on-primary: #10201a;
   --rt-color-primary-soft: #2a3a31;
 
-  --rt-color-accent: #e08768;
-  --rt-color-accent-hover: #e99a7f;
-  --rt-color-on-accent: #2a1008;
-  --rt-color-accent-soft: #3d2a24;
+  --rt-color-accent: #e0a458;
+  --rt-color-accent-hover: #e9b672;
+  --rt-color-on-accent: #2a1a05;
+  --rt-color-accent-soft: #3a2f1f;
 
   --rt-color-success: #6fbf8e;
   --rt-color-success-hover: #86cca1;
@@ -125,7 +131,7 @@
   --rt-color-info-soft: #22313d;
   --rt-color-info-text: #b3d2ea;
 
-  --rt-color-focus-ring: #e08768;
+  --rt-color-focus-ring: #e0a458;
   --rt-color-focus-soft: rgba(127, 176, 140, 0.3);
 
   --rt-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
@@ -133,10 +139,16 @@
   --rt-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.45);
   --rt-shadow-xl: 0 16px 40px rgba(0, 0, 0, 0.55);
   --rt-shadow-tile: 0 2px 0 rgba(0, 0, 0, 0.5), 0 3px 6px rgba(0, 0, 0, 0.4);
+
+  --rt-card-border: var(--rt-color-border);
+  --rt-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --rt-appbar-border: var(--rt-color-border);
+  --rt-radius-card: 20px;
 }
 
 :root {
   /* Типографика. Шрифты системные: ничего не скачивается, всё работает офлайн. */
+  --rt-font-serif: ui-serif, Georgia, "Noto Serif", "Source Serif Pro", serif;
   --rt-font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", sans-serif;
   --rt-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Roboto Mono", "Liberation Mono", monospace;
 

@@ -1,9 +1,9 @@
 .box {
   min-width: 0;
   background-color: var(--rt-color-surface);
-  border: 1px solid var(--rt-color-border);
-  border-radius: var(--rt-radius-md);
-  box-shadow: var(--rt-shadow-sm);
+  border: 1px solid var(--rt-card-border);
+  border-radius: var(--rt-radius-card);
+  box-shadow: var(--rt-card-shadow);
   overflow: hidden;
 }
 

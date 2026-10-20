@@ -4,9 +4,9 @@
   min-width: 0;
   color: var(--rt-color-text);
   background-color: var(--rt-color-surface);
-  border: 1px solid var(--rt-color-border);
-  border-radius: var(--rt-radius-md);
-  box-shadow: var(--rt-shadow-sm);
+  border: 1px solid var(--rt-card-border);
+  border-radius: var(--rt-radius-card);
+  box-shadow: var(--rt-card-shadow);
   transition: box-shadow var(--rt-dur) var(--rt-ease), transform var(--rt-dur) var(--rt-ease);
 }
 
