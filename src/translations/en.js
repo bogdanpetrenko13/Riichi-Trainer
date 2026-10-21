@@ -294,6 +294,7 @@ export const en = {
             }
         },
         analyzer: {
+            chooseFile: "Choose a file (mjlog / xml)",
             instructions1: "Instructions:",
             instructions2: "Paste the URL for your replay into the text box.",
             instructions3: 'Then, right click the link that appears and choose "Save As" or "Save Link As".',
@@ -354,6 +355,7 @@ export const en = {
             }
         },
         explorer: {
+            howTo: "How it works and what to watch for",
             warning: "Warning: Loading a hand may cause the page to hang for 5-10 seconds, or more if you have an older computer, depending on the complexity of the hand. Loading a hand will show all of the ukeire and upgrade possibilities for each discard, even ones that go back in shanten. By default, options that are strictly worse than another option won't be displayed, but you can press the button below to change that. If you only need ukeire information, tenhou.net/2/ will suffice.",
             shanten: "Shanten: The number of tiles away from ready your hand is.",
             ukeire: "Ukeire: The number of tiles that reduce your shanten.",
@@ -385,6 +387,7 @@ export const en = {
             tilesInHand: "Number of tiles in hand: "
         },
         shanten: {
+            historyEmpty: "Your answers will appear here.",
             tapAnswer: "How many shanten is this hand? Tap the answer.",
             quickOk: "Correct: {{shanten}} shanten",
             quickMiss: "Not quite: it is {{shanten}} shanten (you said {{guess}})",

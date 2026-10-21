@@ -226,6 +226,7 @@ class ShantenQuiz extends React.Component {
                 <StatsDisplay values={this.state.stats} onReset={this.resetStats} useTimer={this.state.settings.useTimer} />
 
                 <Collapsible title={t("shanten.history.buttonLabel")} icon="history" defaultOpen>
+                    {this.state.history.length === 0 ? <p className="rt-empty">{t("shanten.historyEmpty")}</p> : null}
                     <ListGroup>
                         {this.state.history.map((entry, index) => (
                             <ListGroupItem key={index} className={entry.className}>

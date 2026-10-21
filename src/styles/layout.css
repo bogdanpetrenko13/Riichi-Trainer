@@ -271,18 +271,22 @@
   color: var(--rt-color-text);
   text-align: left;
   background: transparent;
-  border: 0;
+  border: 1px solid var(--rt-color-border);
   border-radius: var(--rt-radius-md);
+  margin-bottom: var(--rt-space-2);
   cursor: pointer;
   transition: background-color var(--rt-dur) var(--rt-ease);
 }
 
-.rt-lang:hover { background-color: var(--rt-color-surface-2); }
+@media (hover: hover) {
+  .rt-lang:hover { background-color: var(--rt-color-surface-2); }
+}
 
 .rt-lang--active {
   font-weight: 700;
   color: var(--rt-color-primary);
   background-color: var(--rt-color-primary-soft);
+  border-color: var(--rt-color-primary);
 }
 
 .rt-more-list { margin: 0; padding: 0; list-style: none; }
@@ -335,4 +339,46 @@
 
 .rt-settings .row > * {
   min-width: 0;
+}
+
+/* Выбор файла вместо системной кнопки браузера */
+.rt-file {
+  display: flex;
+  align-items: center;
+  gap: var(--rt-space-2);
+  min-height: 48px;
+  padding: 0 var(--rt-space-4);
+  color: var(--rt-color-text);
+  background-color: var(--rt-color-surface-2);
+  border: 1px dashed var(--rt-color-border-strong);
+  border-radius: var(--rt-radius-md);
+  cursor: pointer;
+}
+
+.rt-file input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.rt-file:focus-within {
+  outline: 3px solid var(--rt-color-focus-ring);
+  outline-offset: 2px;
+}
+
+.rt-file__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--rt-color-text-2);
+}
+
+.rt-empty {
+  margin: 0;
+  padding: var(--rt-space-4);
+  text-align: center;
+  color: var(--rt-color-text-2);
 }

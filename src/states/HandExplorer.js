@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '../components/ui';
+import { Button, Collapsible } from '../components/ui';
 import Hand from '../components/Hand';
 import LoadButton from '../components/LoadButton';
 import HandFutures from '../components/hand-explorer/HandFutures';
@@ -63,11 +63,11 @@ class HandExplorer extends React.Component {
         let { t } = this.props;
         return (
             <div className="rt-page">
-                <p className="rt-note">
-                    {t("explorer.warning")}
-                    <br />{t("explorer.shanten")}
-                    <br />{t("explorer.ukeire")}
-                </p>
+                <Collapsible title={t("explorer.howTo")} icon="help">
+                    <p className="rt-prose">{t("explorer.warning")}</p>
+                    <p className="rt-prose">{t("explorer.shanten")}</p>
+                    <p className="rt-prose">{t("explorer.ukeire")}</p>
+                </Collapsible>
                 <div className="rt-actions">
                     <LoadButton callback={this.loadHand} />
                     <Button variant="secondary" icon="layers" onClick={() => this.onShowToggled()}>{this.state.showAll ? t("explorer.notableDiscards") : t("explorer.allDiscards")}</Button>

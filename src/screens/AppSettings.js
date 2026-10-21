@@ -66,7 +66,7 @@ function AppSettings() {
             </Card>
 
             <Card title={t('app.language')} icon="globe">
-                <ul className="rt-lines" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                <ul className="rt-langlist" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                     {LANGUAGES.map((language) => {
                         const active = isCurrent(language.code);
                         return (

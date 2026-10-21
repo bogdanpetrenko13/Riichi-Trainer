@@ -3,7 +3,7 @@ import {
     Dropdown, DropdownItem, DropdownMenu, DropdownToggle,
     Row, ListGroup, ListGroupItem, Input
 } from '../components/ui/legacy';
-import { Button, Card, Collapsible } from '../components/ui';
+import { Button, Card, Collapsible, Icon } from '../components/ui';
 import * as ParseTenhouReplay from '../scripts/ParseTenhouReplay';
 import * as ParseMajsoulReplay from '../scripts/ParseMajsoulReplay';
 import Hand from '../components/Hand';
@@ -252,7 +252,12 @@ class ReplayAnalysis extends React.Component {
                     <div className="rt-stack">
                         <Input id="tenhouURL" aria-label={t("analyzer.URLplaceholder")} placeholder={t("analyzer.URLplaceholder")} onChange={this.onURLChanged} autoCapitalize="off" autoCorrect="off" spellCheck="false" />
                         {this.state.URLfeedback ? <p className="rt-feedback" role="status">{this.state.URLfeedback}</p> : null}
-                        <Input type="file" id="fileInput" aria-label="mjlog / xml" onChange={this.onFileChanged} />
+                        <label className="rt-file">
+                            <Icon name="download" size={20} />
+                            <span>{t("analyzer.chooseFile")}</span>
+                            <span className="rt-file__name">{this.state.fileName || ""}</span>
+                            <input type="file" id="fileInput" aria-label="mjlog / xml" onChange={this.onFileChanged} />
+                        </label>
                         {this.state.rounds.length ? (
                             <div className="rt-pair">
                                 <Dropdown isOpen={this.state.roundDropdownOpen} toggle={this.toggleRoundDropdown}>
