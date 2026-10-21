@@ -19,6 +19,7 @@ import { calculateDiscardUkeire, calculateUkeireFromOnlyHand } from "../scripts/
 import { calculateMinimumShanten, calculateStandardShanten } from "../scripts/ShantenCalculator";
 import { convertRedFives, getTileAsText } from "../scripts/TileConversions";
 import { explainUkeire } from "../scripts/Explain";
+import { addMistake, resolveMistake, countMistakes, pickMistake, mistakeKey, consumeRepeatRequest } from "../mistakes";
 import { convertHandToTenhouString, convertHandToTileIndexArray } from "../scripts/HandConversions";
 import { evaluateBestDiscard } from "../scripts/Evaluations";
 import { shuffleArray, removeRandomItem, getRandomItem } from '../scripts/Utils';
@@ -52,7 +53,7 @@ class UkeireQuiz extends React.Component {
         super(props);
         this.onSettingsChanged = this.onSettingsChanged.bind(this);
         this.onTileClicked = this.onTileClicked.bind(this);
-        this.loadHand = this.onHandLoaded.bind(this);
+        this.loadHand = (data) => { this.repeatKey = null; this.onHandLoaded(data); };
         this.updateTime = this.onUpdateTime.bind(this);
         this.timerUpdate = null;
         this.timer = null;
@@ -61,6 +62,8 @@ class UkeireQuiz extends React.Component {
         this.times = [];
         this.onTileSelected = this.onTileSelected.bind(this);
         this.onHint = this.onHint.bind(this);
+        this.onRepeatMistake = this.onRepeatMistake.bind(this);
+        this.repeatKey = null;
         this.onDiscardSelected = this.onDiscardSelected.bind(this);
         this.setMode = this.setMode.bind(this);
         this.togglePause = this.togglePause.bind(this);
@@ -107,6 +110,9 @@ class UkeireQuiz extends React.Component {
     }
 
     componentDidMount() {
+        if (consumeRepeatRequest() && countMistakes() > 0) {
+            this.repeatTimer = setTimeout(() => this.onRepeatMistake(), 80);
+        }
         try {
             let savedStats = window.localStorage.getItem("stats");
             if (savedStats) {
@@ -130,6 +136,7 @@ class UkeireQuiz extends React.Component {
     }
 
     componentWillUnmount() {
+        clearTimeout(this.repeatTimer);
         clearTimeout(this.autoTimer);
         if (this.lastToast) dismissToast(this.lastToast);
 
@@ -423,6 +430,20 @@ class UkeireQuiz extends React.Component {
         let reviewChosen = convertRedFives(chosenTile);
         reviewRows = reviewRows.filter((row) => row.value > 0 || row.tile === reviewChosen);
 
+        // Mistake deck: remember the decision hand, or settle a repeated one
+        let decisionHand = this.state.hand.slice();
+        let missed = chosenUkeire.value < ukeire[evaluateBestDiscard(ukeire, this.state.dora + 1)].value;
+        let retired = false;
+        let mistakeNote = null;
+        if (this.repeatKey && this.repeatKey === mistakeKey(decisionHand)) {
+            retired = resolveMistake(decisionHand, !missed);
+            mistakeNote = retired ? 'retired' : (missed ? 'again' : 'progress');
+        } else if (missed) {
+            mistakeNote = 'saved';
+            addMistake({ hand: decisionHand, draw: this.state.lastDraw === false || this.state.lastDraw < 0 ? false : this.state.lastDraw, dora: this.state.dora, round: this.state.roundWind - 30, seat: this.state.seatWind - 30 });
+        }
+        this.repeatKey = null;
+
         // Shanten before the discard, to flag a discard that moves the hand away from tenpai
         let shantenBefore = shantenFunction(convertRedFives(hand));
 
@@ -546,7 +567,7 @@ class UkeireQuiz extends React.Component {
             preview: null,
             hinted: false,
             whyOpen: false,
-            review: { rows: reviewRows, chosen: convertRedFives(chosenTile), best: bestTile, data: historyData, hinted: this.state.hinted, worsened: worsened, insight: explainUkeire(chosenUkeire, ukeire[bestTile], convertRedFives(chosenTile), convertRedFives(bestTile)) },
+            review: { rows: reviewRows, chosen: convertRedFives(chosenTile), best: bestTile, data: historyData, hinted: this.state.hinted, worsened: worsened, mistakeNote: mistakeNote, insight: explainUkeire(chosenUkeire, ukeire[bestTile], convertRedFives(chosenTile), convertRedFives(bestTile)) },
             streak: wasBest ? this.state.streak + 1 : 0,
             avgTime: avgTime,
         }, () => {
@@ -606,6 +627,24 @@ class UkeireQuiz extends React.Component {
         let paused = !this.state.paused;
         clearTimeout(this.autoTimer);
         this.setState({ paused: paused }, () => { if (!paused) this.scheduleAutoHand(300); });
+    }
+
+    /** Starts a hand from the mistake deck. */
+    onRepeatMistake() {
+        let item = pickMistake(this.repeatKey);
+        if (!item) return;
+
+        clearTimeout(this.autoTimer);
+        this.onHandLoaded({
+            hand: item.hand.slice(),
+            tiles: item.hand.reduce((sum, count) => sum + count, 0),
+            dora: item.dora,
+            roundWind: item.round,
+            seatWind: item.seat,
+            draw: item.draw,
+        });
+        this.repeatKey = mistakeKey(item.hand);
+        this.setState({ mistakeCount: countMistakes() });
     }
 
     dismissDisclaimer() {
@@ -766,6 +805,7 @@ class UkeireQuiz extends React.Component {
                 hinted={review.hinted}
                 insight={review.insight}
                 worsened={review.worsened}
+                mistakeNote={review.mistakeNote}
                 onNext={() => this.setState({ review: null, whyOpen: false })}
             />
         );
@@ -826,7 +866,10 @@ class UkeireQuiz extends React.Component {
                 {this.state.preview ? this.renderPreview(t) : this.state.review && !quick ? this.renderReview(t) : null}
 
                 <div className="rt-actions">
-                    <Button variant={this.state.isComplete ? "success" : "accent"} icon="refresh" onClick={() => this.onNewHand()}>{t("trainer.newHandButtonLabel")}</Button>
+                    <Button variant={this.state.isComplete ? "success" : "accent"} icon="refresh" onClick={() => { this.repeatKey = null; this.onNewHand(); }}>{t("trainer.newHandButtonLabel")}</Button>
+                    {countMistakes() > 0 ? (
+                        <Button variant="secondary" icon="history" onClick={this.onRepeatMistake}>{t("play.repeat", { count: countMistakes() })}</Button>
+                    ) : null}
                 </div>
                 <Collapsible title={t("play.handTools")} icon="copy">
                     <div className="rt-actions">

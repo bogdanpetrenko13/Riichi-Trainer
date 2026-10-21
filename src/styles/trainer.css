@@ -482,3 +482,10 @@
 .rt-review__tiles .discardTile {
   width: 30px;
 }
+
+.rt-review__note--saved,
+.rt-review__note--again { color: var(--rt-color-warning-text); }
+.rt-review__note--progress,
+.rt-review__note--retired { color: var(--rt-color-success-text); }
+
+.rt-deck__text { margin: 0; font-size: var(--rt-text-sm); }

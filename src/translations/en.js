@@ -29,6 +29,9 @@ export const en = {
             aboutText: "Practice tile efficiency, defense, shanten and endgame decisions. Works fully offline."
         },
         home: {
+            deck: "Mistake deck",
+            deckText: "Hands where you picked a worse discard. Answer one correctly twice in a row to retire it.",
+            deckStart: "Repeat mistakes",
             title: "Today's practice",
             continue: "Continue: {{name}}",
             goal: "Daily goal",
@@ -72,6 +75,13 @@ export const en = {
             worsenedTenpai: "You broke a tenpai hand: it is now {{after}}-shanten.",
             quickWorse: "Shanten got worse ({{before}} → {{after}}): this discard moved you away from tenpai.",
             handTools: "Copy or load a hand",
+            repeat: "Repeat mistakes ({{count}})",
+            deck: {
+                saved: "Added to your mistake deck: it will come back later.",
+                again: "Still a mistake: the hand stays in the deck.",
+                progress: "Correct! One more correct answer and it leaves the deck.",
+                retired: "Mistake mastered: the hand leaves the deck."
+            },
             tapQuick: "Tap a tile to discard it right away.",
             acceptance: "Acceptance: {{count}}",
             improves: "Tiles that improve the hand",
