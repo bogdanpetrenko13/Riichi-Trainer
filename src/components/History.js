@@ -21,7 +21,7 @@ class History extends React.Component {
         let { t } = this.props;
 
         return (
-            <Collapsible title={t("history.label")} icon="history" defaultOpen>
+            <Collapsible title={t("history.label")} icon="history" defaultOpen={!!this.props.defaultOpen}>
                 <ListGroup>
                     {history}
                 </ListGroup>

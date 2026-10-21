@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Modal, Icon, showToast, dismissToast } from '../components/ui';
+import { Button, Modal, Icon, Collapsible, showToast, dismissToast } from '../components/ui';
 import Tile from '../components/Tile';
 import { bumpDaily } from '../progress';
 import ReviewPanel from '../components/ReviewPanel';
@@ -423,9 +423,13 @@ class UkeireQuiz extends React.Component {
         let reviewChosen = convertRedFives(chosenTile);
         reviewRows = reviewRows.filter((row) => row.value > 0 || row.tile === reviewChosen);
 
+        // Shanten before the discard, to flag a discard that moves the hand away from tenpai
+        let shantenBefore = shantenFunction(convertRedFives(hand));
+
         hand[chosenTile]--;
 
         let shanten = shantenFunction(hand);
+        let worsened = shanten > shantenBefore ? { before: shantenBefore, after: shanten } : null;
         let handUkeire = calculateUkeireFromOnlyHand(hand, this.getStartingTiles(), shantenFunction);
         let bestTile = evaluateBestDiscard(ukeire, this.state.dora + 1);
 
@@ -507,6 +511,7 @@ class UkeireQuiz extends React.Component {
             if (this.lastToast) dismissToast(this.lastToast);
             this.lastToast = showToast(wasBest
                 ? { type: 'success', duration: 1600, message: t('play.quickOk', { count: chosenUkeire.value }) }
+                : worsened ? { type: 'error', duration: 3200, message: t('play.quickWorse', { before: worsened.before, after: worsened.after }) }
                 : { type: 'warning', duration: 2600, message: t('play.quickMiss', { tile: getTileAsText(t, bestTile, false), best: ukeire[bestTile].value, count: chosenUkeire.value }) });
         }
 
@@ -541,7 +546,7 @@ class UkeireQuiz extends React.Component {
             preview: null,
             hinted: false,
             whyOpen: false,
-            review: { rows: reviewRows, chosen: convertRedFives(chosenTile), best: bestTile, data: historyData, hinted: this.state.hinted, insight: explainUkeire(chosenUkeire, ukeire[bestTile], convertRedFives(chosenTile), convertRedFives(bestTile)) },
+            review: { rows: reviewRows, chosen: convertRedFives(chosenTile), best: bestTile, data: historyData, hinted: this.state.hinted, worsened: worsened, insight: explainUkeire(chosenUkeire, ukeire[bestTile], convertRedFives(chosenTile), convertRedFives(bestTile)) },
             streak: wasBest ? this.state.streak + 1 : 0,
             avgTime: avgTime,
         }, () => {
@@ -760,6 +765,7 @@ class UkeireQuiz extends React.Component {
                 onToggleWhy={() => this.setState({ whyOpen: !this.state.whyOpen })}
                 hinted={review.hinted}
                 insight={review.insight}
+                worsened={review.worsened}
                 onNext={() => this.setState({ review: null, whyOpen: false })}
             />
         );
@@ -821,9 +827,13 @@ class UkeireQuiz extends React.Component {
 
                 <div className="rt-actions">
                     <Button variant={this.state.isComplete ? "success" : "accent"} icon="refresh" onClick={() => this.onNewHand()}>{t("trainer.newHandButtonLabel")}</Button>
-                    <CopyButton hand={this.state.hand} />
-                    <LoadButton callback={this.loadHand} />
                 </div>
+                <Collapsible title={t("play.handTools")} icon="copy">
+                    <div className="rt-actions">
+                        <CopyButton hand={this.state.hand} />
+                        <LoadButton callback={this.loadHand} />
+                    </div>
+                </Collapsible>
                 <History history={this.state.history} concise={this.state.settings.extraConcise} verbose={this.state.settings.verbose} spoilers={this.state.settings.spoilers}/>
                 <DiscardPool players={this.state.players} discardCount={this.state.discardCount} wallCount={this.state.tilePool && this.state.tilePool.length} showIndexes={this.state.settings.showIndexes} />
                 <StatsDisplay values={this.state.stats} onReset={() => this.resetStats()} />

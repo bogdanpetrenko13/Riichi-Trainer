@@ -52,7 +52,7 @@ export const en = {
             modeConfirm: "Confirm",
             modeQuick: "Quick",
             discard: "Discard",
-            tapToSelect: "Select the tile you would discard, then press Discard (or tap it again). The answer is shown only after you decide.",
+            tapToSelect: "Pick the tile to discard, then confirm.",
             hint: "Hint",
             hintedNote: "Hint used: this discard does not count as optimal.",
             insight: {
@@ -67,6 +67,11 @@ export const en = {
                 lostLabel: "Tiles you stop accepting",
                 gainedLabel: "Only your discard accepts"
             },
+            worsenedTitle: "You moved away from tenpai",
+            worsened: "Shanten went from {{before}} to {{after}}: the hand needs more steps to get ready.",
+            worsenedTenpai: "You broke a tenpai hand: it is now {{after}}-shanten.",
+            quickWorse: "Shanten got worse ({{before}} → {{after}}): this discard moved you away from tenpai.",
+            handTools: "Copy or load a hand",
             tapQuick: "Tap a tile to discard it right away.",
             acceptance: "Acceptance: {{count}}",
             improves: "Tiles that improve the hand",
@@ -366,7 +371,7 @@ export const en = {
             }
         },
         defense: {
-            instructionsConfirm: "Select the tile you would discard, then press Discard (or tap it again). Its safety is shown only after you decide.",
+            instructionsConfirm: "Pick the tile to discard, then confirm.",
             quickOk: "Safest tile! Rating {{rating}}",
             quickMiss: "Safer: {{tile}} (rating {{best}}, yours {{rating}})",
             instructions: "Discard the safest tile.",

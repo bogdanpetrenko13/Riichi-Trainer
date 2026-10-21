@@ -4,7 +4,7 @@
 
 .rt-trainer {
   /* место под док с рукой и кнопкой «Сбросить» */
-  padding-bottom: 150px;
+  padding-bottom: 230px;
 }
 
 .rt-trainer__bar {
@@ -458,4 +458,27 @@
   flex-wrap: wrap;
   gap: 2px;
   margin-top: var(--rt-space-1);
+}
+
+/* Сброс, отдаливший тэмпай */
+.rt-alertbox {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: var(--rt-space-3);
+  padding: var(--rt-space-3);
+  color: var(--rt-color-danger-text);
+  background-color: var(--rt-color-danger-soft);
+  border-left: 4px solid var(--rt-color-danger);
+  border-radius: var(--rt-radius-sm);
+  font-size: var(--rt-text-sm);
+}
+
+.rt-alertbox strong {
+  font-size: var(--rt-text-base);
+}
+
+/* Тайлы в пояснении: компактные, а не на всю ширину */
+.rt-review__tiles .discardTile {
+  width: 30px;
 }
