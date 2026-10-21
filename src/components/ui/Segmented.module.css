@@ -62,3 +62,15 @@
     color: var(--rt-color-text);
   }
 }
+
+/* Три и больше вариантов: значок над подписью, чтобы текст не обрезался */
+.many .option {
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px var(--rt-space-1);
+  line-height: 1.2;
+}
+
+.many .text {
+  max-width: 100%;
+}

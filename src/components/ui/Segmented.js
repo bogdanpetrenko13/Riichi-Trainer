@@ -36,7 +36,7 @@ function Segmented(props) {
     return (
         <div
             ref={containerRef}
-            className={cx(styles.segmented, className)}
+            className={cx(styles.segmented, options.length > 2 && styles.many, className)}
             role={role}
             aria-label={ariaLabel}
             style={{ '--rt-seg-count': options.length, '--rt-seg-index': selectedIndex }}

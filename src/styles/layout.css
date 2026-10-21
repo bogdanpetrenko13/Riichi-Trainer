@@ -324,3 +324,15 @@
   color: var(--rt-color-danger-text);
   background-color: var(--rt-color-danger-soft);
 }
+
+/* Строки настроек с числовым полем: подпись сверху, поле во всю ширину не вылезает за экран */
+.rt-settings .row {
+  flex-wrap: wrap;
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.rt-settings .row > * {
+  min-width: 0;
+}
