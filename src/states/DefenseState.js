@@ -648,12 +648,8 @@ class DefenseState extends React.Component {
                 {ready ? (
                     <div className="rt-trainer__hint">
                         <p className="rt-instructions">{quick ? t("defense.instructions") : t("defense.instructionsConfirm")}</p>
-                        <div className="rt-trainer__hintbtns">
-                            {!quick && !this.state.isComplete && this.state.selected > -1 && !preview ? (
-                                <Button size="sm" variant="ghost" icon="info" onClick={this.onHint}>{t("play.hint")}</Button>
-                            ) : null}
-                            <Button size="sm" variant="secondary" icon="sliders" onClick={() => this.setState({ settingsOpen: true })}>{t("settings.buttonLabel")}</Button>
-                        </div>
+                        <Button size="sm" variant={this.state.isComplete ? "accent" : "secondary"} icon="refresh" aria-label={t("trainer.newHandButtonLabel")} title={t("trainer.newHandButtonLabel")} onClick={() => this.onNewHand()} />
+                        <Button size="sm" variant="secondary" icon="sliders" aria-label={t("settings.buttonLabel")} title={t("settings.buttonLabel")} onClick={() => this.setState({ settingsOpen: true })} />
                     </div>
                 ) : null}
 
@@ -668,13 +664,22 @@ class DefenseState extends React.Component {
                                 showIndexes={this.state.settings.showIndexes} />
                         </section>
                         {!quick ? (
-                            <Button
-                                variant="accent"
-                                size="lg"
-                                block
-                                disabled={this.state.selected < 0 || this.state.isComplete}
-                                onClick={this.onDiscardSelected}
-                            >{t("play.discard")}</Button>
+                            <div className="rt-playbar">
+                                <Button
+                                    variant="accent"
+                                    block
+                                    disabled={this.state.selected < 0 || this.state.isComplete}
+                                    onClick={this.onDiscardSelected}
+                                >{t("play.discard")}</Button>
+                                <Button
+                                    variant="secondary"
+                                    icon="info"
+                                    aria-label={t("play.hint")}
+                                    title={t("play.hint")}
+                                    disabled={this.state.selected < 0 || this.state.isComplete || !!preview}
+                                    onClick={this.onHint}
+                                />
+                            </div>
                         ) : null}
                     </React.Fragment>
                 ) : null}
@@ -701,10 +706,6 @@ class DefenseState extends React.Component {
                         onNext={() => this.setState({ review: null, whyOpen: false })}
                     />
                 ) : null}
-
-                <div className="rt-actions">
-                    <Button variant={this.state.isComplete ? "success" : "secondary"} icon="refresh" onClick={() => this.onNewHand()}>{t("trainer.newHandButtonLabel")}</Button>
-                </div>
 
                 <Collapsible title={t("defense.safetyRatings")} icon="shield" open={!this.state.chartCollapsed} onToggle={() => this.toggleChart()}>
                     <p className="rt-muted">{t("defense.averagedSafetyRating")}</p>

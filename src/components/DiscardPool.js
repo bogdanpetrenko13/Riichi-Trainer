@@ -32,13 +32,11 @@ class DiscardPool extends React.Component {
             )
         }
 
+        if (pools.length === 0) return null;
+
         return (
-            <Collapsible title={t("discards.label")} icon="layers" defaultOpen>
+            <Collapsible title={t("discards.label")} icon="layers">
                 <div className="rt-discards">
-                    <p className="rt-discards__summary">
-                        <span>{t("discards.discardCount", { count: this.props.discardCount })}</span>
-                        <span>{t("discards.tilesLeft", { count: this.props.wallCount })}</span>
-                    </p>
                     {pools}
                 </div>
             </Collapsible>

@@ -2,7 +2,6 @@ import React from 'react';
 import { useTranslation } from '../i18n';
 import { Button, Icon } from '../components/ui';
 import { DAILY_GOAL, getDailyCount, getTrainerSummary } from '../progress';
-import { countMistakes, requestRepeat } from '../mistakes';
 
 /**
  * Home screen: continue button, daily goal and cards for every exercise.
@@ -13,7 +12,6 @@ function Home({ exercises, lastId, onOpen }) {
     const done = getDailyCount();
     const percent = Math.min(100, Math.round(done / DAILY_GOAL * 100));
     const summary = getTrainerSummary();
-    const mistakes = countMistakes();
     const last = exercises.find((exercise) => exercise.id === lastId);
 
     return (
@@ -39,17 +37,6 @@ function Home({ exercises, lastId, onOpen }) {
                     <span>{summary ? summary.rate + '% · ' + t('home.hands', { count: summary.hands }) : t('home.noStats')}</span>
                 </div>
             </section>
-
-            {mistakes > 0 ? (
-                <section className="rt-goal rt-deck" aria-label={t('home.deck')}>
-                    <div className="rt-goal__row">
-                        <strong>{t('home.deck')}</strong>
-                        <span className="rt-num">{mistakes}</span>
-                    </div>
-                    <p className="rt-muted rt-deck__text">{t('home.deckText')}</p>
-                    <Button variant="primary" icon="history" onClick={() => { requestRepeat(); onOpen(exercises[0].id); }}>{t('home.deckStart')}</Button>
-                </section>
-            ) : null}
 
             <h3 className="rt-section-title">{t('home.exercises')}</h3>
             <div className="rt-cards">

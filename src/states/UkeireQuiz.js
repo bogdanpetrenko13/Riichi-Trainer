@@ -18,7 +18,6 @@ import { calculateDiscardUkeire, calculateUkeireFromOnlyHand } from "../scripts/
 import { calculateMinimumShanten, calculateStandardShanten } from "../scripts/ShantenCalculator";
 import { convertRedFives, getTileAsText } from "../scripts/TileConversions";
 import { explainUkeire } from "../scripts/Explain";
-import { addMistake, resolveMistake, countMistakes, pickMistake, mistakeKey, consumeRepeatRequest } from "../mistakes";
 import { convertHandToTenhouString, convertHandToTileIndexArray } from "../scripts/HandConversions";
 import { evaluateBestDiscard } from "../scripts/Evaluations";
 import { shuffleArray, removeRandomItem, getRandomItem } from '../scripts/Utils';
@@ -52,7 +51,7 @@ class UkeireQuiz extends React.Component {
         super(props);
         this.onSettingsChanged = this.onSettingsChanged.bind(this);
         this.onTileClicked = this.onTileClicked.bind(this);
-        this.loadHand = (data) => { this.repeatKey = null; this.onHandLoaded(data); };
+        this.loadHand = (data) => { this.setState({ settingsOpen: false }); this.onHandLoaded(data); };
         this.updateTime = this.onUpdateTime.bind(this);
         this.timerUpdate = null;
         this.timer = null;
@@ -61,8 +60,6 @@ class UkeireQuiz extends React.Component {
         this.times = [];
         this.onTileSelected = this.onTileSelected.bind(this);
         this.onHint = this.onHint.bind(this);
-        this.onRepeatMistake = this.onRepeatMistake.bind(this);
-        this.repeatKey = null;
         this.onDiscardSelected = this.onDiscardSelected.bind(this);
         this.setMode = this.setMode.bind(this);
         this.togglePause = this.togglePause.bind(this);
@@ -109,9 +106,6 @@ class UkeireQuiz extends React.Component {
     }
 
     componentDidMount() {
-        if (consumeRepeatRequest() && countMistakes() > 0) {
-            this.repeatTimer = setTimeout(() => this.onRepeatMistake(), 80);
-        }
         try {
             let savedStats = window.localStorage.getItem("stats");
             if (savedStats) {
@@ -135,7 +129,6 @@ class UkeireQuiz extends React.Component {
     }
 
     componentWillUnmount() {
-        clearTimeout(this.repeatTimer);
         clearTimeout(this.autoTimer);
         if (this.lastToast) dismissToast(this.lastToast);
 
@@ -429,20 +422,6 @@ class UkeireQuiz extends React.Component {
         let reviewChosen = convertRedFives(chosenTile);
         reviewRows = reviewRows.filter((row) => row.value > 0 || row.tile === reviewChosen);
 
-        // Mistake deck: remember the decision hand, or settle a repeated one
-        let decisionHand = this.state.hand.slice();
-        let missed = chosenUkeire.value < ukeire[evaluateBestDiscard(ukeire, this.state.dora + 1)].value;
-        let retired = false;
-        let mistakeNote = null;
-        if (this.repeatKey && this.repeatKey === mistakeKey(decisionHand)) {
-            retired = resolveMistake(decisionHand, !missed);
-            mistakeNote = retired ? 'retired' : (missed ? 'again' : 'progress');
-        } else if (missed) {
-            mistakeNote = 'saved';
-            addMistake({ hand: decisionHand, draw: this.state.lastDraw === false || this.state.lastDraw < 0 ? false : this.state.lastDraw, dora: this.state.dora, round: this.state.roundWind - 30, seat: this.state.seatWind - 30 });
-        }
-        this.repeatKey = null;
-
         // Shanten before the discard, to flag a discard that moves the hand away from tenpai
         let shantenBefore = shantenFunction(convertRedFives(hand));
 
@@ -566,7 +545,7 @@ class UkeireQuiz extends React.Component {
             preview: null,
             hinted: false,
             whyOpen: false,
-            review: { rows: reviewRows, chosen: convertRedFives(chosenTile), best: bestTile, data: historyData, hinted: this.state.hinted, worsened: worsened, mistakeNote: mistakeNote, insight: explainUkeire(chosenUkeire, ukeire[bestTile], convertRedFives(chosenTile), convertRedFives(bestTile)) },
+            review: { rows: reviewRows, chosen: convertRedFives(chosenTile), best: bestTile, data: historyData, hinted: this.state.hinted, worsened: worsened, insight: explainUkeire(chosenUkeire, ukeire[bestTile], convertRedFives(chosenTile), convertRedFives(bestTile)) },
             streak: wasBest ? this.state.streak + 1 : 0,
             avgTime: avgTime,
         }, () => {
@@ -626,24 +605,6 @@ class UkeireQuiz extends React.Component {
         let paused = !this.state.paused;
         clearTimeout(this.autoTimer);
         this.setState({ paused: paused }, () => { if (!paused) this.scheduleAutoHand(300); });
-    }
-
-    /** Starts a hand from the mistake deck. */
-    onRepeatMistake() {
-        let item = pickMistake(this.repeatKey);
-        if (!item) return;
-
-        clearTimeout(this.autoTimer);
-        this.onHandLoaded({
-            hand: item.hand.slice(),
-            tiles: item.hand.reduce((sum, count) => sum + count, 0),
-            dora: item.dora,
-            roundWind: item.round,
-            seatWind: item.seat,
-            draw: item.draw,
-        });
-        this.repeatKey = mistakeKey(item.hand);
-        this.setState({ mistakeCount: countMistakes() });
     }
 
     dismissDisclaimer() {
@@ -804,7 +765,6 @@ class UkeireQuiz extends React.Component {
                 hinted={review.hinted}
                 insight={review.insight}
                 worsened={review.worsened}
-                mistakeNote={review.mistakeNote}
                 onNext={() => this.setState({ review: null, whyOpen: false })}
             />
         );
@@ -831,7 +791,7 @@ class UkeireQuiz extends React.Component {
                     onChange={this.onSettingsChanged}
                     open={this.state.settingsOpen}
                     onClose={() => this.setState({ settingsOpen: false })}
-                    header={modeSwitch}
+                    header={<React.Fragment>{modeSwitch}<div className="rt-setting-block"><div className="rt-actions"><CopyButton hand={this.state.hand} /></div><LoadButton callback={this.loadHand} /></div></React.Fragment>}
                 />
                 <Modal
                     open={this.state.disclaimerOpen}
@@ -855,12 +815,8 @@ class UkeireQuiz extends React.Component {
 
                 <div className="rt-trainer__hint">
                     <p className="rt-instructions">{this.state.isComplete ? "" : (quick ? t("play.tapQuick") : t("play.tapToSelect"))}</p>
-                    <div className="rt-trainer__hintbtns">
-                        {!quick && !this.state.isComplete && this.state.selected > -1 && !this.state.preview ? (
-                            <Button size="sm" variant="ghost" icon="info" onClick={this.onHint}>{t("play.hint")}</Button>
-                        ) : null}
-                        <Button size="sm" variant="secondary" icon="sliders" onClick={() => this.setState({ settingsOpen: true })}>{t("settings.buttonLabel")}</Button>
-                    </div>
+                    <Button size="sm" variant={this.state.isComplete ? "accent" : "secondary"} icon="refresh" aria-label={t("trainer.newHandButtonLabel")} title={t("trainer.newHandButtonLabel")} onClick={() => this.onNewHand()} />
+                    <Button size="sm" variant="secondary" icon="sliders" aria-label={t("settings.buttonLabel")} title={t("settings.buttonLabel")} onClick={() => this.setState({ settingsOpen: true })} />
                 </div>
                 <section className="rt-board rt-board--play">
                     {this.state.settings.sort
@@ -869,28 +825,29 @@ class UkeireQuiz extends React.Component {
                     }
                 </section>
                 {!quick ? (
-                    <Button
-                        variant="accent"
-                        size="lg"
-                        block
-                        disabled={this.state.selected < 0 || this.state.isComplete}
-                        onClick={this.onDiscardSelected}
-                    >{t("play.discard")}</Button>
+                    <div className="rt-playbar">
+                        <Button
+                            variant="accent"
+                            block
+                            disabled={this.state.selected < 0 || this.state.isComplete}
+                            onClick={this.onDiscardSelected}
+                        >{t("play.discard")}</Button>
+                        <Button
+                            variant="secondary"
+                            icon="info"
+                            aria-label={t("play.hint")}
+                            title={t("play.hint")}
+                            disabled={this.state.selected < 0 || this.state.isComplete || !!this.state.preview}
+                            onClick={this.onHint}
+                        />
+                    </div>
                 ) : null}
                 {this.state.preview ? this.renderPreview(t) : this.state.review && !quick ? this.renderReview(t) : null}
 
-                <div className="rt-actions">
-                    <Button variant={this.state.isComplete ? "success" : "secondary"} icon="refresh" onClick={() => { this.repeatKey = null; this.onNewHand(); }}>{t("trainer.newHandButtonLabel")}</Button>
-                    {countMistakes() > 0 ? (
-                        <Button variant="secondary" icon="history" onClick={this.onRepeatMistake}>{t("play.repeat", { count: countMistakes() })}</Button>
-                    ) : null}
-                </div>
-                <Collapsible title={t("play.handTools")} icon="copy">
-                    <div className="rt-actions">
-                        <CopyButton hand={this.state.hand} />
-                        <LoadButton callback={this.loadHand} />
-                    </div>
-                </Collapsible>
+                <p className="rt-caption">
+                    <span>{t("discards.discardCount", { count: this.state.discardCount })}</span>
+                    <span>{t("discards.tilesLeft", { count: this.state.tilePool ? this.state.tilePool.length : 0 })}</span>
+                </p>
                 <History history={this.state.history} concise={this.state.settings.extraConcise} verbose={this.state.settings.verbose} spoilers={this.state.settings.spoilers}/>
                 <DiscardPool players={this.state.players} discardCount={this.state.discardCount} wallCount={this.state.tilePool && this.state.tilePool.length} showIndexes={this.state.settings.showIndexes} />
                 <StatsDisplay values={this.state.stats} onReset={() => this.resetStats()} />

@@ -212,16 +212,13 @@ class ShantenQuiz extends React.Component {
 
                 <div className="rt-trainer__hint">
                     <p className="rt-instructions">{t("shanten.tapAnswer")}</p>
-                    <Button size="sm" variant="secondary" icon="sliders" onClick={() => this.setState({ settingsOpen: true })}>{t("settings.buttonLabel")}</Button>
+                    <Button size="sm" variant="secondary" icon="refresh" aria-label={t("shanten.newHandButtonLabel")} title={t("shanten.newHandButtonLabel")} onClick={() => this.onNewHand()} />
+                    <Button size="sm" variant="secondary" icon="sliders" aria-label={t("settings.buttonLabel")} title={t("settings.buttonLabel")} onClick={() => this.setState({ settingsOpen: true })} />
                 </div>
 
                 <section className="rt-board rt-board--play">
                     <Hand tiles={this.state.hand} showIndexes={this.state.settings.showIndexes} />
                 </section>
-
-                <div className="rt-actions">
-                    <Button variant="accent" icon="refresh" onClick={() => this.onNewHand()}>{t("shanten.newHandButtonLabel")}</Button>
-                </div>
 
                 <StatsDisplay values={this.state.stats} onReset={this.resetStats} useTimer={this.state.settings.useTimer} />
 

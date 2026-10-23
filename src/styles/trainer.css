@@ -4,7 +4,7 @@
 
 .rt-trainer {
   /* место под док с рукой и кнопкой «Сбросить» */
-  padding-bottom: 24px;
+  padding-bottom: 8px;
 }
 
 .rt-trainer__bar {
@@ -507,4 +507,63 @@
   max-width: 640px;
   margin: 0 auto;
   padding-top: 10px;
+}
+
+/* ---------- Компактная компоновка тренеров ---------- */
+.rt-trainer {
+  gap: var(--rt-space-2);
+}
+
+.rt-trainer__hint {
+  gap: var(--rt-space-2);
+}
+
+.rt-trainer__hint .rt-instructions {
+  margin: 0;
+  font-size: var(--rt-text-sm);
+  line-height: 1.3;
+}
+
+/* Под рукой: «Сбросить» на всю ширину + кнопка подсказки */
+.rt-playbar {
+  display: flex;
+  gap: var(--rt-space-2);
+}
+
+.rt-playbar > :first-child {
+  flex: 1 1 auto;
+}
+
+/* Счётчики тайлов одной строкой */
+.rt-caption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--rt-space-3);
+  margin: 0;
+  font-size: var(--rt-text-xs);
+  color: var(--rt-color-text-2);
+}
+
+/* Ветер раунда, ваш ветер, дора: три компактные плашки в ряд */
+.rt-trainer .rt-values {
+  gap: var(--rt-space-2);
+}
+
+.rt-trainer .rt-value {
+  flex-direction: row;
+  justify-content: space-between;
+  gap: var(--rt-space-2);
+  padding: 4px var(--rt-space-2) 4px var(--rt-space-3);
+  text-align: left;
+  min-height: 44px;
+}
+
+.rt-trainer .rt-value__label {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+
+.rt-trainer .rt-value .discardTile {
+  width: 26px;
+  flex: none;
 }

@@ -15,10 +15,10 @@
 .trigger {
   display: flex;
   align-items: center;
-  gap: var(--rt-space-3);
+  gap: var(--rt-space-2);
   width: 100%;
-  min-height: 52px;
-  padding: 0 var(--rt-space-4);
+  min-height: 44px;
+  padding: 0 var(--rt-space-3);
   font: inherit;
   font-weight: 600;
   color: var(--rt-color-text);

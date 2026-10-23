@@ -7,7 +7,7 @@ import Tile from './Tile';
  * Review after a discard: one bar per distinct tile, marked "yours" and "best".
  * rows: [{ tile, value }]; format(value) gives the label; lines are the "Why?" explanation.
  */
-function ReviewPanel({ rows, chosen, best, format, lines, whyOpen, onToggleWhy, onNext, maxValue, hinted, insight, worsened, mistakeNote }) {
+function ReviewPanel({ rows, chosen, best, format, lines, whyOpen, onToggleWhy, onNext, maxValue, hinted, insight, worsened }) {
     const { t } = useTranslation();
     const ref = useRef(null);
     useEffect(() => {
@@ -24,7 +24,6 @@ function ReviewPanel({ rows, chosen, best, format, lines, whyOpen, onToggleWhy, 
                 </div>
             ) : null}
             <h3 className="rt-review__title">{t('play.review')}</h3>
-            {mistakeNote ? <p className={cx('rt-review__note', 'rt-review__note--' + mistakeNote)}>{t('play.deck.' + mistakeNote)}</p> : null}
             {hinted ? <p className="rt-review__note">{t('play.hintedNote')}</p> : null}
             <ul className="rt-review__list">
                 {rows.map((row) => (
