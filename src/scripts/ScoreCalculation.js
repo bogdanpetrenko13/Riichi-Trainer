@@ -1,4 +1,4 @@
-function calculateBasicPoints(han, fu, yakuman) {
+export function calculateBasicPoints(han, fu, yakuman) {
     if (han <= 0) return 0;
 
     var basicPoints;

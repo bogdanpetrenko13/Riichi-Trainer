@@ -23,7 +23,10 @@ Sister project: Riichi Night (same stack and design language).
 | `src/translations/en.js`, `ru.js` | The two languages (others were dropped); `en` is the reference, `ru` must have the same keys |
 | `src/states/*` | The trainer screens (legacy JS, being ported) |
 | `src/components/ui/*` | UI kit (tokens, `rt-*` classes); `legacy.js` renders the old reactstrap components |
-| `src/screens/*` | Home (exercise cards, daily goal), Settings, Help, About |
+| `src/screens/*` | Home (exercise cards, daily goal), Settings, Help, About, Glossary, ScoreCounter |
+| `src/states/MainMenu.js` | Three top-level sections in the bottom nav: Trainer (Home + every exercise), Glossary, Score counter. Settings are in the AppBar; Help/About are links on Home |
+| `src/data/glossary.js` | Glossary entries (ru + en in one row, with search aliases) and `searchGlossary`; terms were fact-checked, not copied from the old site |
+| `src/scripts/ScoreCounter.js` | Fu + payment maths for the counter (double-wind pair = 4 fu, kiriage optional, yakuman multiples); tests in `tests/scorecounter.test.ts` |
 | `src/progress.js` | localStorage helpers for the home screen (daily goal, last exercise, trainer summary) |
 | `src/trainerMode.js`, `components/Dock.js`, `ModeSwitch.js`, `ReviewPanel.js` | Shared trainer kit: confirm/quick mode (localStorage `rt-trainer-mode`), bottom dock, mode switch, review bars; used by ukeire and defense trainers (hand sits in the page in ONE row right under the hint via `.rt-board--play`, no fixed dock; Dock is only used by Shanten) |
 | `src/scripts/Explain.js` | Plain-language reason for a discard (ukeire / safety) shown in the review under "Why?" |

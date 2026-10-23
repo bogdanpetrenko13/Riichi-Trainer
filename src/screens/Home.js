@@ -7,7 +7,7 @@ import { DAILY_GOAL, getDailyCount, getTrainerSummary } from '../progress';
  * Home screen: continue button, daily goal and cards for every exercise.
  * `exercises`: [{ id, label, icon, summary? }]; onOpen(id) opens one.
  */
-function Home({ exercises, lastId, onOpen }) {
+function Home({ exercises, lastId, onOpen, helpId, aboutId }) {
     const { t } = useTranslation();
     const done = getDailyCount();
     const percent = Math.min(100, Math.round(done / DAILY_GOAL * 100));
@@ -46,6 +46,11 @@ function Home({ exercises, lastId, onOpen }) {
                         <span className="rt-excard__label">{exercise.label}</span>
                     </button>
                 ))}
+            </div>
+
+            <div className="rt-homelinks">
+                <Button variant="secondary" icon="help" onClick={() => onOpen(helpId)}>{t('app.help')}</Button>
+                <Button variant="secondary" icon="info" onClick={() => onOpen(aboutId)}>{t('app.about')}</Button>
             </div>
         </div>
     );

@@ -12,7 +12,9 @@ import Help from '../screens/Help';
 import About from '../screens/About';
 import Home from '../screens/Home';
 import { getLastState, setLastState } from '../progress';
-import { AppBar, BottomNav, Button, Icon, Modal, ToastHost } from '../components/ui';
+import Glossary from '../screens/Glossary';
+import ScoreCounter from '../screens/ScoreCounter';
+import { AppBar, BottomNav, Button, Icon, ToastHost } from '../components/ui';
 
 const STATES = {
     UKEIRE: 0,
@@ -26,49 +28,35 @@ const STATES = {
     HELP: 8,
     ABOUT: 9,
     HOME: 10,
+    GLOSSARY: 11,
+    COUNTER: 12,
 };
 
 /** Screens that count as exercises (shown on the home screen, remembered for «Continue»). */
 const EXERCISES = [STATES.UKEIRE, STATES.DEFENSE, STATES.SOUTH_FOUR, STATES.REPLAY, STATES.EXPLORER, STATES.SHANTEN, STATES.UTILS];
 
-/** Пункты нижней навигации: id совпадает с номером состояния, кроме «Ещё». */
-const NAV_STATES = [STATES.UKEIRE, STATES.DEFENSE, STATES.SOUTH_FOUR, STATES.REPLAY];
+/** Разделы верхнего уровня (нижняя навигация). Всё остальное — внутри «Тренера». */
+const SECTIONS = [STATES.HOME, STATES.GLOSSARY, STATES.COUNTER];
 
 class MainMenu extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            active: STATES.HOME,
-            moreOpen: false
+            active: STATES.HOME
         }
 
         this.onSetActivePage = this.onSetActivePage.bind(this);
-        this.onNavSelect = this.onNavSelect.bind(this);
-        this.closeMore = this.closeMore.bind(this);
     }
 
     onSetActivePage(index) {
         if (EXERCISES.indexOf(index) > -1) setLastState(index);
 
         this.setState({
-            active: index,
-            moreOpen: false
+            active: index
         });
 
         window.scrollTo(0, 0);
-    }
-
-    onNavSelect(id) {
-        if (id === 'more') {
-            this.setState({ moreOpen: true });
-        } else {
-            this.onSetActivePage(id);
-        }
-    }
-
-    closeMore() {
-        this.setState({ moreOpen: false });
     }
 
     changeLanguage(newLanguage) {
@@ -88,6 +76,8 @@ class MainMenu extends React.Component {
             case STATES.SETTINGS: return t("app.settings");
             case STATES.HELP: return t("app.help");
             case STATES.ABOUT: return t("app.about");
+            case STATES.GLOSSARY: return t("menu.glossary");
+            case STATES.COUNTER: return t("menu.counter");
             case STATES.HOME: return t("app.name");
             default: return t("menu.trainer");
         }
@@ -128,8 +118,12 @@ class MainMenu extends React.Component {
                 return <Help />;
             case STATES.ABOUT:
                 return <About />;
+            case STATES.GLOSSARY:
+                return <Glossary />;
+            case STATES.COUNTER:
+                return <ScoreCounter />;
             case STATES.HOME:
-                return <Home exercises={this.getExercises()} lastId={getLastState()} onOpen={this.onSetActivePage} />;
+                return <Home exercises={this.getExercises()} lastId={getLastState()} onOpen={this.onSetActivePage} helpId={STATES.HELP} aboutId={STATES.ABOUT} />;
             default:
                 return <UkeireQuiz />;
         }
@@ -140,30 +134,20 @@ class MainMenu extends React.Component {
         let active = this.state.active;
 
         let items = [
-            { id: STATES.UKEIRE, label: t("app.navDiscard"), icon: "target" },
-            { id: STATES.DEFENSE, label: t("app.navDefense"), icon: "shield" },
-            { id: STATES.SOUTH_FOUR, label: t("app.navScore"), icon: "barChart" },
-            { id: STATES.REPLAY, label: t("app.navReview"), icon: "search" },
-            { id: 'more', label: t("app.more"), icon: "more" },
+            { id: STATES.HOME, label: t("app.navTrainer"), icon: "target" },
+            { id: STATES.GLOSSARY, label: t("app.navGlossary"), icon: "book" },
+            { id: STATES.COUNTER, label: t("app.navCounter"), icon: "calculator" },
         ];
 
-        let moreLinks = [
-            { id: STATES.HOME, label: t("home.home"), icon: "tile" },
-            { id: STATES.EXPLORER, label: t("menu.explorer"), icon: "layers" },
-            { id: STATES.SHANTEN, label: t("menu.shanten"), icon: "compass" },
-            { id: STATES.UTILS, label: t("menu.utils"), icon: "wrench" },
-            { id: STATES.SETTINGS, label: t("app.settings"), icon: "sliders" },
-            { id: STATES.HELP, label: t("app.help"), icon: "help" },
-            { id: STATES.ABOUT, label: t("app.about"), icon: "info" },
-        ];
-
-        let activeNav = NAV_STATES.indexOf(active) > -1 ? active : (active === STATES.HOME ? null : 'more');
+        // Любой экран тренера (упражнения, настройки, справка) подсвечивает «Тренер».
+        let activeNav = active === STATES.GLOSSARY || active === STATES.COUNTER ? active : STATES.HOME;
+        let isSection = SECTIONS.indexOf(active) > -1;
 
         return (
             <div className="rt-app">
                 <AppBar
                     title={this.getTitle()}
-                    left={active === STATES.HOME
+                    left={isSection
                         ? <Icon name="tile" size={24} className="rt-brand" />
                         : <Button variant="ghost" icon="chevronLeft" aria-label={t("home.back")} onClick={() => this.onSetActivePage(STATES.HOME)} />}
                     right={<Button variant="ghost" icon="sliders" aria-label={t("app.settings")} onClick={() => this.onSetActivePage(STATES.SETTINGS)} />}
@@ -171,24 +155,7 @@ class MainMenu extends React.Component {
                 <main className="rt-main">
                     {this.renderPage()}
                 </main>
-                <BottomNav items={items} activeId={activeNav} onSelect={this.onNavSelect} ariaLabel={t("app.navLabel")} />
-                <Modal open={this.state.moreOpen} onClose={this.closeMore} title={t("app.moreTitle")}>
-                    <ul className="rt-more-list">
-                        {moreLinks.map((link) => (
-                            <li key={link.id}>
-                                <button
-                                    type="button"
-                                    className="rt-lang"
-                                    aria-current={active === link.id ? 'page' : undefined}
-                                    onClick={() => this.onSetActivePage(link.id)}
-                                >
-                                    <span className="rt-row"><Icon name={link.icon} size={20} />{link.label}</span>
-                                    <Icon name="chevronRight" size={18} />
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
-                </Modal>
+                <BottomNav items={items} activeId={activeNav} onSelect={this.onSetActivePage} ariaLabel={t("app.navLabel")} />
                 <ToastHost />
             </div>
         );
