@@ -4,7 +4,7 @@
 
 const THEME_KEY = 'rt-theme';
 const TILE_KEY = 'rt-tile-size';
-const THEME_COLORS = { light: '#f3eee1', dark: '#15181a' };
+const THEME_COLORS = { light: '#f7f4ec', dark: '#1c1f1d' };
 
 export const THEMES = ['light', 'dark', 'system'];
 export const TILE_SIZES = ['s', 'm', 'l'];

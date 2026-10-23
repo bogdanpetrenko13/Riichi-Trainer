@@ -215,7 +215,7 @@ class ShantenQuiz extends React.Component {
                     <Button size="sm" variant="secondary" icon="sliders" onClick={() => this.setState({ settingsOpen: true })}>{t("settings.buttonLabel")}</Button>
                 </div>
 
-                <section className="rt-board">
+                <section className="rt-board rt-board--play">
                     <Hand tiles={this.state.hand} showIndexes={this.state.settings.showIndexes} />
                 </section>
 

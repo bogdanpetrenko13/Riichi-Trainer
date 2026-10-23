@@ -66,7 +66,7 @@
 
 /* Выбранный тайл приподнят и подсвечен */
 .rt-tile--selected .tile {
-  transform: translateY(-12px);
+  transform: translateY(-9px);
   filter: drop-shadow(0 0 0 var(--rt-color-accent)) drop-shadow(0 6px 4px rgba(35, 35, 35, 0.35));
   outline: 2px solid var(--rt-color-accent);
   outline-offset: 1px;
@@ -74,7 +74,7 @@
 }
 
 .rt-tile--selected .tile:hover {
-  transform: translateY(-12px);
+  transform: translateY(-9px);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -398,13 +398,6 @@
   cursor: not-allowed;
 }
 
-/* Метки ветра и доры: в светлой теме без плашек */
-:root.theme-light .rt-trainer .rt-value {
-  background: transparent;
-  border-color: transparent;
-  box-shadow: none;
-}
-
 /* ---------- Шантен: ответ одним нажатием ---------- */
 .rt-answers {
   display: grid;
@@ -494,7 +487,24 @@
   padding-bottom: 170px;
 }
 
-/* Рука сразу под подсказкой: тайлы крупные, видны вместе с разбором без прокрутки */
+/* Рука в один ряд сразу под подсказкой (как за столом в Riichi Night):
+   на всю ширину экрана, число колонок подстраивается под число тайлов */
 .rt-board--play {
-  padding: var(--rt-space-3) var(--rt-space-2);
+  margin-left: calc(-1 * var(--rt-space-4));
+  margin-right: calc(-1 * var(--rt-space-4));
+  padding: var(--rt-space-3) 4px var(--rt-space-2);
+  border-left: 0;
+  border-right: 0;
+  border-radius: 0;
+}
+
+.rt-board--play .rt-hand {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: none;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 0 1px;
+  max-width: 640px;
+  margin: 0 auto;
+  padding-top: 10px;
 }
