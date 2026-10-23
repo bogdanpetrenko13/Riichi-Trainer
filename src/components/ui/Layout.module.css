@@ -56,7 +56,7 @@
 
 .bottomnavList {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(var(--rt-nav-count, 5), 1fr);
   max-width: var(--rt-page-max);
   height: var(--rt-bottomnav-h);
   margin: 0 auto;

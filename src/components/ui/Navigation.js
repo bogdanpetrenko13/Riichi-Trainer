@@ -27,7 +27,7 @@ export function BottomNav(props) {
 
     return (
         <nav className={styles.bottomnav} aria-label={ariaLabel}>
-            <ul className={styles.bottomnavList}>
+            <ul className={styles.bottomnavList} style={{ '--rt-nav-count': items.length }}>
                 {items.map((item) => {
                     const active = item.id === activeId;
                     return (
