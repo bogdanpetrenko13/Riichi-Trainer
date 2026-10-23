@@ -198,7 +198,7 @@ class ShantenQuiz extends React.Component {
         const answers = [-1, 0, 1, 2, 3, 4, 5, 6];
 
         return (
-            <div className="rt-page rt-trainer">
+            <div className="rt-page rt-trainer rt-trainer--dock">
                 <Settings
                     onChange={this.onSettingsChanged}
                     open={this.state.settingsOpen}

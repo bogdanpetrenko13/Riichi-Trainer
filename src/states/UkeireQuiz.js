@@ -3,7 +3,6 @@ import { Button, Modal, Icon, Collapsible, showToast, dismissToast } from '../co
 import Tile from '../components/Tile';
 import { bumpDaily } from '../progress';
 import ReviewPanel from '../components/ReviewPanel';
-import Dock from '../components/Dock';
 import ModeSwitch from '../components/ModeSwitch';
 import { getTrainerMode, setTrainerMode } from '../trainerMode';
 import Hand from '../components/Hand';
@@ -863,10 +862,25 @@ class UkeireQuiz extends React.Component {
                         <Button size="sm" variant="secondary" icon="sliders" onClick={() => this.setState({ settingsOpen: true })}>{t("settings.buttonLabel")}</Button>
                     </div>
                 </div>
+                <section className="rt-board rt-board--play">
+                    {this.state.settings.sort
+                        ? <Hand tiles={this.state.hand} {...handProps} />
+                        : <SortedHand tiles={this.state.shuffle} {...handProps} />
+                    }
+                </section>
+                {!quick ? (
+                    <Button
+                        variant="accent"
+                        size="lg"
+                        block
+                        disabled={this.state.selected < 0 || this.state.isComplete}
+                        onClick={this.onDiscardSelected}
+                    >{t("play.discard")}</Button>
+                ) : null}
                 {this.state.preview ? this.renderPreview(t) : this.state.review && !quick ? this.renderReview(t) : null}
 
                 <div className="rt-actions">
-                    <Button variant={this.state.isComplete ? "success" : "accent"} icon="refresh" onClick={() => { this.repeatKey = null; this.onNewHand(); }}>{t("trainer.newHandButtonLabel")}</Button>
+                    <Button variant={this.state.isComplete ? "success" : "secondary"} icon="refresh" onClick={() => { this.repeatKey = null; this.onNewHand(); }}>{t("trainer.newHandButtonLabel")}</Button>
                     {countMistakes() > 0 ? (
                         <Button variant="secondary" icon="history" onClick={this.onRepeatMistake}>{t("play.repeat", { count: countMistakes() })}</Button>
                     ) : null}
@@ -880,21 +894,6 @@ class UkeireQuiz extends React.Component {
                 <History history={this.state.history} concise={this.state.settings.extraConcise} verbose={this.state.settings.verbose} spoilers={this.state.settings.spoilers}/>
                 <DiscardPool players={this.state.players} discardCount={this.state.discardCount} wallCount={this.state.tilePool && this.state.tilePool.length} showIndexes={this.state.settings.showIndexes} />
                 <StatsDisplay values={this.state.stats} onReset={() => this.resetStats()} />
-
-                <Dock>
-                    {!quick ? (
-                        <Button
-                            variant="accent"
-                            block
-                            disabled={this.state.selected < 0 || this.state.isComplete}
-                            onClick={this.onDiscardSelected}
-                        >{t("play.discard")}</Button>
-                    ) : null}
-                    {this.state.settings.sort
-                        ? <Hand tiles={this.state.hand} {...handProps} />
-                        : <SortedHand tiles={this.state.shuffle} {...handProps} />
-                    }
-                </Dock>
             </div>
         );
     }

@@ -2,7 +2,6 @@ import React from 'react';
 import { withTranslation } from '../i18n';
 import { Button, Collapsible, Icon, showToast, dismissToast } from '../components/ui';
 import Tile from '../components/Tile';
-import Dock from '../components/Dock';
 import ReviewPanel from '../components/ReviewPanel';
 import ModeSwitch from '../components/ModeSwitch';
 import { getTrainerMode, setTrainerMode } from '../trainerMode';
@@ -457,6 +456,8 @@ class DefenseState extends React.Component {
             if (players[0].hand[i] > 0) reviewRows.push({ tile: i, value: averageSafety[i] });
         }
         reviewRows.sort((a, b) => b.value - a.value);
+        // Keep the review short: the five safest tiles plus the one that was chosen
+        reviewRows = reviewRows.filter((row, index) => index < 5 || row.tile === chosenTile);
 
         players[0].discardTile(chosenTile);
         this.tileDiscardedAfterRiichi(chosenTile, players);
@@ -656,6 +657,28 @@ class DefenseState extends React.Component {
                     </div>
                 ) : null}
 
+                {ready ? (
+                    <React.Fragment>
+                        <DiscardTable players={this.state.players} discardCount={this.state.discardCount} wallCount={this.state.tilePool && this.state.tilePool.length} showIndexes={this.state.settings.showIndexes} />
+                        <section className="rt-board rt-board--play">
+                            <Hand tiles={this.state.players[0].hand}
+                                lastDraw={this.state.lastDraw}
+                                onTileClick={this.onTileSelected}
+                                selected={this.state.selected > -1 ? this.state.selected : undefined}
+                                showIndexes={this.state.settings.showIndexes} />
+                        </section>
+                        {!quick ? (
+                            <Button
+                                variant="accent"
+                                size="lg"
+                                block
+                                disabled={this.state.selected < 0 || this.state.isComplete}
+                                onClick={this.onDiscardSelected}
+                            >{t("play.discard")}</Button>
+                        ) : null}
+                    </React.Fragment>
+                ) : null}
+
                 {preview ? (
                     <section className="rt-peek" aria-live="polite">
                         <div className="rt-peek__head">
@@ -679,10 +702,8 @@ class DefenseState extends React.Component {
                     />
                 ) : null}
 
-                {ready ? <DiscardTable players={this.state.players} discardCount={this.state.discardCount} wallCount={this.state.tilePool && this.state.tilePool.length} showIndexes={this.state.settings.showIndexes} /> : null}
-
                 <div className="rt-actions">
-                    <Button variant={this.state.isComplete ? "success" : "accent"} icon="refresh" onClick={() => this.onNewHand()}>{t("trainer.newHandButtonLabel")}</Button>
+                    <Button variant={this.state.isComplete ? "success" : "secondary"} icon="refresh" onClick={() => this.onNewHand()}>{t("trainer.newHandButtonLabel")}</Button>
                 </div>
 
                 <Collapsible title={t("defense.safetyRatings")} icon="shield" open={!this.state.chartCollapsed} onToggle={() => this.toggleChart()}>
@@ -692,24 +713,6 @@ class DefenseState extends React.Component {
                     </ul>
                 </Collapsible>
                 {ready ? <History history={this.state.history} concise={true} verbose={this.state.settings.verbose} spoilers={this.state.settings.spoilers} /> : null}
-
-                {ready ? (
-                    <Dock>
-                        {!quick ? (
-                            <Button
-                                variant="accent"
-                                block
-                                disabled={this.state.selected < 0 || this.state.isComplete}
-                                onClick={this.onDiscardSelected}
-                            >{t("play.discard")}</Button>
-                        ) : null}
-                        <Hand tiles={this.state.players[0].hand}
-                            lastDraw={this.state.lastDraw}
-                            onTileClick={this.onTileSelected}
-                            selected={this.state.selected > -1 ? this.state.selected : undefined}
-                            showIndexes={this.state.settings.showIndexes} />
-                    </Dock>
-                ) : null}
             </div>
         );
     }

@@ -9,8 +9,8 @@ export const en = {
             moreTitle: "All sections",
             navDiscard: "Discard",
             navDefense: "Defense",
-            navScore: "Score",
-            navReview: "Review",
+            navScore: "Round",
+            navReview: "Analyzer",
             navLabel: "Main navigation",
             settings: "Settings",
             help: "Help",
@@ -259,13 +259,13 @@ export const en = {
             shantenPostLink: "",
         },
         menu: {
-            trainer: "Trainer",
+            trainer: "Discard",
             analyzer: "Analyzer",
-            allLast: "All Last Trainer",
+            allLast: "Last round",
             explorer: "Explorer",
             utils: "Misc. Utils",
             language: "Language",
-            defense: "Folding",
+            defense: "Defense",
             shanten: "Shanten"
         },
         allLast: {
@@ -275,7 +275,7 @@ export const en = {
                 third: "third",
                 fourth: "fourth"
             },
-            title: "All Last Trainer",
+            title: "Last round",
             maxFu: "Maximum Fu",
             showDifferences: "Show Point Differences",
             loadInstructions: "Enter comma-separated scores for East, South, West, and North, in that order, to load a situation.",
