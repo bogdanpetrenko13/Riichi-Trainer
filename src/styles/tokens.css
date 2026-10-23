@@ -191,7 +191,7 @@
   /* Каркас приложения и safe-area (вырезы, скруглённые углы) */
   --rt-appbar-h: 56px;
   --rt-bottomnav-h: 60px;
-  --rt-safe-top: env(safe-area-inset-top, 0px);
+  --rt-safe-top: min(env(safe-area-inset-top, 0px), 14px); /* вырез камеры: оставляем только небольшой отступ */
   --rt-safe-right: env(safe-area-inset-right, 0px);
   --rt-safe-bottom: env(safe-area-inset-bottom, 0px);
   --rt-safe-left: env(safe-area-inset-left, 0px);
