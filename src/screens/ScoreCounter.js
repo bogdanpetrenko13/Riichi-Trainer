@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from '../i18n';
-import { Button, Card, Collapsible, Icon, NumberField, Segmented } from '../components/ui';
+import { Button, Collapsible, Icon, NumberField, Segmented } from '../components/ui';
 import { MELD_FU, WAITS, calculateFu, calculatePayment, emptyMelds } from '../scripts/ScoreCounter';
 
 const MELD_KINDS = Object.keys(MELD_FU);
@@ -36,14 +36,14 @@ function Counter({ value, onChange, canAdd, label }) {
 /** Группа взаимоисключающих кнопок (для 4–5 вариантов в сетке). */
 function Choice({ options, value, onChange, ariaLabel }) {
     return (
-        <div className="rt-choice" role="radiogroup" aria-label={ariaLabel}>
+        <div className="rt-opts" role="radiogroup" aria-label={ariaLabel}>
             {options.map((option) => (
                 <button
                     key={option.value}
                     type="button"
                     role="radio"
                     aria-checked={value === option.value ? 'true' : 'false'}
-                    className={'rt-choice__item' + (value === option.value ? ' rt-choice__item--on' : '')}
+                    className={'rt-opts__item' + (value === option.value ? ' rt-opts__item--on' : '')}
                     onClick={() => onChange(option.value)}
                 >
                     <span>{option.label}</span>
@@ -138,77 +138,51 @@ function ScoreCounter() {
 
     return (
         <div className="rt-page rt-counter">
-            <section className="rt-result" aria-live="polite">
-                <div className="rt-result__head">
-                    <span className="rt-result__hanfu">{headline}</span>
-                    {limit ? <span className="rt-badge">{t('counter.limit.' + limit)}</span> : null}
-                </div>
-                <div className="rt-result__row">
-                    <span>{t('counter.ron')}<small>{t('counter.ronSub')}</small></span>
-                    <b className="rt-num">{empty ? '—' : fmt(result.ron.ron)}</b>
-                </div>
-                <div className="rt-result__row">
-                    <span>{t('counter.tsumo')}<small>{t('counter.tsumoSub')}</small></span>
-                    <b className="rt-num">{empty ? '—' : tsumoText}</b>
-                </div>
-                {!empty ? (
-                    <p className="rt-result__total">{t('counter.tsumoTotal', { total: fmt(result.tsumo.total) })}</p>
-                ) : null}
-            </section>
+            <Segmented
+                ariaLabel={t('counter.player')}
+                value={s.dealer}
+                onChange={(value) => set({ dealer: value })}
+                options={[{ value: 'ko', label: t('counter.nonDealer') }, { value: 'oya', label: t('counter.dealer') }]}
+            />
 
-            <Card title={t('counter.player')} bodyClassName="rt-counter__body">
-                <Segmented
-                    ariaLabel={t('counter.player')}
-                    value={s.dealer}
-                    onChange={(value) => set({ dealer: value })}
-                    options={[{ value: 'ko', label: t('counter.nonDealer') }, { value: 'oya', label: t('counter.dealer') }]}
-                />
-            </Card>
-
-            <Card title={t('counter.value')} bodyClassName="rt-counter__body">
-                <Segmented
-                    ariaLabel={t('counter.value')}
-                    value={s.mode}
-                    onChange={(value) => set({ mode: value })}
-                    options={[{ value: 'han', label: t('counter.han') }, { value: 'yakuman', label: t('counter.yakuman') }]}
-                />
-                {isYakuman ? (
-                    <div className="rt-counter__line">
-                        <span>{t('counter.yakumanCount')}</span>
-                        <NumberField id="counter-yakuman" min={1} max={6} value={s.yakuman} onChange={(value) => set({ yakuman: value })} />
-                    </div>
-                ) : (
-                    <>
-                        <div className="rt-counter__line">
-                            <span>{t('counter.hanCount')}</span>
-                            <NumberField id="counter-han" min={0} max={13} value={s.han} onChange={(value) => set({ han: value })} />
-                        </div>
-                        <div className="rt-quick" role="group" aria-label={t('counter.hanCount')}>
-                            {[1, 2, 3, 4, 5, 6, 8, 11, 13].map((value) => (
-                                <button
-                                    key={value}
-                                    type="button"
-                                    className={'rt-quick__item' + (s.han === value ? ' rt-quick__item--on' : '')}
-                                    onClick={() => set({ han: value })}
-                                >
-                                    {value}
-                                </button>
-                            ))}
-                        </div>
-                        {han >= 13 ? <p className="rt-hint">{t('counter.kazoeNote')}</p> : null}
-                    </>
-                )}
-            </Card>
+            <h3 className="rt-label">{t('counter.han')}</h3>
+            <div className="rt-quick rt-quick--han" role="group" aria-label={t('counter.hanCount')}>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map((value) => (
+                    <button
+                        key={value}
+                        type="button"
+                        className={'rt-quick__item' + (!isYakuman && s.han === value ? ' rt-quick__item--on' : '')}
+                        onClick={() => set({ han: value, mode: 'han' })}
+                    >
+                        {value}
+                    </button>
+                ))}
+                <button
+                    type="button"
+                    className={'rt-quick__item rt-quick__item--wide' + (isYakuman ? ' rt-quick__item--on' : '')}
+                    onClick={() => set({ mode: 'yakuman' })}
+                >
+                    {t('counter.yakuman')}
+                </button>
+            </div>
+            {isYakuman ? (
+                <div className="rt-counter__line">
+                    <span>{t('counter.yakumanCount')}</span>
+                    <NumberField id="counter-yakuman" min={1} max={6} value={s.yakuman} onChange={(value) => set({ yakuman: value })} />
+                </div>
+            ) : null}
+            {!isYakuman && han >= 13 ? <p className="rt-hint">{t('counter.kazoeNote')}</p> : null}
+            {!isYakuman && han >= 5 ? <p className="rt-hint">{t('counter.fuIgnored')}</p> : null}
 
             {fuMatters ? (
-                <Card title={t('counter.fuTitle')} bodyClassName="rt-counter__body">
+                <>
+                    <h3 className="rt-label">{t('counter.handType')}</h3>
                     <Segmented
                         ariaLabel={t('counter.handType')}
                         value={s.open ? 'open' : 'closed'}
                         onChange={(value) => set({ open: value === 'open' })}
                         options={[{ value: 'closed', label: t('counter.closedHand') }, { value: 'open', label: t('counter.openHand') }]}
                     />
-                    <p className="rt-hint">{s.open ? t('counter.openHint') : t('counter.closedHint')}</p>
 
                     {!s.open ? (
                         <Choice
@@ -225,9 +199,10 @@ function ScoreCounter() {
 
                     {special === 'none' ? (
                         <>
+                            <h3 className="rt-label">{t('counter.sets')}</h3>
                             <div className="rt-melds">
                                 <div className="rt-melds__head">
-                                    <span>{t('counter.sets')}</span>
+                                    <span />
                                     <span>{t('counter.closed')}</span>
                                     <span>{t('counter.openMeld')}</span>
                                 </div>
@@ -250,19 +225,19 @@ function ScoreCounter() {
                                 ))}
                             </div>
 
-                            <h4 className="rt-counter__sub">{t('counter.pair')}</h4>
-                            <Choice
+                            <h3 className="rt-label">{t('counter.pair')}</h3>
+                            <Segmented
                                 ariaLabel={t('counter.pair')}
                                 value={s.pair}
                                 onChange={(value) => set({ pair: value })}
                                 options={[
-                                    { value: 0, label: t('counter.pairNone'), sub: '0' },
-                                    { value: 2, label: t('counter.pairYakuhai'), sub: '+2' },
-                                    { value: 4, label: t('counter.pairDouble'), sub: '+4' },
+                                    { value: 0, label: t('counter.pairNone') },
+                                    { value: 2, label: t('counter.pairYakuhai') },
+                                    { value: 4, label: t('counter.pairDouble') },
                                 ]}
                             />
 
-                            <h4 className="rt-counter__sub">{t('counter.wait')}</h4>
+                            <h3 className="rt-label">{t('counter.wait')}</h3>
                             <Choice
                                 ariaLabel={t('counter.wait')}
                                 value={s.wait}
@@ -276,18 +251,18 @@ function ScoreCounter() {
                             <p className="rt-hint">{t('counter.waitHint')}</p>
                         </>
                     ) : null}
-                </Card>
+                </>
             ) : null}
 
-            {!isYakuman && han >= 5 ? <p className="rt-note">{t('counter.fuIgnored')}</p> : null}
-
-            <label className="rt-check">
-                <input type="checkbox" checked={s.kiriage} onChange={(event) => set({ kiriage: event.target.checked })} />
-                <span>
-                    {t('counter.kiriage')}
-                    <small>{t('counter.kiriageHint')}</small>
-                </span>
-            </label>
+            <Collapsible title={t('counter.rules')} icon="sliders">
+                <label className="rt-check rt-check--flat">
+                    <input type="checkbox" checked={s.kiriage} onChange={(event) => set({ kiriage: event.target.checked })} />
+                    <span>
+                        {t('counter.kiriage')}
+                        <small>{t('counter.kiriageHint')}</small>
+                    </span>
+                </label>
+            </Collapsible>
 
             {fuMatters ? (
                 <Collapsible title={t('counter.breakdown')} icon="list">
@@ -305,7 +280,23 @@ function ScoreCounter() {
                 </div>
             </Collapsible>
 
-            <Button variant="secondary" icon="refresh" block onClick={() => setS(INITIAL)}>{t('counter.reset')}</Button>
+            <Button variant="ghost" icon="refresh" block onClick={() => setS(INITIAL)}>{t('counter.reset')}</Button>
+
+            <section className="rt-resultbar" aria-live="polite">
+                <div className="rt-resultbar__main">
+                    <span className="rt-resultbar__head">
+                        {headline}
+                        {limit ? <span className="rt-limit">{t('counter.limit.' + limit)}</span> : null}
+                    </span>
+                    <span className="rt-resultbar__ron">
+                        {t('counter.ron')} <b className="rt-num">{empty ? '—' : fmt(result.ron.ron)}</b>
+                    </span>
+                </div>
+                <div className="rt-resultbar__side">
+                    <span>{t('counter.tsumo')}</span>
+                    <b className="rt-num">{empty ? '—' : tsumoText}</b>
+                </div>
+            </section>
         </div>
     );
 }
