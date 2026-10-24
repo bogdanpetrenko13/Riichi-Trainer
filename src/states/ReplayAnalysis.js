@@ -243,13 +243,7 @@ class ReplayAnalysis extends React.Component {
 
         return (
             <div className="rt-page">
-                <Collapsible title={t("analyzer.instructions1")} icon="help">
-                    <ol className="rt-prose">
-                        {[2, 3, 4, 5, 6, 7, 8, 9].map((n) => <li key={n}>{t("analyzer.instructions" + n)}</li>)}
-                    </ol>
-                </Collapsible>
-                <Card title={t("menu.analyzer")} icon="search">
-                    <div className="rt-stack">
+                <div className="rt-stack">
                         <Input id="tenhouURL" aria-label={t("analyzer.URLplaceholder")} placeholder={t("analyzer.URLplaceholder")} onChange={this.onURLChanged} autoCapitalize="off" autoCorrect="off" spellCheck="false" />
                         {this.state.URLfeedback ? <p className="rt-feedback" role="status">{this.state.URLfeedback}</p> : null}
                         <label className="rt-file">
@@ -278,8 +272,7 @@ class ReplayAnalysis extends React.Component {
                                 </Dropdown>
                             </div>
                         ) : null}
-                    </div>
-                </Card>
+                </div>
                 {this.state.turns.length ? (
                     <React.Fragment>
                         <section className="rt-board">
@@ -305,6 +298,11 @@ class ReplayAnalysis extends React.Component {
                         </ListGroup>
                     </React.Fragment>
                 ) : null}
+                <Collapsible title={t("analyzer.instructions1")} icon="help">
+                    <ol className="rt-prose">
+                        {[2, 3, 4, 5, 6, 7, 8, 9].map((n) => <li key={n}>{t("analyzer.instructions" + n)}</li>)}
+                    </ol>
+                </Collapsible>
             </div>
         );
     }

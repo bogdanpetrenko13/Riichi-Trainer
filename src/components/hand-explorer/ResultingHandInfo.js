@@ -1,7 +1,6 @@
 import React from 'react';
 import { Collapsible } from '../ui';
-import { convertHandToAsciiSymbols } from '../../scripts/HandConversions';
-import { getTileAsText, convertTilesToAsciiSymbols } from '../../scripts/TileConversions';
+import { getTileAsText, getTileImage } from '../../scripts/TileConversions';
 import { calculateDiscardUkeire } from '../../scripts/UkeireCalculator';
 import calculateStandardShanten from '../../scripts/ShantenCalculator';
 import { ALL_TILES_REMAINING } from '../../Constants';
@@ -71,14 +70,33 @@ class ResultingHandInfo extends React.Component {
             });
         }
 
+        let percent = this.props.maxUkeire > 0 ? Math.round(this.props.ukeire.value / this.props.maxUkeire * 100) : 0;
+        let tilesRow = (indexes) => (
+            <span className="rt-xtiles">
+                {indexes.map((tile) => <img key={tile} src={getTileImage(tile)} alt={getTileAsText(t, tile, false)} draggable="false" />)}
+            </span>
+        );
+
         return (
-            <div className="rt-stack">
-                <h3 className="rt-section-title">{t("explorer.discardInfo.discard", { tile: getTileAsText(t, this.props.discard, false) })}</h3>
-                <div className="rt-num">{convertHandToAsciiSymbols(this.props.hand)}</div>
-                <ul className="rt-lines rt-num">
-                    <li>{t("explorer.discardInfo.shanten", { count: this.props.shanten })}</li>
-                    <li>{t("explorer.discardInfo.ukeire", { count: this.props.ukeire.value, tiles: convertTilesToAsciiSymbols(this.props.ukeire.tiles) })}</li>
-                </ul>
+            <div className={"rt-xcard" + (this.props.best ? " rt-xcard--best" : "")}>
+                <div className="rt-xcard__head">
+                    <img className="rt-xcard__discard" src={getTileImage(this.props.discard)} alt={getTileAsText(t, this.props.discard, false)} draggable="false" />
+                    <div className="rt-xcard__main">
+                        <div className="rt-xcard__value">
+                            <b className="rt-num">{this.props.ukeire.value}</b>
+                            <span>{t("explorer.ukeireLabel")}</span>
+                            <span className="rt-xcard__shanten">{t("explorer.discardInfo.shanten", { count: this.props.shanten })}</span>
+                        </div>
+                        <div className="rt-xcard__bar" aria-hidden="true"><i style={{ width: percent + "%" }} /></div>
+                    </div>
+                </div>
+                {this.props.ukeire.tiles.length ? <div className="rt-xcard__row">{tilesRow(this.props.ukeire.tiles)}</div> : null}
+                {upgradeTiles.length ? (
+                    <div className="rt-xcard__row">
+                        <span className="rt-muted">{t("explorer.upgradesShort", { count: this.props.upgrades.value })}</span>
+                        {tilesRow(upgradeTiles)}
+                    </div>
+                ) : null}
                 <Collapsible title={t("explorer.discardInfo.expand")} icon="list" open={!this.state.shantenCollapsed} onToggle={this.toggleShanten}>
                     <ul className="rt-lines rt-num">
                         {shantenResults}
@@ -87,9 +105,6 @@ class ResultingHandInfo extends React.Component {
                         {t("explorer.discardInfo.average", { average: Math.round(totalShantenUkeire / shantenResults.length) })}
                     </p>
                 </Collapsible>
-                <p className="rt-num">
-                    {t("explorer.discardInfo.upgrades", { count: this.props.upgrades.value, tiles: convertTilesToAsciiSymbols(upgradeTiles) })}
-                </p>
                 <Collapsible title={t("explorer.discardInfo.expandUpgrades")} icon="list" open={!this.state.upgradesCollapsed} onToggle={this.toggleUpgrades}>
                     <ul className="rt-lines rt-num">
                         {upgradeResults}

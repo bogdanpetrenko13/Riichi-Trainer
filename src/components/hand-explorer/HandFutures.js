@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card } from '../ui';
 import ResultingHandInfo from './ResultingHandInfo';
 import { calculateUkeire, calculateUkeireUpgrades, calculateDiscardUkeire } from '../../scripts/UkeireCalculator';
 import { calculateStandardShanten } from '../../scripts/ShantenCalculator';
@@ -64,17 +63,22 @@ function HandFutures(props) {
         });
     }
 
+    let bestShanten = infoObjects.length ? infoObjects[0].shanten : 0;
+    let maxUkeire = Math.max(1, ...infoObjects.filter((obj) => obj.shanten === bestShanten).map((obj) => obj.ukeire.value));
+
     let handInfos = infoObjects.map((obj, index) => {
         return (
-            <Card key={obj.discard + '-' + index}>
+            <div key={obj.discard + '-' + index}>
                 <ResultingHandInfo
+                    best={obj.shanten === bestShanten && obj.ukeire.value === maxUkeire}
+                    maxUkeire={maxUkeire}
                     hand={obj.hand}
                     discard={obj.discard}
                     shanten={obj.shanten}
                     ukeire={obj.ukeire}
                     upgrades={obj.upgrades}
                 />
-            </Card>
+            </div>
         );
     });
 

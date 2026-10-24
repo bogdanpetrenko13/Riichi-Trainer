@@ -497,6 +497,10 @@ export const ru = {
             ukeire: "Укеире: количество тайло которые улучшают ваш шантен.",
             notableDiscards: "Показывать только значимые дискарды",
             allDiscards: "Показывать все дискарды",
+            notableShort: "Значимые",
+            allShort: "Все сбросы",
+            ukeireLabel: "укеире",
+            upgradesShort: "Улучшения: {{count}}",
             discardInfo: {
                 discard: "При сбросе {{tile}}:",
                 shanten: "Шантен: {{count}}",
@@ -550,6 +554,9 @@ export const ru = {
             },
         },
         utils: {
+            tabConvert: "Конвертер",
+            tabState: "Состояние игры",
+            locale: "ru-RU",
             convertHeader: "Преобразование руки",
             convertButtonLabel: "Преобразовать руку",
             ascii: "ASCII:",

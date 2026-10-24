@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Collapsible } from '../components/ui';
+import { Collapsible, Segmented } from '../components/ui';
 import Hand from '../components/Hand';
 import LoadButton from '../components/LoadButton';
 import HandFutures from '../components/hand-explorer/HandFutures';
@@ -63,20 +63,26 @@ class HandExplorer extends React.Component {
         let { t } = this.props;
         return (
             <div className="rt-page">
+                <LoadButton callback={this.loadHand} />
+                <Segmented
+                    ariaLabel={t("menu.explorer")}
+                    value={this.state.showAll ? "all" : "notable"}
+                    onChange={(value) => this.setState({ showAll: value === "all" })}
+                    options={[
+                        { value: "notable", label: t("explorer.notableShort") },
+                        { value: "all", label: t("explorer.allShort") },
+                    ]}
+                />
+                {this.state.message ? <p className="rt-feedback" role="status">{this.state.message}</p> : null}
+                <section className="rt-board rt-board--play">
+                    <Hand tiles={this.state.hand} />
+                </section>
+                <HandFutures hand={this.state.hand} showAll={this.state.showAll} />
                 <Collapsible title={t("explorer.howTo")} icon="help">
                     <p className="rt-prose">{t("explorer.warning")}</p>
                     <p className="rt-prose">{t("explorer.shanten")}</p>
                     <p className="rt-prose">{t("explorer.ukeire")}</p>
                 </Collapsible>
-                <div className="rt-actions">
-                    <LoadButton callback={this.loadHand} />
-                    <Button variant="secondary" icon="layers" onClick={() => this.onShowToggled()}>{this.state.showAll ? t("explorer.notableDiscards") : t("explorer.allDiscards")}</Button>
-                </div>
-                {this.state.message ? <p className="rt-feedback" role="status">{this.state.message}</p> : null}
-                <section className="rt-board">
-                    <Hand tiles={this.state.hand} />
-                </section>
-                <HandFutures hand={this.state.hand} showAll={this.state.showAll} />
             </div>
         );
     }

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Button, Card } from '../ui';
+import { Button } from '../ui';
 import Player from '../../models/Player';
-import { convertTilesToAsciiSymbols, convertIndexesToTenhouTiles, getTileAsText } from '../../scripts/TileConversions';
+import { convertIndexesToTenhouTiles, getTileAsText, getTileImage } from '../../scripts/TileConversions';
 import { ROUND_PARAMETERS, SEAT_NAMES } from '../../Constants';
 import { withTranslation } from '../../i18n';
 
@@ -121,38 +121,38 @@ class RandomGameState extends React.Component {
 
         let { t } = this.props;
 
+        let fmt = (points) => points.toLocaleString(t("utils.locale")).replace(/[\u00a0\u202f]/g, " ");
+
         let playerItems = this.state.players.map((player, index) => {
+            let you = player.seat === this.state.userSeat;
+            let discards = [].concat(...player.discards);
             return (
-                <li key={index + 1}>
-                    <strong>{t("utils.playerLabel", {
-                        seat: t(SEAT_NAMES[player.seat]),
-                        you: player.seat === this.state.userSeat
-                            ? `(${t("allLast.you")})`
-                            : ""
-                    })}</strong>
-                    <div className="rt-num">{t("utils.points")} {player.points}</div>
-                    <div>{t("utils.discards")} {convertTilesToAsciiSymbols(player.discards)} ({convertIndexesToTenhouTiles(player.discards)})</div>
+                <li key={index + 1} className={"rt-seat" + (you ? " rt-seat--you" : "")}>
+                    <div className="rt-seat__head">
+                        <strong>{t(SEAT_NAMES[player.seat])}{you ? " · " + t("allLast.you") : ""}</strong>
+                        <b className="rt-num">{fmt(player.points)}</b>
+                    </div>
+                    <div className="rt-xtiles" aria-label={t("utils.discards") + " " + convertIndexesToTenhouTiles(player.discards)}>
+                        {discards.map((tile, i) => <img key={i} src={getTileImage(tile)} alt="" draggable="false" />)}
+                    </div>
                 </li>
             );
         });
 
         return (
-            <Card title={t("utils.stateHeader")} icon="layers">
-                <div className="rt-stack">
-                    <Button variant="accent" block icon="refresh" onClick={() => this.generateState()}>{t("utils.stateButtonLabel")}</Button>
-                    <ul className="rt-lines">
-                        <li key={0}>
-                            <div>{t("utils.info", {
-                                turn: this.state.turn,
-                                round: t("roundName", ROUND_PARAMETERS[this.state.round]),
-                                seat: t(SEAT_NAMES[this.state.userSeat])
-                            })}</div>
-                            <div>{t("utils.dora", { tile: getTileAsText(t, this.state.doraIndicator, true) })}</div>
-                        </li>
-                        {playerItems}
-                    </ul>
-                </div>
-            </Card>
+            <div className="rt-stack">
+                <p className="rt-question__text">
+                    {t("utils.info", {
+                        turn: this.state.turn,
+                        round: t("roundName", ROUND_PARAMETERS[this.state.round]),
+                        seat: t(SEAT_NAMES[this.state.userSeat])
+                    })}
+                    {" "}
+                    {t("utils.dora", { tile: getTileAsText(t, this.state.doraIndicator, true) })}
+                </p>
+                <ul className="rt-seats">{playerItems}</ul>
+                <Button variant="accent" block icon="refresh" onClick={() => this.generateState()}>{t("utils.stateButtonLabel")}</Button>
+            </div>
         );
     }
 }

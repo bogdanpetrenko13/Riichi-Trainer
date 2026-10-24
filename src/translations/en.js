@@ -497,6 +497,10 @@ export const en = {
             ukeire: "Ukeire: The number of tiles that reduce your shanten.",
             notableDiscards: "Show Only Notable Discards",
             allDiscards: "Show All Possible Discards",
+            notableShort: "Notable",
+            allShort: "All discards",
+            ukeireLabel: "ukeire",
+            upgradesShort: "Upgrades: {{count}}",
             discardInfo: {
                 discard: "Discarding the {{tile}}:",
                 shanten: "Shanten: {{count}}",
@@ -550,6 +554,9 @@ export const en = {
             },
         },
         utils: {
+            tabConvert: "Converter",
+            tabState: "Game state",
+            locale: "en-US",
             convertHeader: "Hand Conversion",
             convertButtonLabel: "Convert Hand",
             ascii: "ASCII:",

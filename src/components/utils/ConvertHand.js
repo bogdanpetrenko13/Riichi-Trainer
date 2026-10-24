@@ -1,7 +1,8 @@
 import React from 'react';
 import { Input, InputGroup, InputGroupAddon } from '../ui/legacy';
-import { Button, Card } from '../ui';
-import { convertHandToAsciiSymbols, convertHandToDiscordEmoji } from '../../scripts/HandConversions';
+import { Button } from '../ui';
+import { convertHandToAsciiSymbols, convertHandToDiscordEmoji, convertHandToTileIndexArray } from '../../scripts/HandConversions';
+import { getTileImage } from '../../scripts/TileConversions';
 import { withTranslation } from '../../i18n';
 import { characterToSuit } from '../../scripts/Utils';
 
@@ -60,20 +61,23 @@ class ConvertHand extends React.Component {
     render() {
         let { t } = this.props;
         return (
-            <Card title={t("utils.convertHeader")} icon="wrench">
-                <div className="rt-stack">
-                    <InputGroup>
-                        <Input id="convertHandString" aria-label={t("utils.convertButtonLabel")} placeholder="123m456p789s12345z" autoCapitalize="off" autoCorrect="off" spellCheck="false" />
-                        <InputGroupAddon addonType="append">
-                            <Button variant="primary" icon="refresh" onClick={() => this.onClick()}>{t("utils.convertButtonLabel")}</Button>
-                        </InputGroupAddon>
-                    </InputGroup>
-                    <ul className="rt-lines">
-                        <li>{t("utils.ascii")} {convertHandToAsciiSymbols(this.state.hand)}</li>
-                        <li>{t("utils.emoji")} {convertHandToDiscordEmoji(this.state.hand)}</li>
-                    </ul>
+            <div className="rt-stack">
+                <InputGroup>
+                    <Input id="convertHandString" aria-label={t("utils.convertButtonLabel")} placeholder="123m456p789s12345z" autoCapitalize="off" autoCorrect="off" spellCheck="false" />
+                    <InputGroupAddon addonType="append">
+                        <Button variant="primary" icon="refresh" onClick={() => this.onClick()}>{t("utils.convertButtonLabel")}</Button>
+                    </InputGroupAddon>
+                </InputGroup>
+                <div className="rt-xtiles rt-xtiles--lg">
+                    {convertHandToTileIndexArray(this.state.hand).map((tile, i) => (
+                        <img key={i} src={getTileImage(tile)} alt="" draggable="false" />
+                    ))}
                 </div>
-            </Card>
+                <ul className="rt-lines">
+                    <li>{t("utils.ascii")} {convertHandToAsciiSymbols(this.state.hand)}</li>
+                    <li>{t("utils.emoji")} {convertHandToDiscordEmoji(this.state.hand)}</li>
+                </ul>
+            </div>
         )
     }
 }

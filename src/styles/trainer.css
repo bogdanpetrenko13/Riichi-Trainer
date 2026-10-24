@@ -567,3 +567,90 @@
   width: 26px;
   flex: none;
 }
+
+/* ---------- «Последний раунд»: всё на одном экране ---------- */
+.rt-lastround {
+  gap: var(--rt-space-3);
+  padding-bottom: 76px;
+}
+
+.rt-lastround__kind {
+  margin: 0;
+  font-size: var(--rt-text-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--rt-color-text-2);
+}
+
+.rt-lastround .rt-question__text {
+  margin: 0;
+  font-size: var(--rt-text-base);
+  line-height: 1.4;
+}
+
+.rt-scores {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rt-score {
+  display: grid;
+  grid-template-columns: 32px 1fr auto;
+  align-items: center;
+  gap: var(--rt-space-2);
+  padding: 6px var(--rt-space-3);
+  background-color: var(--rt-color-surface);
+  border: 1px solid var(--rt-card-border);
+  border-radius: var(--rt-radius-md);
+}
+
+.rt-score--me {
+  background-color: var(--rt-color-primary-soft);
+  border-color: var(--rt-color-primary);
+}
+
+.rt-score__wind {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  font-weight: 700;
+  background-color: var(--rt-color-surface-2);
+  border-radius: var(--rt-radius-sm);
+}
+
+.rt-score__points {
+  font-size: 1.1rem;
+}
+
+.rt-score__diff {
+  font-size: var(--rt-text-sm);
+  color: var(--rt-color-text-2);
+}
+
+.rt-lastround .rt-choice-group__items {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--rt-space-1);
+}
+
+.rt-lastround .rt-choice {
+  min-width: 0;
+  min-height: 42px;
+  padding: 0;
+}
+
+.rt-lastround__bar {
+  position: fixed;
+  right: calc(var(--rt-space-3) + var(--rt-safe-right));
+  bottom: calc(var(--rt-bottomnav-h) + var(--rt-safe-bottom) + var(--rt-space-2));
+  left: calc(var(--rt-space-3) + var(--rt-safe-left));
+  z-index: 1010;
+  max-width: calc(var(--rt-page-max) - 2 * var(--rt-space-3));
+  margin: 0 auto;
+}

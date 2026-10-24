@@ -70,6 +70,7 @@ function projectScores(players, question, han, fu) {
 class SouthFourQuiz extends React.Component {
     constructor(props) {
         super(props);
+        this.feedbackRef = React.createRef();
         this.state = {
             score: 0,
             players: [],
@@ -269,6 +270,13 @@ class SouthFourQuiz extends React.Component {
         this.setState({ han: han, fu: han < 2 && this.state.fu > 110 ? 30 : this.state.fu });
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        let current = this.state.current;
+        if (!prevState.messages[current] && this.state.messages[current] && this.feedbackRef.current) {
+            this.feedbackRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+    }
+
     onPickFu(fu) {
         this.setState({ fu: fu, han: fu > 110 && this.state.han < 2 ? 2 : this.state.han });
     }
@@ -329,13 +337,19 @@ class SouthFourQuiz extends React.Component {
         let finished = index >= total;
         let players = this.state.players;
 
-        let scores = players.map((player, i) => {
-            if (this.state.showDifferences) {
-                return <li key={i}>{t(SEAT_NAMES[player.seat]) + ": " + player.points} ({i === 0 ? t("allLast.you") : "+" + (player.points - players[0].points)})</li>;
-            } else {
-                return <li key={i}>{t(SEAT_NAMES[player.seat]) + ": " + player.points}</li>;
-            }
-        });
+        let fmtPoints = (points) => points.toLocaleString(this.props.i18n && this.props.i18n.language === "ru" ? "ru-RU" : "en-US").replace(/[\u00a0\u202f]/g, " ");
+        let scores = players
+            .map((player, i) => ({ player: player, i: i }))
+            .sort((x, y) => y.player.points - x.player.points || x.i - y.i)
+            .map(({ player, i }) => (
+                <li key={i} className={cx("rt-score", i === 0 && "rt-score--me")}>
+                    <span className="rt-score__wind">{t(SEAT_NAMES[player.seat]).charAt(0)}</span>
+                    <b className="rt-num rt-score__points">{fmtPoints(player.points)}</b>
+                    <span className="rt-num rt-score__diff">
+                        {i === 0 ? t("allLast.you") : (this.state.showDifferences ? "+" + fmtPoints(player.points - players[0].points) : "")}
+                    </span>
+                </li>
+            ));
 
         let settingsSheet = (
             <Modal open={this.state.settingsOpen} onClose={() => this.setState({ settingsOpen: false })} title={t("lastRound.settings")}>
@@ -385,7 +399,7 @@ class SouthFourQuiz extends React.Component {
         let percent = Math.round(index / total * 100);
 
         return (
-            <div className="rt-page">
+            <div className="rt-page rt-lastround">
                 {settingsSheet}
 
                 <div className="rt-lastround__top">
@@ -396,30 +410,26 @@ class SouthFourQuiz extends React.Component {
                     <span style={{ width: percent + "%" }} />
                 </div>
 
-                <Card title={t(sectionKey(index))} icon={index < 4 ? "shield" : index < 10 ? "target" : "barChart"}>
-                    <div className="rt-stack">
-                        <p className="rt-instructions">{t("allLast.info")}</p>
-                        <ul className="rt-lines rt-num">{scores}</ul>
-                        <p className="rt-question__text">{this.questionText(t, question)}</p>
+                <p className="rt-lastround__kind">{t(sectionKey(index))}</p>
+                <p className="rt-question__text">{this.questionText(t, question)}</p>
+                <ul className="rt-scores">{scores}</ul>
 
-                        {this.renderChoices(t("allLast.han"), HAN_CHOICES, this.state.han, (han) => this.onPickHan(han))}
-                        {this.renderChoices(t("allLast.fu"), FU_CHOICES.filter((fu) => fu <= this.state.maxFu), this.state.fu, (fu) => this.onPickFu(fu))}
+                {this.renderChoices(t("allLast.han"), HAN_CHOICES, this.state.han, (han) => this.onPickHan(han))}
+                {this.renderChoices(t("allLast.fu"), FU_CHOICES.filter((fu) => fu <= this.state.maxFu), this.state.fu, (fu) => this.onPickFu(fu))}
 
-                        <p className="rt-lastround__outcome rt-num" aria-live="polite">
-                            {t("lastRound.outcome", { points: projection.gained, score: projection.scores[0], place: place })}
-                        </p>
+                <p className="rt-lastround__outcome rt-num" aria-live="polite">
+                    {t("lastRound.outcome", { points: projection.gained, score: projection.scores[0], place: place })}
+                </p>
 
-                        {answered ? answer.generateJSX(t, this.state.showDifferences) : null}
+                <div ref={this.feedbackRef}>{answered ? answer.generateJSX(t, this.state.showDifferences) : null}</div>
 
-                        <div className="rt-actions">
-                            {answered ? (
-                                <Button variant="accent" iconRight="chevronRight" onClick={() => this.onNext()}>{t("play.next")}</Button>
-                            ) : (
-                                <Button variant="primary" icon="check" onClick={() => this.onCheck()}>{t("lastRound.check")}</Button>
-                            )}
-                        </div>
-                    </div>
-                </Card>
+                <div className="rt-lastround__bar">
+                    {answered ? (
+                        <Button variant="accent" size="lg" block iconRight="chevronRight" onClick={() => this.onNext()}>{t("play.next")}</Button>
+                    ) : (
+                        <Button variant="accent" size="lg" block icon="check" onClick={() => this.onCheck()}>{t("lastRound.check")}</Button>
+                    )}
+                </div>
             </div>
         );
     }

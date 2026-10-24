@@ -558,3 +558,122 @@
   font-family: inherit;
   font-variant-numeric: tabular-nums;
 }
+
+/* ---------- Разбор вариантов: карточка сброса ---------- */
+.rt-xcard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rt-space-2);
+  padding: var(--rt-space-3);
+  background-color: var(--rt-color-surface);
+  border: 1px solid var(--rt-card-border);
+  border-radius: var(--rt-radius-card);
+  box-shadow: var(--rt-card-shadow);
+}
+
+.rt-xcard--best {
+  background-color: var(--rt-color-success-soft);
+  border-color: var(--rt-color-success);
+}
+
+.rt-xcard__head {
+  display: flex;
+  align-items: center;
+  gap: var(--rt-space-3);
+}
+
+.rt-xcard__discard {
+  width: 40px;
+  height: auto;
+  border-radius: 3px;
+}
+
+.rt-xcard__main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.rt-xcard__value {
+  display: flex;
+  align-items: baseline;
+  gap: var(--rt-space-2);
+}
+
+.rt-xcard__value b {
+  font-size: 1.4rem;
+}
+
+.rt-xcard__shanten {
+  margin-left: auto;
+  font-size: var(--rt-text-sm);
+  color: var(--rt-color-text-2);
+}
+
+.rt-xcard__bar {
+  height: 6px;
+  margin-top: var(--rt-space-1);
+  overflow: hidden;
+  background-color: var(--rt-color-surface-2);
+  border-radius: var(--rt-radius-pill);
+}
+
+.rt-xcard__bar i {
+  display: block;
+  height: 100%;
+  background-color: var(--rt-color-primary);
+}
+
+.rt-xcard__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--rt-space-2);
+  font-size: var(--rt-text-sm);
+}
+
+.rt-xtiles {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.rt-xtiles img {
+  width: 22px;
+  height: auto;
+  border-radius: 2px;
+}
+
+.rt-xtiles--lg img {
+  width: 26px;
+}
+
+.rt-seats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rt-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rt-seat {
+  padding: var(--rt-space-2) var(--rt-space-3);
+  background-color: var(--rt-color-surface);
+  border: 1px solid var(--rt-card-border);
+  border-radius: var(--rt-radius-md);
+}
+
+.rt-seat--you {
+  background-color: var(--rt-color-primary-soft);
+  border-color: var(--rt-color-primary);
+}
+
+.rt-seat__head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--rt-space-1);
+}
+
+.rt-seat .rt-xtiles img {
+  width: 20px;
+}
